@@ -1,0 +1,48 @@
+<project name="RPG Audio Mixer" basedir="." default="compile">
+
+	<property name="sourceDirectory" value="src" />
+	<property name="buildDirectory" value="build" />
+	<property name="classesDirectory" value="${buildDirectory}/classes" />
+    <property name="libraryDirectory" value="lib" />	
+
+	<property name="jarDirectory" value="${buildDirectory}/jar" />
+	<property name="jarName" value="RPGAudioMixer" />
+	<property name="mainClass"  value="com.rpgaudiomixer.RPGAudioMixer"/>
+
+    <path id="classpath">
+        <fileset dir="${libraryDirectory}" includes="**/*.jar"/>
+    </path>
+	
+	<target name="clean">
+		<delete dir="${buildDirectory}" />
+	</target>
+	
+	<target name="compile">
+		<mkdir dir="${classesDirectory}" />
+		<javac srcdir="${sourceDirectory}" destdir="${classesDirectory}" classpathref="classpath" />
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="${jarDirectory}"/>
+		<jar destfile="${jarDirectory}/${jarName}.jar" basedir="${classesDirectory}">
+            <manifest>
+                <attribute name="Main-Class" value="${mainClass}"/>
+            </manifest>
+        </jar>
+    </target>
+
+	<target name="run" depends="jar">
+       <java fork="true" classname="${mainClass}">
+            <classpath>
+                <path refid="classpath"/>
+                <path location="${jarDirectory}/${jarName}.jar"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="clean-build" depends="clean,jar"/>
+
+    <target name="main" depends="clean,run"/>
+
+</project>
+	
