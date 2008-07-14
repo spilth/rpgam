@@ -11,11 +11,11 @@
 	<classpathentry kind="lib" path="lib/tritonus_share.jar"/>
 	<classpathentry kind="lib" path="lib/vorbisspi1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/xstream-1.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.3.0.I20070605-0010.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.3.0.v20070426.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.3.2.M20080207-0800.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.3.2.R33x_v20080105.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.ui.workbench_3.3.2.M20080207-0800.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.swt"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.4.0.I20080509-2000.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.4.0.I20080606-1300.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.4.0.v20080605-1900.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.ui.workbench_3.4.0.I20080606-1300.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
