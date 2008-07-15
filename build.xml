@@ -78,17 +78,10 @@
 		<unzip src="${linuxZipFile}"   dest="${unzipDirectory}/linux" />
 	</target>
 
-	<target name="run" depends="jar">
-       <java fork="true" jar="dist/jar/rpgam.jar">
-            <classpath>
-                <path refid="classpath"/>
-				<pathelement path="lib/native/mac" />
-            </classpath>
-        </java>
-    </target>
-
-	<target name="testrun" depends="unzip">
+	<!-- TODO: Add Windows and Linux versions of "run" task -->
+	<target name="run" depends="unzip">
 		<java fork="true" classname="${mainClass}" dir="${unzipDirectory}/mac" >
+			<arg value="-XstartOnFirstThread" />
             <classpath>
     	        <fileset dir="${unzipDirectory}/mac" includes="**/*.jar"/>
             </classpath>
