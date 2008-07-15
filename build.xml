@@ -1,48 +1,111 @@
-<project name="RPG Audio Mixer" basedir="." default="compile">
+<project name="rpgam" default="compile">
 
-	<property name="sourceDirectory" value="src" />
-	<property name="buildDirectory" value="build" />
-	<property name="classesDirectory" value="${buildDirectory}/classes" />
-    <property name="libraryDirectory" value="lib" />	
+	<property name="sourceDirectory"         location="src" />
+    <property name="libraryDirectory"        location="lib/shared" />
+	<property name="buildDirectory"          location="build" />
+	<property name="classesDirectory"        location="${buildDirectory}/classes" />
+	<property name="distDirectory"           location="dist" />
 
-	<property name="jarDirectory" value="${buildDirectory}/jar" />
-	<property name="jarName" value="RPGAudioMixer" />
-	<property name="mainClass"  value="com.rpgaudiomixer.RPGAudioMixer"/>
+	<property name="jarDirectory"            location="${distDirectory}/jar" />
+	<property name="unjarDirectory"          location="${distDirectory}/unjar" />
+	<property name="zipDirectory"            location="${distDirectory}/zip" />
+	<property name="unzipDirectory"          location="${distDirectory}/unzip" />
 
+	<property name="macLibraryDirectory"     location="lib/native/mac" />
+	<property name="windowsLibraryDirectory" location="lib/native/windows" />
+	<property name="linuxLibraryDirectory"   location="lib/native/linux" />
+	
+	<property name="jarFile"                 location="${jarDirectory}/rpgam.jar" />
+	<property name="mainClass"               value="com.rpgaudiomixer.RPGAudioMixer"/>
+
+	<property name="macZipFile"              location="${zipDirectory}/rpgam-mac.zip" />
+	<property name="windowsZipFile"          location="${zipDirectory}/rpgam-windows.zip" />
+	<property name="linuxZipFile"            location="${zipDirectory}/rpgam-linux.zip" />
+	
     <path id="classpath">
         <fileset dir="${libraryDirectory}" includes="**/*.jar"/>
     </path>
-	
-	<target name="clean">
-		<delete dir="${buildDirectory}" />
+
+	<target name="init">
+		<mkdir dir="${buildDirectory}" />
+		<mkdir dir="${distDirectory}" />
 	</target>
-	
-	<target name="compile">
+
+	<target name="compile" depends="init">
 		<mkdir dir="${classesDirectory}" />
 		<javac srcdir="${sourceDirectory}" destdir="${classesDirectory}" classpathref="classpath" />
+		<copy todir="build/classes/icons">
+			<fileset dir="icons" />
+		</copy>
 	</target>
 
 	<target name="jar" depends="compile">
 		<mkdir dir="${jarDirectory}"/>
-		<jar destfile="${jarDirectory}/${jarName}.jar" basedir="${classesDirectory}">
+		<jar destfile="${jarFile}" basedir="${classesDirectory}">
             <manifest>
                 <attribute name="Main-Class" value="${mainClass}"/>
             </manifest>
         </jar>
     </target>
 
+	<target name="unjar" depends="jar">
+		<mkdir dir="${unjarDirectory}" />
+		<unjar src="${jarFile}" dest="${unjarDirectory}" />		
+	</target>
+
+	<target name="zip" depends="jar">
+		<mkdir dir="${zipDirectory}" />
+
+		<zip destFile="${macZipFile}">
+			<zipfileset file="${jarFile}" />
+			<zipfileset dir="${libraryDirectory}" />
+			<zipfileset dir="${macLibraryDirectory}" />
+		</zip>
+
+		<zip destFile="${windowsZipFile}">
+			<zipfileset file="${jarFile}" />
+			<zipfileset dir="${libraryDirectory}" />
+			<zipfileset dir="${windowsLibraryDirectory}" />
+		</zip>
+
+		<zip destFile="${linuxZipFile}">
+			<zipfileset file="${jarFile}" />
+			<zipfileset dir="${libraryDirectory}" />
+			<zipfileset dir="${linuxLibraryDirectory}" />
+		</zip>
+	
+	</target>
+	
+	<target name="unzip" depends="zip">
+		<mkdir dir="${unzipDirectory}" />
+		<unzip src="${macZipFile}"     dest="${unzipDirectory}/mac" />
+		<unzip src="${windowsZipFile}" dest="${unzipDirectory}/windows" />
+		<unzip src="${linuxZipFile}"   dest="${unzipDirectory}/linux" />
+	</target>
+
 	<target name="run" depends="jar">
-       <java fork="true" classname="${mainClass}">
+       <java fork="true" jar="dist/jar/rpgam.jar">
             <classpath>
                 <path refid="classpath"/>
-                <path location="${jarDirectory}/${jarName}.jar"/>
+				<pathelement path="lib/native/mac" />
             </classpath>
         </java>
     </target>
 
-    <target name="clean-build" depends="clean,jar"/>
+	<target name="testrun" depends="unzip">
+		<java fork="true" classname="${mainClass}" dir="${unzipDirectory}/mac" >
+            <classpath>
+    	        <fileset dir="${unzipDirectory}/mac" includes="**/*.jar"/>
+            </classpath>
+        </java>
+    </target>
 
-    <target name="main" depends="clean,run"/>
+	<target name="clean">
+		<delete dir="${buildDirectory}" />
+		<delete dir="${distDirectory}" />
+	</target>
 
+	<target name="full" depends="clean, zip" />
+		
 </project>
 	

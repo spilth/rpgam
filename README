@@ -2,10 +2,6 @@
 
 RPG Audio Mixer is an application for organizing and playing back music and sound effects for pen & paper role playing games.
 
-### BUILDING ###
-
-Build Info TK
-
 ### LINKS ###
 
 Official Web Site
@@ -16,3 +12,17 @@ Subversion Repository
 
 Trac Web Site
 	https://spilth.devguard.com/trac/rpgam/
+
+### ECLIPSE DEVELOPMENT/BUILDING ###
+
+To development RPG Audio Mixer using Eclipse 3.4, you must do the following:
+
+1) Download and install Eclipse 3.4 (Ganymede) for your development OS - http://www.eclipse.org/downloads/
+2) Download the SWT 3.4 release for your development OS - http://www.eclipse.org/swt/
+3) Check out the RPGAM project from the trunk - https://spilth.devguard.com/svn/rpgam/trunk
+4) In Eclipse go to File, Import, General, Existing Projects in Workspace, select Archive and choose the SWT 3.4 zip you downloaded in step 2.
+5) Select the RPGAM project, go to Project, Properties, Java Build Path, Projects, click Add and choose the org.eclipse.swt project you just imported.
+
+The project should now build successfully in Eclipse.
+
+See also: http://www.eclipse.org/swt/eclipse.php

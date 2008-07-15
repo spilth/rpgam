@@ -2,20 +2,20 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/basicplayer3.0.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-api.jar"/>
-	<classpathentry kind="lib" path="lib/jl1.0.jar"/>
-	<classpathentry kind="lib" path="lib/jogg-0.0.7.jar"/>
-	<classpathentry kind="lib" path="lib/jorbis-0.0.15.jar"/>
-	<classpathentry kind="lib" path="lib/mp3spi1.9.4.jar"/>
-	<classpathentry kind="lib" path="lib/tritonus_share.jar"/>
-	<classpathentry kind="lib" path="lib/vorbisspi1.0.2.jar"/>
-	<classpathentry kind="lib" path="lib/xstream-1.2.1.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.swt"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.core.commands_3.4.0.I20080509-2000.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.jface_3.4.0.I20080606-1300.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.4.0.v20080605-1900.jar"/>
-	<classpathentry kind="lib" path="lib/org.eclipse.ui.workbench_3.4.0.I20080606-1300.jar"/>
+	<classpathentry kind="lib" path="lib/shared/basicplayer3.0.jar"/>
+	<classpathentry kind="lib" path="lib/shared/commons-logging-api.jar"/>
+	<classpathentry kind="lib" path="lib/shared/jl1.0.jar"/>
+	<classpathentry kind="lib" path="lib/shared/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="lib/shared/jorbis-0.0.15.jar"/>
+	<classpathentry kind="lib" path="lib/shared/mp3spi1.9.4.jar"/>
+	<classpathentry kind="lib" path="lib/shared/org.eclipse.core.commands_3.4.0.I20080509-2000.jar"/>
+	<classpathentry kind="lib" path="lib/shared/org.eclipse.equinox.common_3.4.0.v20080421-2006.jar"/>
+	<classpathentry kind="lib" path="lib/shared/org.eclipse.jface_3.4.0.I20080606-1300.jar"/>
+	<classpathentry kind="lib" path="lib/shared/org.eclipse.osgi_3.4.0.v20080605-1900.jar"/>
+	<classpathentry kind="lib" path="lib/shared/org.eclipse.ui.workbench_3.4.0.I20080606-1300.jar"/>
+	<classpathentry kind="lib" path="lib/shared/tritonus_share.jar"/>
+	<classpathentry kind="lib" path="lib/shared/vorbisspi1.0.2.jar"/>
+	<classpathentry kind="lib" path="lib/shared/xstream-1.2.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
