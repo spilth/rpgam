@@ -1,10 +1,11 @@
 <project name="rpgam" default="compile">
-
+	
 	<property name="sourceDirectory"         location="src" />
     <property name="libraryDirectory"        location="lib/shared" />
 	<property name="buildDirectory"          location="build" />
 	<property name="classesDirectory"        location="${buildDirectory}/classes" />
 	<property name="distDirectory"           location="dist" />
+	<property name="iconsDirectory"          location="icons" />
 
 	<property name="jarDirectory"            location="${distDirectory}/jar" />
 	<property name="unjarDirectory"          location="${distDirectory}/unjar" />
@@ -28,56 +29,50 @@
 
 	<target name="init">
 		<mkdir dir="${buildDirectory}" />
+		<mkdir dir="${classesDirectory}" />
 		<mkdir dir="${distDirectory}" />
+		<mkdir dir="${jarDirectory}"/>
+		<mkdir dir="${unjarDirectory}" />
+		<mkdir dir="${zipDirectory}" />
+		<mkdir dir="${unzipDirectory}" />
 	</target>
 
 	<target name="compile" depends="init">
-		<mkdir dir="${classesDirectory}" />
 		<javac srcdir="${sourceDirectory}" destdir="${classesDirectory}" classpathref="classpath" />
-		<copy todir="build/classes/icons">
-			<fileset dir="icons" />
-		</copy>
 	</target>
 
 	<target name="jar" depends="compile">
-		<mkdir dir="${jarDirectory}"/>
-		<jar destfile="${jarFile}" basedir="${classesDirectory}">
-            <manifest>
-                <attribute name="Main-Class" value="${mainClass}"/>
-            </manifest>
-        </jar>
+		<jar destfile="${jarFile}" basedir="${classesDirectory}" manifest="manifest.txt" />
     </target>
 
 	<target name="unjar" depends="jar">
-		<mkdir dir="${unjarDirectory}" />
 		<unjar src="${jarFile}" dest="${unjarDirectory}" />		
 	</target>
 
 	<target name="zip" depends="jar">
-		<mkdir dir="${zipDirectory}" />
-
 		<zip destFile="${macZipFile}">
 			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${libraryDirectory}" />
-			<zipfileset dir="${macLibraryDirectory}" />
+			<zipfileset dir="${iconsDirectory}" prefix="icons" />
+			<zipfileset dir="${libraryDirectory}" prefix="lib" />
+			<zipfileset dir="${macLibraryDirectory}" prefix="lib" />
 		</zip>
 
 		<zip destFile="${windowsZipFile}">
 			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${libraryDirectory}" />
-			<zipfileset dir="${windowsLibraryDirectory}" />
+			<zipfileset dir="${iconsDirectory}" prefix="icons" />
+			<zipfileset dir="${libraryDirectory}" prefix="lib" />
+			<zipfileset dir="${windowsLibraryDirectory}" prefix="lib" />
 		</zip>
 
 		<zip destFile="${linuxZipFile}">
 			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${libraryDirectory}" />
-			<zipfileset dir="${linuxLibraryDirectory}" />
+			<zipfileset dir="${iconsDirectory}" prefix="icons" />
+			<zipfileset dir="${libraryDirectory}" prefix="lib" />
+			<zipfileset dir="${linuxLibraryDirectory}" prefix="lib" />
 		</zip>
-	
 	</target>
 	
 	<target name="unzip" depends="zip">
-		<mkdir dir="${unzipDirectory}" />
 		<unzip src="${macZipFile}"     dest="${unzipDirectory}/mac" />
 		<unzip src="${windowsZipFile}" dest="${unzipDirectory}/windows" />
 		<unzip src="${linuxZipFile}"   dest="${unzipDirectory}/linux" />
