@@ -1,24 +1,36 @@
-<project name="rpgam" default="compile">
-	
+<project name="rpgam" default="run-tests">
+
+	<!-- Main Properties -->
 	<property name="sourceDirectory"         location="src" />
     <property name="libraryDirectory"        location="lib/shared" />
 	<property name="buildDirectory"          location="build" />
 	<property name="classesDirectory"        location="${buildDirectory}/classes" />
+
+	<!-- Test Properties -->
+	<property name="testSourceDirectory"     location="test" />
+    <property name="testLibraryDirectory"    location="testlib" />
+	<property name="testDirectory"           location="${buildDirectory}/test" />
+	<property name="testClassesDirectory"    location="${testDirectory}/classes" />
+	<property name="testReportDirectory"     location="${testDirectory}/reports" />
+
+	<!-- Distribution Properties -->
 	<property name="distDirectory"           location="dist" />
 	<property name="iconsDirectory"          location="icons" />
 
+	<!-- Jar Properties -->
 	<property name="jarDirectory"            location="${distDirectory}/jar" />
 	<property name="unjarDirectory"          location="${distDirectory}/unjar" />
-	<property name="zipDirectory"            location="${distDirectory}/zip" />
-	<property name="unzipDirectory"          location="${distDirectory}/unzip" />
-
-	<property name="macLibraryDirectory"     location="lib/native/mac" />
-	<property name="windowsLibraryDirectory" location="lib/native/windows" />
-	<property name="linuxLibraryDirectory"   location="lib/native/linux" />
-	
 	<property name="jarFile"                 location="${jarDirectory}/rpgam.jar" />
 	<property name="mainClass"               value="com.rpgaudiomixer.RPGAudioMixer"/>
 
+	<!-- Native Library Properties -->
+	<property name="macLibraryDirectory"     location="lib/native/mac" />
+	<property name="windowsLibraryDirectory" location="lib/native/windows" />
+	<property name="linuxLibraryDirectory"   location="lib/native/linux" />
+
+	<!-- Zip Properties -->
+	<property name="zipDirectory"            location="${distDirectory}/zip" />
+	<property name="unzipDirectory"          location="${distDirectory}/unzip" />
 	<property name="macZipFile"              location="${zipDirectory}/rpgam-mac.zip" />
 	<property name="windowsZipFile"          location="${zipDirectory}/rpgam-windows.zip" />
 	<property name="linuxZipFile"            location="${zipDirectory}/rpgam-linux.zip" />
@@ -27,9 +39,17 @@
         <fileset dir="${libraryDirectory}" includes="**/*.jar"/>
     </path>
 
+    <path id="testClasspath">
+        <fileset dir="${libraryDirectory}"     includes="**/*.jar"/>
+        <fileset dir="${jarDirectory}"         includes="**/*.jar"/>
+        <fileset dir="${testLibraryDirectory}" includes="**/*.jar"/>
+    </path>
+	
 	<target name="init">
 		<mkdir dir="${buildDirectory}" />
 		<mkdir dir="${classesDirectory}" />
+		<mkdir dir="${testClassesDirectory}" />
+		<mkdir dir="${testReportDirectory}" />
 		<mkdir dir="${distDirectory}" />
 		<mkdir dir="${jarDirectory}"/>
 		<mkdir dir="${unjarDirectory}" />
@@ -41,6 +61,10 @@
 		<javac srcdir="${sourceDirectory}" destdir="${classesDirectory}" classpathref="classpath" />
 	</target>
 
+	<target name="compile-tests" depends="jar">
+		<javac srcdir="${testSourceDirectory}" destdir="${testClassesDirectory}" classpathref="testClasspath" />
+	</target>
+		
 	<target name="jar" depends="compile">
 		<jar destfile="${jarFile}" basedir="${classesDirectory}" manifest="manifest.txt" />
     </target>
@@ -52,26 +76,26 @@
 	<target name="zip" depends="jar">
 		<zip destFile="${macZipFile}">
 			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${iconsDirectory}" prefix="icons" />
-			<zipfileset dir="${libraryDirectory}" prefix="lib" />
-			<zipfileset dir="${macLibraryDirectory}" prefix="lib" />
+			<zipfileset dir="${iconsDirectory}"          prefix="icons" />
+			<zipfileset dir="${libraryDirectory}"        prefix="lib" />
+			<zipfileset dir="${macLibraryDirectory}"     prefix="lib" />
 		</zip>
 
 		<zip destFile="${windowsZipFile}">
 			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${iconsDirectory}" prefix="icons" />
-			<zipfileset dir="${libraryDirectory}" prefix="lib" />
+			<zipfileset dir="${iconsDirectory}"          prefix="icons" />
+			<zipfileset dir="${libraryDirectory}"        prefix="lib" />
 			<zipfileset dir="${windowsLibraryDirectory}" prefix="lib" />
 		</zip>
 
 		<zip destFile="${linuxZipFile}">
 			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${iconsDirectory}" prefix="icons" />
-			<zipfileset dir="${libraryDirectory}" prefix="lib" />
-			<zipfileset dir="${linuxLibraryDirectory}" prefix="lib" />
+			<zipfileset dir="${iconsDirectory}"          prefix="icons" />
+			<zipfileset dir="${libraryDirectory}"        prefix="lib" />
+			<zipfileset dir="${linuxLibraryDirectory}"   prefix="lib" />
 		</zip>
 	</target>
-	
+
 	<target name="unzip" depends="zip">
 		<unzip src="${macZipFile}"     dest="${unzipDirectory}/mac" />
 		<unzip src="${windowsZipFile}" dest="${unzipDirectory}/windows" />
@@ -88,12 +112,29 @@
         </java>
     </target>
 
+	<target name="run-tests" depends="compile-tests">
+		<junit printsummary="yes">
+			<classpath>
+		        <fileset dir="${libraryDirectory}"     includes="**/*.jar" />
+		        <fileset dir="${testLibraryDirectory}" includes="**/*.jar" />
+		        <path location="${classesDirectory}" />
+		        <path location="${testClassesDirectory}" />
+			</classpath>
+
+			<formatter type="plain" />
+
+			<batchtest fork="yes" todir="${testReportDirectory}">
+				<fileset dir="${testClassesDirectory}" />
+			</batchtest>
+		</junit>
+	</target>
+
 	<target name="clean">
 		<delete dir="${buildDirectory}" />
 		<delete dir="${distDirectory}" />
 	</target>
 
-	<target name="full" depends="clean, zip" />
-		
+	<target name="full" depends="clean, unzip, run-tests" />
+
 </project>
 	
