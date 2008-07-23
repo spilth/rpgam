@@ -33,4 +33,7 @@ public class Alias {
 		return this.path;
 	}
 
+	public String toString() {
+		return this.name;
+	}
 }
