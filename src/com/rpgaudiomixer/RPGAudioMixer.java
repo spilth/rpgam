@@ -81,7 +81,7 @@ import com.rpgaudiomixer.util.FilenameExtensionFilter;
 import com.thoughtworks.xstream.XStream;
 
 public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListener {
-	
+
 	public static void main(String[] args) {
 		RPGAudioMixer rpgam = new RPGAudioMixer();
 		rpgam.setBlockOnOpen(true);
@@ -1168,7 +1168,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		if (selectedResource instanceof Folder) {
 				int childrenCount = selectedResource.getItems().size();
 				if (childrenCount > 0) {
-					confirmDialog.setMessage("Delete '" + selectedResource.getName() + "' and it's " + childrenCount + " resources?");
+					confirmDialog.setMessage("Delete '" + selectedResource.getName() + "' and all items underneath it?");
 				}
 		}
 		int iResponse = confirmDialog.open();
