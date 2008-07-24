@@ -37,6 +37,7 @@
 	
     <path id="classpath">
         <fileset dir="${libraryDirectory}" includes="**/*.jar"/>
+        <fileset dir="${macLibraryDirectory}" includes="**/*.jar"/>
     </path>
 
     <path id="testClasspath">
@@ -137,4 +138,3 @@
 	<target name="full" depends="clean, unzip, run-tests" />
 
 </project>
-	
