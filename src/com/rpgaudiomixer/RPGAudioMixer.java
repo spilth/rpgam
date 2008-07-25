@@ -12,6 +12,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -63,6 +64,7 @@ import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import com.rpgaudiomixer.audioengine.AudioEngine;
@@ -159,6 +161,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		createContextMenus();
 
 		addMenuBar();
+		addToolBar(SWT.FLAT | SWT.WRAP | SWT.RIGHT);
 	}
 	
 	private void createActions() {
@@ -1039,6 +1042,15 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		filePopupMenuManager.add(fileAddPaletteAction);
 	}
 
+	protected ToolBarManager createToolBarManager(int style) {
+		ToolBarManager tbm = new ToolBarManager(style);
+		tbm.add(newFolderAction);
+		tbm.add(newPlaylistAction);
+		tbm.add(newPaletteAction);
+
+		return tbm;
+	}
+	
 	protected MenuManager createMenuManager() {
 		MenuManager fileMenuManager	= new MenuManager("&File");
 		fileMenuManager.add(newAdventureAction);
