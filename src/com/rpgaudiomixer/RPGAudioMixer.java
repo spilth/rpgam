@@ -64,7 +64,6 @@ import org.eclipse.swt.widgets.ProgressBar;
 import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import com.rpgaudiomixer.audioengine.AudioEngine;
@@ -141,10 +140,16 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private TreeViewer directoryViewer, resourceViewer;
 	private XStream xstream;
 	private Image deleteImage;
+	private Image saveImage;
+	private Image saveAsImage;
+	private Image newAdventureImage;
+	private Image newFolderImage;
+	private Image newPlaylistImage;
+	private Image newPaletteImage;
 	
 	public RPGAudioMixer() {
 		super(null);
-		
+
 		audioEngine = new JavaZoomAudioEngine();
 		audioEngine.init();
 		audioEngine.addAudioEngineListener(this);
@@ -254,16 +259,29 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		paletteImage = new Image(getShell().getDisplay(), "icons/palette.gif");
 		deleteImage = new Image(getShell().getDisplay(), "icons/delete.gif");
 
-		newFolderAction.setImageDescriptor(ImageDescriptor.createFromImage(getFolderImage()));
-		newPlaylistAction.setImageDescriptor(ImageDescriptor.createFromImage(getPlaylistImage()));
-		newPaletteAction.setImageDescriptor(ImageDescriptor.createFromImage(getPaletteImage()));
+		newAdventureImage = new Image(getShell().getDisplay(), "icons/newadventure.gif");
+		newFolderImage = new Image(getShell().getDisplay(), "icons/folder.gif");
+		newPlaylistImage = new Image(getShell().getDisplay(), "icons/newplaylist.gif");
+		newPaletteImage = new Image(getShell().getDisplay(), "icons/newpalette.gif");
+		saveImage = new Image(getShell().getDisplay(), "icons/save.gif");
+		saveAsImage = new Image(getShell().getDisplay(), "icons/saveas.gif");
+
+		newAdventureAction.setImageDescriptor(ImageDescriptor.createFromImage(newAdventureImage));
+		newFolderAction.setImageDescriptor(ImageDescriptor.createFromImage(newFolderImage));
+		newPlaylistAction.setImageDescriptor(ImageDescriptor.createFromImage(newPlaylistImage));
+		newPaletteAction.setImageDescriptor(ImageDescriptor.createFromImage(newPaletteImage));
 
 		ImageDescriptor deleteImageDescriptor = ImageDescriptor.createFromImage(deleteImage);
+		ImageDescriptor saveImageDescriptor = ImageDescriptor.createFromImage(saveImage);
+		ImageDescriptor saveAsImageDescriptor = ImageDescriptor.createFromImage(saveAsImage);
+
 		deleteFolderAction.setImageDescriptor(deleteImageDescriptor);
 		deletePlaylistAction.setImageDescriptor(deleteImageDescriptor);
 		deletePaletteAction.setImageDescriptor(deleteImageDescriptor);
 		deleteSongAction.setImageDescriptor(deleteImageDescriptor);
 		deleteEffectAction.setImageDescriptor(deleteImageDescriptor);
+		saveAdventureAction.setImageDescriptor(saveImageDescriptor);
+		saveAdventureAsAction.setImageDescriptor(saveAsImageDescriptor);
 		
 		SashForm mainSash = new SashForm(parent, SWT.HORIZONTAL);
 		mainSash.SASH_WIDTH = 4;
@@ -1044,6 +1062,11 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	protected ToolBarManager createToolBarManager(int style) {
 		ToolBarManager tbm = new ToolBarManager(style);
+		tbm.add(newAdventureAction);
+		tbm.add(openAdventureAction);
+		tbm.add(saveAdventureAction);
+		tbm.add(saveAdventureAsAction);
+		tbm.add(new Separator());
 		tbm.add(newFolderAction);
 		tbm.add(newPlaylistAction);
 		tbm.add(newPaletteAction);
