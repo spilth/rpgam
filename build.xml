@@ -76,26 +76,26 @@
 
 	<target name="zip" depends="jar">
 		<zip destFile="${macZipFile}">
-			<zipfileset file="scripts/rpgam.sh" />
-			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${iconsDirectory}"          prefix="icons" />
-			<zipfileset dir="${libraryDirectory}"        prefix="lib" />
-			<zipfileset dir="${macLibraryDirectory}"     prefix="lib" />
+			<zipfileset file="scripts/rpgam.sh"          prefix="RPG Audio Mixer/" />
+			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/" />
+			<zipfileset dir="${iconsDirectory}"          prefix="RPG Audio Mixer/icons" />
+			<zipfileset dir="${libraryDirectory}"        prefix="RPG Audio Mixer/lib" />
+			<zipfileset dir="${macLibraryDirectory}"     prefix="RPG Audio Mixer/lib" />
 		</zip>
 
 		<zip destFile="${windowsZipFile}">
-			<zipfileset file="scripts/rpgam.bat" />
-			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${iconsDirectory}"          prefix="icons" />
-			<zipfileset dir="${libraryDirectory}"        prefix="lib" />
-			<zipfileset dir="${windowsLibraryDirectory}" prefix="lib" />
+			<zipfileset file="scripts/rpgam.bat"         prefix="RPG Audio Mixer/" />
+			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/"  />
+			<zipfileset dir="${iconsDirectory}"          prefix="RPG Audio Mixer/icons" />
+			<zipfileset dir="${libraryDirectory}"        prefix="RPG Audio Mixer/lib" />
+			<zipfileset dir="${windowsLibraryDirectory}" prefix="RPG Audio Mixer/lib" />
 		</zip>
 
 		<zip destFile="${linuxZipFile}">
-			<zipfileset file="${jarFile}" />
-			<zipfileset dir="${iconsDirectory}"          prefix="icons" />
-			<zipfileset dir="${libraryDirectory}"        prefix="lib" />
-			<zipfileset dir="${linuxLibraryDirectory}"   prefix="lib" />
+			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/" />
+			<zipfileset dir="${iconsDirectory}"          prefix="RPG Audio Mixer/icons" />
+			<zipfileset dir="${libraryDirectory}"        prefix="RPG Audio Mixer/lib" />
+			<zipfileset dir="${linuxLibraryDirectory}"   prefix="RPG Audio Mixer/lib" />
 		</zip>
 	</target>
 
@@ -131,7 +131,7 @@
 			</batchtest>
 		</junit>
 	</target>
-
+	
 	<target name="clean">
 		<delete dir="${buildDirectory}" />
 		<delete dir="${distDirectory}" />
