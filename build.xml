@@ -76,6 +76,7 @@
 
 	<target name="zip" depends="jar">
 		<zip destFile="${macZipFile}">
+			<zipfileset file="scripts/rpgam.sh" />
 			<zipfileset file="${jarFile}" />
 			<zipfileset dir="${iconsDirectory}"          prefix="icons" />
 			<zipfileset dir="${libraryDirectory}"        prefix="lib" />
@@ -83,6 +84,7 @@
 		</zip>
 
 		<zip destFile="${windowsZipFile}">
+			<zipfileset file="scripts/rpgam.bat" />
 			<zipfileset file="${jarFile}" />
 			<zipfileset dir="${iconsDirectory}"          prefix="icons" />
 			<zipfileset dir="${libraryDirectory}"        prefix="lib" />
