@@ -1,0 +1,1 @@
+java -jar rpgam.jar
