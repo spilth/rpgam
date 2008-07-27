@@ -35,6 +35,10 @@
 	<property name="windowsZipFile"          location="${zipDirectory}/rpgam-windows.zip" />
 	<property name="linuxZipFile"            location="${zipDirectory}/rpgam-linux.zip" />
 	
+	<!-- Upload Properties -->
+	<property name="uploadServer" value="rocket.alienwebshop.com" />
+	<property name="uploadDirectory" value="/home/www/brian/rpgaudiomixer/dist/development" />
+	
     <path id="classpath">
         <fileset dir="${libraryDirectory}" includes="**/*.jar"/>
         <fileset dir="${macLibraryDirectory}" includes="**/*.jar"/>
@@ -130,6 +134,14 @@
 				<fileset dir="${testClassesDirectory}" />
 			</batchtest>
 		</junit>
+	</target>
+	
+	<target name="upload" depends="zip">
+		<input addproperty="username" message="Username:" />
+		<input addproperty="password" message="Password:" />
+		<scp todir="${username}:${password}@${uploadServer}:${uploadDirectory}" verbose="yes">
+			<fileset dir="${zipDirectory}" />
+		</scp>
 	</target>
 	
 	<target name="clean">
