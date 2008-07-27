@@ -147,6 +147,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private Image newFolderImage;
 	private Image newPlaylistImage;
 	private Image newPaletteImage;
+	private IInputValidator resourceNameInputValidator;
 	
 	public RPGAudioMixer() {
 		super(null);
@@ -163,6 +164,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		xstream.alias("folder", Folder.class);
 		xstream.alias("palette", Palette.class);
 		xstream.alias("playlist", Playlist.class);
+
 		createActions();
 		createContextMenus();
 
@@ -599,6 +601,16 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
 	private void createDialogs() {
+
+		resourceNameInputValidator = new IInputValidator() {
+	    	public String isValid(String newText) {
+	    		if (newText.equals("")) {
+	    			return ("The name cannot be blank.") ;
+	    		}
+	    		return null;
+	    	}
+		};
+
 		saveAdventureDialog = new FileDialog(getShell(), SWT.SAVE | SWT.SINGLE);
 		saveAdventureDialog.setFilterExtensions(rpgamExtension);
 
@@ -1225,7 +1237,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	// TODO: These 3 look pretty similar, no?
 	private void newFolder() {
-		InputDialog newFolderDialog = new InputDialog(this.getShell(), "New Folder" , "Enter Folder name", "Default Folder", null);
+		InputDialog newFolderDialog = new InputDialog(this.getShell(), "New Folder" , "Enter Folder name", "Default Folder", resourceNameInputValidator);
 		if (newFolderDialog.open() == InputDialog.OK) {
 			Folder f = new Folder(newFolderDialog.getValue());
 			((Folder)selectedResource).addItem(f);
@@ -1236,7 +1248,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
 	private void newPalette() {
-		InputDialog newPaletteDialog = new InputDialog(this.getShell(), "New Playlist" , "Enter Palette name", "Default Palette", null);
+		InputDialog newPaletteDialog = new InputDialog(this.getShell(), "New Playlist" , "Enter Palette name", "Default Palette", resourceNameInputValidator);
 		if (newPaletteDialog.open() == InputDialog.OK) {
 			Palette p = new Palette(newPaletteDialog.getValue());
 			((Folder)selectedResource).addItem(p);
@@ -1247,7 +1259,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 	
 	private void newPlaylist() {
-		InputDialog newPlaylistDialog = new InputDialog(this.getShell(), "New Playlist" , "Enter Playlist name", "Default Playlist", null);
+		InputDialog newPlaylistDialog = new InputDialog(this.getShell(), "New Playlist" , "Enter Playlist name", "Default Playlist", resourceNameInputValidator);
 		if (newPlaylistDialog.open() == InputDialog.OK) {
 			Playlist p = new Playlist(newPlaylistDialog.getValue());
 			((Folder)selectedResource).addItem(p);
@@ -1282,14 +1294,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	private void renameResource(String typeName, IResource resource) {
 		// Prompt for new name
-		InputDialog renameDialog = new InputDialog(this.getShell(), "Rename " + typeName + ": " + resource.getName() , "Enter new name", resource.getName(), new IInputValidator() {
-	    	public String isValid(String newText) {
-	    		if (newText.equals("")) {
-	    			return ("The name cannot be blank.") ;
-	    		}
-	    		return null;
-	    	}
-	    });
+		InputDialog renameDialog = new InputDialog(this.getShell(), "Rename " + typeName + ": " + resource.getName() , "Enter new name", resource.getName(), resourceNameInputValidator);
 
 		if (renameDialog.open() == InputDialog.OK) {
 			resource.setName(renameDialog.getValue());
