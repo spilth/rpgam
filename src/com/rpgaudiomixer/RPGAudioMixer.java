@@ -13,6 +13,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -1281,12 +1282,19 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	private void renameResource(String typeName, IResource resource) {
 		// Prompt for new name
-		InputDialog renameDialog = new InputDialog(this.getShell(), "Rename " + typeName + ": " + resource.getName() , "Enter new name", resource.getName(), null);
+		InputDialog renameDialog = new InputDialog(this.getShell(), "Rename " + typeName + ": " + resource.getName() , "Enter new name", resource.getName(), new IInputValidator() {
+	    	public String isValid(String newText) {
+	    		if (newText.equals("")) {
+	    			return ("The name cannot be blank.") ;
+	    		}
+	    		return null;
+	    	}
+	    });
+
 		if (renameDialog.open() == InputDialog.OK) {
 			resource.setName(renameDialog.getValue());
 			touchAdventure();
-			resourceViewer.refresh(resource.getParent());
-			
+			resourceViewer.refresh(resource.getParent());		
 		}
 	}
 
