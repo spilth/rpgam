@@ -111,10 +111,10 @@
 
 	<!-- TODO: Add Windows and Linux versions of "run" task -->
 	<target name="run" depends="unzip">
-		<java fork="true" classname="${mainClass}" dir="${unzipDirectory}/mac" >
+		<java fork="true" classname="${mainClass}" dir="${unzipDirectory}/mac/RPG Audio Mixer" >
 			<arg value="-XstartOnFirstThread" />
             <classpath>
-    	        <fileset dir="${unzipDirectory}/mac" includes="**/*.jar"/>
+    	        <fileset dir="${unzipDirectory}/mac/RPG Audio Mixer" includes="**/*.jar"/>
             </classpath>
         </java>
     </target>
