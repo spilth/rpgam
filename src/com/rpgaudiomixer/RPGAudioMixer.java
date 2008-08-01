@@ -92,6 +92,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		rpgam.quit();
 	}
 
+	private final static int MAX_RESOURCE_NAME_LENGTH = 32;
+	
 	private Action newFolderAction, deleteFolderAction, renameFolderAction;
 	private Action newPlaylistAction, playPlaylistAction, deletePlaylistAction, renamePlaylistAction;
 	private Action newPaletteAction, deletePaletteAction, renamePaletteAction;
@@ -606,6 +608,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	    	public String isValid(String newText) {
 	    		if (newText.equals("")) {
 	    			return ("The name cannot be blank.") ;
+	    		}
+	    		
+	    		if (newText.length() > MAX_RESOURCE_NAME_LENGTH) {
+	    			return("The name cannot exceed " + MAX_RESOURCE_NAME_LENGTH + " characters.");
 	    		}
 	    		return null;
 	    	}
@@ -1478,7 +1484,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		Iterator i = selection.iterator();
 		while (i.hasNext()) {
 			a = (Alias) i.next();
-			renameDialog = new InputDialog(this.getShell(), "Rename " + type + ": " + a.getName() , "Enter new name", a.getName(), null);
+			renameDialog = new InputDialog(this.getShell(), "Rename " + type + ": " + a.getName() , "Enter new name", a.getName(), resourceNameInputValidator);
 			if (renameDialog.open() == InputDialog.OK) {
 				a.setName(renameDialog.getValue());
 				touchAdventure();
