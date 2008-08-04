@@ -139,7 +139,7 @@
 	<target name="upload" depends="zip">
 		<input addproperty="username" message="Username:" />
 		<input addproperty="password" message="Password:" />
-		<scp todir="${username}:${password}@${uploadServer}:${uploadDirectory}" verbose="yes">
+		<scp todir="${username}:${password}@${uploadServer}:${uploadDirectory}" verbose="yes" trust="true">
 			<fileset dir="${zipDirectory}" />
 		</scp>
 	</target>
