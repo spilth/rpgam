@@ -70,7 +70,7 @@ import org.eclipse.swt.widgets.TreeItem;
 import com.rpgaudiomixer.audioengine.AudioEngine;
 import com.rpgaudiomixer.audioengine.AudioEngineListener;
 import com.rpgaudiomixer.audioengine.JavaZoomAudioEngine;
-import com.rpgaudiomixer.model.Adventure;
+import com.rpgaudiomixer.model.Library;
 import com.rpgaudiomixer.model.AliasCollector;
 import com.rpgaudiomixer.model.Folder;
 import com.rpgaudiomixer.model.IResource;
@@ -111,13 +111,13 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private Action fileAddPlaylistAction, fileAddPaletteAction;
 	private Action filePreviewAction;
 
-	private Action newAdventureAction, openAdventureAction, saveAdventureAction, saveAdventureAsAction, closeAdventureAction, exitAction;
+	private Action newLibraryAction, openLibraryAction, saveLibraryAction, saveLibraryAsAction, closeLibraryAction, exitAction;
 	
-	private Adventure adventure;
+	private Library library;
 	private Alias activeSong;
 	private AudioEngine audioEngine;
 	private boolean bDirtyData;
-	private FileDialog saveAdventureDialog, openFileDialog, songDialog;
+	private FileDialog saveLibraryDialog, openFileDialog, songDialog;
 	private FilenameExtensionFilter audioFileFilter = new FilenameExtensionFilter(new String[] {"wav", "mp3", "ogg"});
 	private Group explorerComposite, paletteComposite, playlistComposite, resourceComposite;
 	private Image folderImage, playlistImage, paletteImage;
@@ -133,9 +133,9 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private Playlist activePlaylist, selectedPlaylist;
 	private SashForm explorerSash;
 	private Scale songVolumeScale;
-	private String adventurePath;
+	private String libraryPath;
 	private String[] audioExtensions = new String[] {"*.mp3;*.wav;*.ogg","*.wav","*.mp3","*.ogg"};
-	private String[] rpgamExtension = new String[] {"*.raa"};
+	private String[] rpgamExtension = new String[] {"*.raml"};
 	private Table effectTable;
 	private Table songTable;
 	private TableViewer effectTableViewer, songTableViewer, fileViewer;
@@ -145,7 +145,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private Image deleteImage;
 	private Image saveImage;
 	private Image saveAsImage;
-	private Image newAdventureImage;
+	private Image newLibraryImage;
 	private Image newFolderImage;
 	private Image newPlaylistImage;
 	private Image newPaletteImage;
@@ -158,10 +158,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		audioEngine.init();
 		audioEngine.addAudioEngineListener(this);
 		
-		//adventure = new Adventure();
+		//library = new Library();
 
 		xstream = new XStream();
-		xstream.alias("adventure", Adventure.class);
+		xstream.alias("library", Library.class);
 		xstream.alias("alias", Alias.class);
 		xstream.alias("folder", Folder.class);
 		xstream.alias("palette", Palette.class);
@@ -176,22 +176,22 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	
 	private void createActions() {
 		// File
-		newAdventureAction = new Action("&New Adventure", IAction.AS_PUSH_BUTTON) {public void run () {newAdventure();}};
-		openAdventureAction = new Action("&Open Adventure", IAction.AS_PUSH_BUTTON) {public void run () {openAdventure();}};
-		saveAdventureAction = new Action("&Save Adventure", IAction.AS_PUSH_BUTTON) {public void run () {saveAdventure();}};
-		saveAdventureAsAction = new Action("Save Adventure &As", IAction.AS_PUSH_BUTTON) {public void run () {saveAdventureAs();}};
-		closeAdventureAction = new Action("&Close Adventure", IAction.AS_PUSH_BUTTON) {public void run () {closeAdventure();}};
+		newLibraryAction = new Action("&New", IAction.AS_PUSH_BUTTON) {public void run () {newLibrary();}};
+		openLibraryAction = new Action("&Open", IAction.AS_PUSH_BUTTON) {public void run () {openLibrary();}};
+		saveLibraryAction = new Action("&Save", IAction.AS_PUSH_BUTTON) {public void run () {saveLibrary();}};
+		saveLibraryAsAction = new Action("Save &As...", IAction.AS_PUSH_BUTTON) {public void run () {saveLibraryAs();}};
+		closeLibraryAction = new Action("&Close", IAction.AS_PUSH_BUTTON) {public void run () {closeLibrary();}};
 		exitAction = new Action("E&xit", IAction.AS_PUSH_BUTTON) {public void run () {quit();}};
 		
-		newAdventureAction.setAccelerator(SWT.CTRL + 'N');
-		openAdventureAction.setAccelerator(SWT.CTRL + 'O');
-		saveAdventureAction.setAccelerator(SWT.CTRL + 'S');
+		newLibraryAction.setAccelerator(SWT.CTRL + 'N');
+		openLibraryAction.setAccelerator(SWT.CTRL + 'O');
+		saveLibraryAction.setAccelerator(SWT.CTRL + 'S');
 		
-		newAdventureAction.setEnabled(true);
-		openAdventureAction.setEnabled(true);
-		saveAdventureAction.setEnabled(false);
-		saveAdventureAsAction.setEnabled(false);
-		closeAdventureAction.setEnabled(false);
+		newLibraryAction.setEnabled(true);
+		openLibraryAction.setEnabled(true);
+		saveLibraryAction.setEnabled(false);
+		saveLibraryAsAction.setEnabled(false);
+		closeLibraryAction.setEnabled(false);
 		exitAction.setEnabled(true);
 		
 		// Resources
@@ -264,14 +264,14 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		paletteImage = new Image(getShell().getDisplay(), "icons/palette.gif");
 		deleteImage = new Image(getShell().getDisplay(), "icons/delete.gif");
 
-		newAdventureImage = new Image(getShell().getDisplay(), "icons/newadventure.gif");
+		newLibraryImage = new Image(getShell().getDisplay(), "icons/newlibrary.gif");
 		newFolderImage = new Image(getShell().getDisplay(), "icons/folder.gif");
 		newPlaylistImage = new Image(getShell().getDisplay(), "icons/newplaylist.gif");
 		newPaletteImage = new Image(getShell().getDisplay(), "icons/newpalette.gif");
 		saveImage = new Image(getShell().getDisplay(), "icons/save.gif");
 		saveAsImage = new Image(getShell().getDisplay(), "icons/saveas.gif");
 
-		newAdventureAction.setImageDescriptor(ImageDescriptor.createFromImage(newAdventureImage));
+		newLibraryAction.setImageDescriptor(ImageDescriptor.createFromImage(newLibraryImage));
 		newFolderAction.setImageDescriptor(ImageDescriptor.createFromImage(newFolderImage));
 		newPlaylistAction.setImageDescriptor(ImageDescriptor.createFromImage(newPlaylistImage));
 		newPaletteAction.setImageDescriptor(ImageDescriptor.createFromImage(newPaletteImage));
@@ -285,8 +285,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		deletePaletteAction.setImageDescriptor(deleteImageDescriptor);
 		deleteSongAction.setImageDescriptor(deleteImageDescriptor);
 		deleteEffectAction.setImageDescriptor(deleteImageDescriptor);
-		saveAdventureAction.setImageDescriptor(saveImageDescriptor);
-		saveAdventureAsAction.setImageDescriptor(saveAsImageDescriptor);
+		saveLibraryAction.setImageDescriptor(saveImageDescriptor);
+		saveLibraryAsAction.setImageDescriptor(saveAsImageDescriptor);
 		
 		SashForm mainSash = new SashForm(parent, SWT.HORIZONTAL);
 		mainSash.SASH_WIDTH = 4;
@@ -294,7 +294,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		// Resource Viewer
 		resourceComposite = new Group(mainSash, SWT.SHADOW_NONE);
 		resourceComposite.setLayout(new FillLayout());
-		resourceComposite.setText("Resources");
+		resourceComposite.setText("Library Explorer");
 		createResourceViewer(resourceComposite);
 		
 		// Middle Column
@@ -617,8 +617,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	    	}
 		};
 
-		saveAdventureDialog = new FileDialog(getShell(), SWT.SAVE | SWT.SINGLE);
-		saveAdventureDialog.setFilterExtensions(rpgamExtension);
+		saveLibraryDialog = new FileDialog(getShell(), SWT.SAVE | SWT.SINGLE);
+		saveLibraryDialog.setFilterExtensions(rpgamExtension);
 
 		openFileDialog =  new FileDialog(getShell(), SWT.SINGLE);
 		openFileDialog.setFilterExtensions(rpgamExtension);
@@ -994,7 +994,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			
 		});
 
-		//treeViewer.setInput(adventure.getResources());
+		//treeViewer.setInput(library.getResources());
 		
 		resourceViewer.getTree().addKeyListener(new KeyListener() {
 
@@ -1022,27 +1022,27 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
 	private void createContextMenus() {
-		// Adventure - New
+		// Library - New
 		newMenu = new MenuManager("New");
 		newMenu.add(newFolderAction);
 		newMenu.add(newPlaylistAction);
 		newMenu.add(newPaletteAction);
 
-		// Adventure - Folder
+		// Library - Folder
 		folderContextMenu = new MenuManager("Folder");
 		folderContextMenu.add(newMenu);
 		folderContextMenu.add(new Separator());
 		folderContextMenu.add(deleteFolderAction);
 		folderContextMenu.add(renameFolderAction);
 
-		// Adventure - Playlist
+		// Library - Playlist
 		playlistContextMenu = new MenuManager("Playlist");
 		playlistContextMenu.add(playPlaylistAction);
 		playlistContextMenu.add(new Separator());
 		playlistContextMenu.add(deletePlaylistAction);
 		playlistContextMenu.add(renamePlaylistAction);
 
-		// Adventure - Palette
+		// Library - Palette
 		paletteContextMenu = new MenuManager("Palette");
 		paletteContextMenu.add(deletePaletteAction);
 		paletteContextMenu.add(renamePaletteAction);
@@ -1081,10 +1081,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	protected ToolBarManager createToolBarManager(int style) {
 		ToolBarManager tbm = new ToolBarManager(style);
-		tbm.add(newAdventureAction);
-		tbm.add(openAdventureAction);
-		tbm.add(saveAdventureAction);
-		tbm.add(saveAdventureAsAction);
+		tbm.add(newLibraryAction);
+		tbm.add(openLibraryAction);
+		tbm.add(saveLibraryAction);
+		tbm.add(saveLibraryAsAction);
 		tbm.add(new Separator());
 		tbm.add(newFolderAction);
 		tbm.add(newPlaylistAction);
@@ -1095,18 +1095,18 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	
 	protected MenuManager createMenuManager() {
 		MenuManager fileMenuManager	= new MenuManager("&File");
-		fileMenuManager.add(newAdventureAction);
-		fileMenuManager.add(openAdventureAction);
+		fileMenuManager.add(newLibraryAction);
+		fileMenuManager.add(openLibraryAction);
 		fileMenuManager.add(new Separator());
-		fileMenuManager.add(saveAdventureAction);
-		fileMenuManager.add(saveAdventureAsAction);
+		fileMenuManager.add(saveLibraryAction);
+		fileMenuManager.add(saveLibraryAsAction);
 		fileMenuManager.add(new Separator());
-		fileMenuManager.add(closeAdventureAction);
+		fileMenuManager.add(closeLibraryAction);
 		fileMenuManager.add(new Separator());
 		fileMenuManager.add(exitAction);
 
-		MenuManager adventureMenuManager = new MenuManager("&Adventure");
-		//adventureMenuManager.add(newMenu);
+		MenuManager libraryMenuManager = new MenuManager("&Library");
+		//libraryMenuManager.add(newMenu);
 		
 		MenuManager playlistMenuManager = new MenuManager("Playlist");
 
@@ -1114,7 +1114,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		
 		MenuManager mainMenu = new MenuManager();
 		mainMenu.add(fileMenuManager);
-		mainMenu.add(adventureMenuManager);
+		mainMenu.add(libraryMenuManager);
 		mainMenu.add(playlistMenuManager);
 		mainMenu.add(paletteMenuManager);
 
@@ -1184,7 +1184,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				}
 			}
 
-			touchAdventure();
+			touchLibrary();
 		}
 	}
 
@@ -1200,7 +1200,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			ac.add(a);
 		}
 		destinationViewer.refresh();
-		touchAdventure();
+		touchLibrary();
 	}
 
 	// Resource Viewer Actions
@@ -1232,7 +1232,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				Folder f = (Folder) selectedResource.getParent();
 				f.removeItem(selectedResource);
 				resourceViewer.refresh(f);
-				touchAdventure();
+				touchLibrary();
 				
 			case SWT.CANCEL:
 				break;
@@ -1247,7 +1247,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		if (newFolderDialog.open() == InputDialog.OK) {
 			Folder f = new Folder(newFolderDialog.getValue());
 			((Folder)selectedResource).addItem(f);
-			touchAdventure();
+			touchLibrary();
 			resourceViewer.refresh(selectedResource);
 			resourceViewer.expandToLevel(selectedResource, 1);
 		}
@@ -1258,7 +1258,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		if (newPaletteDialog.open() == InputDialog.OK) {
 			Palette p = new Palette(newPaletteDialog.getValue());
 			((Folder)selectedResource).addItem(p);
-			touchAdventure();
+			touchLibrary();
 			resourceViewer.refresh(selectedResource);
 			resourceViewer.expandToLevel(selectedResource, 1);
 		}	
@@ -1269,7 +1269,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		if (newPlaylistDialog.open() == InputDialog.OK) {
 			Playlist p = new Playlist(newPlaylistDialog.getValue());
 			((Folder)selectedResource).addItem(p);
-			touchAdventure();
+			touchLibrary();
 			resourceViewer.refresh(selectedResource);
 			resourceViewer.expandToLevel(selectedResource, 1);
 		}
@@ -1304,7 +1304,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 		if (renameDialog.open() == InputDialog.OK) {
 			resource.setName(renameDialog.getValue());
-			touchAdventure();
+			touchLibrary();
 			resourceViewer.refresh(resource.getParent());		
 		}
 	}
@@ -1337,7 +1337,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		}
 		v.refresh();
 
-		touchAdventure();
+		touchLibrary();
 	}
 
 	private void moveSongUp() {
@@ -1349,7 +1349,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			selectedPlaylist.moveUp(a);
 		}
 		songTableViewer.refresh();
-		touchAdventure();
+		touchLibrary();
 	}
 	
 	private void moveSongDown() {
@@ -1366,7 +1366,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		}
 		
 		songTableViewer.refresh();
-		touchAdventure();
+		touchLibrary();
 		
 	}
 
@@ -1407,7 +1407,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			
 			if (bDataChanged) {
 				v.refresh();
-				touchAdventure();
+				touchLibrary();
 			}
 		}
 	}
@@ -1487,7 +1487,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			renameDialog = new InputDialog(this.getShell(), "Rename " + type + ": " + a.getName() , "Enter new name", a.getName(), resourceNameInputValidator);
 			if (renameDialog.open() == InputDialog.OK) {
 				a.setName(renameDialog.getValue());
-				touchAdventure();
+				touchLibrary();
 				v.refresh();
 			}
 		}
@@ -1505,7 +1505,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			ac.add(a);
 		}
 		v.refresh();
-		touchAdventure();
+		touchLibrary();
 	}
 	
 	private void nextSong() {
@@ -1544,17 +1544,17 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	
 	// File Methods
 
-	private void newAdventure() {
+	private void newLibrary() {
 		boolean bContinue = confirmSaveDialog();
 		
 		if (bContinue) {
 			audioEngine.stop();
-			adventure = new Adventure();
-			adventurePath = null;
-			untouchAdventure();
+			library = new Library();
+			libraryPath = null;
+			untouchLibrary();
 			
-			// TODO: Update a bunch of UI here - probably shared by Open Adventure as well
-			resourceViewer.setInput(adventure.getResources());
+			// TODO: Update a bunch of UI here - probably shared by Open Library as well
+			resourceViewer.setInput(library.getResources());
 			resourceViewer.getTree().setVisible(true);
 
 			songTableViewer.setInput(null);
@@ -1563,12 +1563,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			effectTableViewer.setInput(null);
 			effectTableViewer.getTable().setVisible(false);
 			
-			saveAdventureAction.setEnabled(true);
-			closeAdventureAction.setEnabled(true);
+			saveLibraryAction.setEnabled(true);
+			closeLibraryAction.setEnabled(true);
 		}
 	}
 	
-	private void openAdventure() {
+	private void openLibrary() {
 		boolean bContinue = confirmSaveDialog();
 		
 		if (bContinue) {
@@ -1578,12 +1578,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			
 			if (!openFilename.equals("")) {
 				audioEngine.stop();
-				adventurePath = openDirectory + File.separator + openFilename;
-				//adventureFilename = openFilename;
-				loadAdventureXML(adventurePath);
-				untouchAdventure();
+				libraryPath = openDirectory + File.separator + openFilename;
+				//libraryFilename = openFilename;
+				loadLibraryXML(libraryPath);
+				untouchLibrary();
 
-				resourceViewer.setInput(adventure.getResources());
+				resourceViewer.setInput(library.getResources());
 				resourceViewer.getTree().setVisible(true);
 
 				songTableViewer.setInput(null);
@@ -1592,20 +1592,20 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				effectTableViewer.setInput(null);
 				effectTableViewer.getTable().setVisible(false);
 				
-				saveAdventureAction.setEnabled(false);
-				saveAdventureAsAction.setEnabled(true);
-				closeAdventureAction.setEnabled(true);
+				saveLibraryAction.setEnabled(false);
+				saveLibraryAsAction.setEnabled(true);
+				closeLibraryAction.setEnabled(true);
 				
 			}
 		}
 	}
 
-	private boolean saveAdventure() {
+	private boolean saveLibrary() {
 		boolean bSuccess = false;
 		
-		if (adventurePath != null) {
-			// Already have a path, just save the Adventure
-			bSuccess = saveAdventureXML();
+		if (libraryPath != null) {
+			// Already have a path, just save the Library
+			bSuccess = saveLibraryXML();
 
 		} else {
 			// Otherwise, prompt for a path and filename
@@ -1613,26 +1613,26 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		}
 		
 		if (bSuccess) {
-			untouchAdventure();
+			untouchLibrary();
 		}
 		
 		return bSuccess;
 	}
 
-	private void saveAdventureAs() {
-		// TODO: Implement saveAdventureAs
-		// Show saveDialog asking for new Adventure filename
+	private void saveLibraryAs() {
+		// TODO: Implement saveLibraryAs
+		// Show saveDialog asking for new Library filename
 	}
 
-	private void closeAdventure() {
+	private void closeLibrary() {
 		boolean bContinue = confirmSaveDialog();
 		
 		if (bContinue) {
 			audioEngine.stop();
 
-			adventure = null;
-			adventurePath = null;
-			untouchAdventure();
+			library = null;
+			libraryPath = null;
+			untouchLibrary();
 
 			resourceViewer.setInput(null);
 			resourceViewer.getTree().setVisible(false);
@@ -1643,25 +1643,25 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			effectTableViewer.setInput(null);
 			effectTableViewer.getTable().setVisible(false);
 			
-			saveAdventureAction.setEnabled(false);
-			saveAdventureAsAction.setEnabled(false);
-			closeAdventureAction.setEnabled(false);
+			saveLibraryAction.setEnabled(false);
+			saveLibraryAsAction.setEnabled(false);
+			closeLibraryAction.setEnabled(false);
 		}
 
 	}
 
 	private boolean confirmSaveDialog() {
-		if (adventure != null && isAdventureDirty()) {
+		if (library != null && isLibraryDirty()) {
 			confirmDialog = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO | SWT.CANCEL);
-			confirmDialog.setText("Save Current Adventure?");
-			confirmDialog.setMessage("The currently opened Adventure is not saved.  Do you want to save it before continuing?");
+			confirmDialog.setText("Save Current Library?");
+			confirmDialog.setMessage("The currently opened Library is not saved.  Do you want to save it before continuing?");
 			
 			int iResponse = confirmDialog.open();
 
 			switch (iResponse) {
 				case SWT.YES:
 					// If they cancel out of the save, cancel out of this as well
-					return saveAdventure();
+					return saveLibrary();
 					
 				case SWT.NO:
 					return true;
@@ -1679,12 +1679,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		close();
 	}
 
-	private void loadAdventureXML(String adventureFilePath) {
-		File adventureFile = new File(adventureFilePath);
+	private void loadLibraryXML(String libraryFilePath) {
+		File libraryFile = new File(libraryFilePath);
 
-		if (adventureFile.exists()) {
+		if (libraryFile.exists()) {
 			try {
-				BufferedReader in = new BufferedReader(new FileReader(adventureFile));
+				BufferedReader in = new BufferedReader(new FileReader(libraryFile));
 				StringBuffer xml = new StringBuffer();
 				String str;
 				while((str = in.readLine()) != null) {
@@ -1692,7 +1692,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				}
 				in.close();
 								
-				adventure = (Adventure) xstream.fromXML(xml.toString());
+				library = (Library) xstream.fromXML(xml.toString());
 								
 			} catch (Exception e) {
 				System.out.println(e.toString());
@@ -1702,14 +1702,14 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		
 	}
 	
-	private boolean saveAdventureXML() {
-		String xml = xstream.toXML(adventure);
+	private boolean saveLibraryXML() {
+		String xml = xstream.toXML(library);
 		
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(adventurePath));
+			BufferedWriter out = new BufferedWriter(new FileWriter(libraryPath));
 			out.write(xml);
 			out.close();
-			untouchAdventure();
+			untouchLibrary();
 			
 			return true;
 			
@@ -1720,16 +1720,16 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
     private boolean showSaveDialog() {
-		saveAdventureDialog.open();
-		String newFilename = saveAdventureDialog.getFileName();
-		String newDirectory = saveAdventureDialog.getFilterPath();
+		saveLibraryDialog.open();
+		String newFilename = saveLibraryDialog.getFileName();
+		String newDirectory = saveLibraryDialog.getFilterPath();
 		
 		if (!newFilename.equals("")) {
-			adventurePath = newDirectory + File.separator + newFilename;
-			System.out.println(adventurePath);	
+			libraryPath = newDirectory + File.separator + newFilename;
+			System.out.println(libraryPath);	
 
-			//adventureFilename = newFilename;
-			return saveAdventureXML();
+			//libraryFilename = newFilename;
+			return saveLibraryXML();
 			
 		} else {
 			return false;
@@ -1737,21 +1737,21 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		}
 	}
 
-    // Adventure Data 
+    // Library Data 
 
-	private boolean isAdventureDirty() {
+	private boolean isLibraryDirty() {
 		return bDirtyData;
 	}
         
-	private void touchAdventure() {
+	private void touchLibrary() {
 		bDirtyData = true;
-		saveAdventureAction.setEnabled(true);
+		saveLibraryAction.setEnabled(true);
 		updateWindowTitle();
 	}
 
-	private void untouchAdventure() {
+	private void untouchLibrary() {
 		bDirtyData = false;
-		saveAdventureAction.setEnabled(false);
+		saveLibraryAction.setEnabled(false);
 		updateWindowTitle();
 	}
 	
@@ -1759,14 +1759,14 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	public void updateWindowTitle() {
 		StringBuffer title = new StringBuffer("RPG Audio Mixer");
 
-		if (adventure != null) {
-			if (adventurePath != null) {
-				title.append(": " + adventurePath);
+		if (library != null) {
+			if (libraryPath != null) {
+				title.append(": " + libraryPath);
 			} else {
-				title.append(": Unsaved Adventure");
+				title.append(": Unsaved Library");
 			}
 			
-			if (isAdventureDirty()) {
+			if (isLibraryDirty()) {
 					title.append(" [unsaved]");
 			}
 
