@@ -68,7 +68,7 @@
 
 	<target name="javadoc" depends="compile">
 		<javadoc
-		           destdir="docs/api"
+		           destdir="dist/docs/api"
 		           author="true"
 		           version="true"
 		           use="true"
