@@ -1,8 +1,23 @@
 package com.rpgaudiomixer.model;
 
-public class Library {
-	private Folder root;
+/**
+ * Library is the main document type in RPG Audio Mixer.
+ * It contains Folders, Playlists and Palettes.
+ * 
+ * @author brian
+ *
+ */
+
+public final class Library {
+	/**
+	 * The root Folder that contains all children folders,
+	 * playlists and palettes.
+	 */
+	private final Folder root;
 	
+	/**
+	 * This is the default Constructor.
+	 */
 	public Library() {
 		root = new Folder("Root");
 
@@ -15,6 +30,10 @@ public class Library {
 		f.addItem(x);
 	}
 	
+	/**
+	 * 
+	 * @return The root Folder of the Library
+	 */
 	public IResource getResources() {
 		return root;
 	}
