@@ -118,7 +118,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private AudioEngine audioEngine;
 	private boolean bDirtyData;
 	private FileDialog saveLibraryDialog, openFileDialog, songDialog;
-	private FilenameExtensionFilter audioFileFilter = new FilenameExtensionFilter(new String[] {"wav", "mp3", "ogg"});
+	private FilenameExtensionFilter audioFileFilter = new FilenameExtensionFilter(new String[] {"wav", "mp3", "ogg", "flac"});
 	private Group explorerComposite, paletteComposite, playlistComposite, resourceComposite;
 	private Image folderImage, playlistImage, paletteImage;
 	private InputDialog renameDialog;
@@ -134,7 +134,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private SashForm explorerSash;
 	private Scale songVolumeScale;
 	private String libraryPath;
-	private String[] audioExtensions = new String[] {"*.mp3;*.wav;*.ogg","*.wav","*.mp3","*.ogg"};
+	private String[] audioExtensions = new String[] {"*.mp3;*.wav;*.ogg;*.flac","*.wav","*.mp3","*.ogg","*.flac"};
 	private String[] rpgamExtension = new String[] {"*.raml"};
 	private Table effectTable;
 	private Table songTable;
