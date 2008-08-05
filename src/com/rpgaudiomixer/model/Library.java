@@ -4,7 +4,7 @@ package com.rpgaudiomixer.model;
  * Library is the main document type in RPG Audio Mixer.
  * It contains Folders, Playlists and Palettes.
  * 
- * @author brian
+ * @author Brian Kelly
  *
  */
 

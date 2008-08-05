@@ -4,6 +4,6 @@ import java.util.EventListener;
 
 public interface AudioEngineListener extends EventListener {
 
-	public abstract void songFinished();
+	abstract void songFinished();
 	
 }

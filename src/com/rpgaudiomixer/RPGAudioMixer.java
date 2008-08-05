@@ -134,7 +134,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private SashForm explorerSash;
 	private Scale songVolumeScale;
 	private String libraryPath;
-	private String[] audioExtensions = new String[] {"*.mp3;*.wav;*.ogg;*.flac","*.wav","*.mp3","*.ogg","*.flac"};
+	private String[] audioExtensions = new String[] {"*.mp3;*.wav;*.ogg;*.flac", "*.wav", "*.mp3", "*.ogg", "*.flac"};
 	private String[] rpgamExtension = new String[] {"*.raml"};
 	private Table effectTable;
 	private Table songTable;
@@ -254,8 +254,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	protected Control createContents(Composite parent) {
 		getShell().setText("RPG Audio Mixer");
-		parent.setSize(800,600);
-		parent.setLocation(16,16);
+		parent.setSize(800, 600);
+		parent.setLocation(16, 16);
 
 		createDialogs();
 
@@ -325,7 +325,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		explorerComposite.setText("Audio Explorer");
 		createAudioExplorer(explorerComposite);
 
-		mainSash.setWeights(new int[] {20,60,20});
+		mainSash.setWeights(new int[] {20, 60, 20});
 		
 		return mainSash;
 	}
@@ -339,10 +339,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		controlLayout.marginHeight = 2;
 		controlLayout.marginWidth = 2;
 		controlComposite.setLayout(controlLayout);
-		Button playButton = new Button(controlComposite,SWT.PUSH);
+		Button playButton = new Button(controlComposite, SWT.PUSH);
 		playButton.setText("Play");
 		
-		Button stopButton = new Button(controlComposite,SWT.PUSH);
+		Button stopButton = new Button(controlComposite, SWT.PUSH);
 		stopButton.setText("Stop");
 		stopButton.addSelectionListener(new SelectionAdapter() {
 			public void widgetSelected(SelectionEvent se) {
@@ -598,7 +598,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			}
 		});
 		
-		explorerSash.setWeights(new int[] {20,40,40});
+		explorerSash.setWeights(new int[] {20, 40, 40});
 
 	}
 

@@ -2,12 +2,50 @@ package com.rpgaudiomixer.model;
 
 import java.util.List;
 
+/** 
+ * IResource is an interface that represents a
+ * type of object that can be added to a Library.
+ * A resource can optionally have other resources as children.
+ * 
+ * @author Brian Kelly
+ *
+ */
+
 public interface IResource {
-	public String getName();
-	public void setName(String name);
+	
+	/** 
+	 * Retrieves the name of the resource.
+	 * 
+	 * @return A String representing the name of the resource
+	 */
+	String getName();
+	
+	/**
+	 * Sets the name of the resource.
+	 * 
+	 * @param name The new name of the resource as a String
+	 */
+	void setName(String name);
 
-	public List<IResource> getItems();
+	/**
+	 * Get the children items of this resource, if any.
 
-	public void setParent(IResource parent);
-	public IResource getParent();
+	 * @return A List of IResources or null
+	 */
+	List<IResource> getItems();
+
+	/**
+	 * Sets the parents resource of this resource.
+	 * 
+	 * @param parent The IResource that should be this resource's parent
+	 */
+	void setParent(IResource parent);
+
+	/**
+	 * Gets the parents resource of this resource.
+	 * Returns null if there is no parent.
+	 * 
+	 * @return An IResource representing the parent of this resoruce
+	 */
+	IResource getParent();
 }
