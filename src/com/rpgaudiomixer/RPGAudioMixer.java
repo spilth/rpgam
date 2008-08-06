@@ -295,7 +295,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		resourceComposite = new Group(mainSash, SWT.SHADOW_NONE);
 		resourceComposite.setLayout(new FillLayout());
 		resourceComposite.setText("Library Explorer");
-		createResourceViewer(resourceComposite);
+		createLibraryExplorer(resourceComposite);
 		
 		// Middle Column
 		Composite middleComposite = new Composite(mainSash, SWT.NULL);
@@ -846,7 +846,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		songTable.setVisible(false);
 	}
 
-	private void createResourceViewer(Composite c) {
+	private void createLibraryExplorer(Composite c) {
 		resourceViewer = new TreeViewer(c, SWT.BORDER);
 		resourceViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
