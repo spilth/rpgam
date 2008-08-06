@@ -43,11 +43,9 @@ public final class Palette implements IResource, AliasCollector {
 	}
 
 	/**
-	 * Returns the Aliases assigned to the Palette.
-	 * 
-	 * @return List of IResources that make up this Palette.
+	 * @return Returns null since Palettes can't have children resources.
 	 */
-	public List<IResource> getItems() {
+	public List<IResource> getChildren() {
 		return null;
 	}
 

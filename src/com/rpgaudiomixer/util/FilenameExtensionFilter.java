@@ -5,37 +5,76 @@ import java.io.FilenameFilter;
 import java.util.HashSet;
 import java.util.Iterator;
 
-public class FilenameExtensionFilter implements FilenameFilter {
-	HashSet<String> extensions = new HashSet<String>();
-	
-	public FilenameExtensionFilter() {}
+/**
+ * A class that filers filenames based on their extension.
+ * 
+ * @author Brian Kelly
+ *
+ */
 
-	public FilenameExtensionFilter(String ext) {
+public final class FilenameExtensionFilter implements FilenameFilter {
+	/** The list of acceptable extensions. */
+	private HashSet<String> extensions = new HashSet<String>();
+
+	/** Default constructor. */
+	public FilenameExtensionFilter() { }
+	
+	/**
+	 * Create a filter with a single extension.
+	 * 
+	 * @param ext The extension to use.  Should NOT include the leading dot.
+	 * "mp3", not "*.mp3" or ".mp3".
+	 *  
+	 */
+
+	public FilenameExtensionFilter(final String ext) {
 		this();
 		this.addExtension(ext);
 	}
-	
-	public FilenameExtensionFilter(String[] exts) {
+
+	/**
+	 * Creates a filter from an array of extensions.
+	 * 
+	 * @param extensionArray An array of extensions.
+	 */
+	public FilenameExtensionFilter(final String[] extensionArray) {
 		// Loops through array and add extensions
-		for (int i = 0; i < exts.length; i++) {
-			this.addExtension(exts[i]);
+		for (int i = 0; i < extensionArray.length; i++) {
+			this.addExtension(extensionArray[i]);
 		}
 	}
-	
-	public void addExtension(String ext) {
-		extensions.add(ext);
+
+	/** 
+	 * @param extension The extension to add.
+	 */
+	public void addExtension(final String extension) {
+		extensions.add(extension);
 	}
 	
-	public void removeExtension(String ext) {
-		extensions.remove(ext);
+	/**
+	 * @param extension The extension to remove.
+	 */
+	public void removeExtension(final String extension) {
+		extensions.remove(extension);
 	}
 	
-	// FilenameFilter Implementation
-	public boolean accept(File f, String s) {
-		if (extensions.isEmpty()) return false;
+	/**
+	 * FilenameFilter implementation.
+	 * Accepts a file if it ends with any of the extensions
+	 * that this filter contains.
+	 * 
+	 * @param file The file to test.
+	 * @param string I'm not sure... ???
+	 * 
+	 * @return True if the file ends with one of the supplied extensions.
+	 */
+	public boolean accept(final File file, final String string) {
+		if (extensions.isEmpty()) {
+			return false;
+		}
 
 		for (Iterator<String> i = extensions.iterator(); i.hasNext();) {
-			if (s.toLowerCase().endsWith( "." + (String)i.next() )) {
+			if (string.toLowerCase().endsWith("." + (String) i.next())) {
 				return true;
 			}
 		}

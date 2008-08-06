@@ -176,12 +176,43 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	
 	private void createActions() {
 		// File
-		newLibraryAction = new Action("&New", IAction.AS_PUSH_BUTTON) {public void run () {newLibrary();}};
-		openLibraryAction = new Action("&Open", IAction.AS_PUSH_BUTTON) {public void run () {openLibrary();}};
-		saveLibraryAction = new Action("&Save", IAction.AS_PUSH_BUTTON) {public void run () {saveLibrary();}};
-		saveLibraryAsAction = new Action("Save &As...", IAction.AS_PUSH_BUTTON) {public void run () {saveLibraryAs();}};
-		closeLibraryAction = new Action("&Close", IAction.AS_PUSH_BUTTON) {public void run () {closeLibrary();}};
-		exitAction = new Action("E&xit", IAction.AS_PUSH_BUTTON) {public void run () {quit();}};
+		newLibraryAction = new Action("&New", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				newLibrary();
+			}
+		};
+		
+		openLibraryAction = new Action("&Open", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				openLibrary();
+			}
+		};
+		
+		saveLibraryAction = new Action("&Save", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				saveLibrary();
+			}
+		};
+		
+		saveLibraryAsAction = new Action("Save &As...",
+				IAction.AS_PUSH_BUTTON) {
+
+			public void run() {
+				saveLibraryAs();
+			}
+		};
+		
+		closeLibraryAction = new Action("&Close", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				closeLibrary();
+			}
+		};
+		
+		exitAction = new Action("E&xit", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				quit();
+			}
+		};
 		
 		newLibraryAction.setAccelerator(SWT.CTRL + 'N');
 		openLibraryAction.setAccelerator(SWT.CTRL + 'O');
@@ -195,30 +226,95 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		exitAction.setEnabled(true);
 		
 		// Resources
-		newFolderAction = new Action("Folder", IAction.AS_PUSH_BUTTON) {public void run() {newFolder();}};
-		newPlaylistAction = new Action("Playlist", IAction.AS_PUSH_BUTTON) {public void run() {newPlaylist();}};
-		newPaletteAction = new Action("Palette", IAction.AS_PUSH_BUTTON) {public void run() {newPalette();}};
+		newFolderAction = new Action("Folder", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				newFolder();
+			}
+		};
+		newPlaylistAction = new Action("Playlist", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				newPlaylist();
+			}
+		};
+		newPaletteAction = new Action("Palette", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				newPalette();
+			}
+		};
 		
 		// Resource - Folder
-		renameFolderAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {public void run() {renameFolder();}};
-		deleteFolderAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {public void run() {deleteSelectedFolder();}};
+		renameFolderAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				renameFolder();
+			}
+		};
+		
+		deleteFolderAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				deleteSelectedFolder();
+			}
+		};
 
 		// Resource - Playlist
-		playPlaylistAction = new Action("Play", IAction.AS_PUSH_BUTTON) {public void run() {activatePlaylist();}};
-		renamePlaylistAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {public void run() {renamePlaylist();}};
-		deletePlaylistAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {public void run() {deleteSelectedPlaylist();}};
+		playPlaylistAction = new Action("Play", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				activatePlaylist();
+			}
+		};
+		renamePlaylistAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				renamePlaylist();
+			}
+		};
+		deletePlaylistAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				deleteSelectedPlaylist();
+			}
+		};
 
 		// Resource - Palette
-		renamePaletteAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {public void run() {renamePalette();}};
-		deletePaletteAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {public void run() {deleteSelectedPalette();}};
+		renamePaletteAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				renamePalette();
+			}
+		};
+		deletePaletteAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				deleteSelectedPalette();
+			}
+		};
 
 		// Song
-		playSongAction = new Action("Play", IAction.AS_PUSH_BUTTON) {public void run() {playSelectedSong();}};
-		newSongAction = new Action("New", IAction.AS_PUSH_BUTTON) {public void run() {newSong();}};
-		renameSongAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {public void run() {renameSelectedSongs();}};
-		deleteSongAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {public void run() {deleteSelectedSongs();}};
-		moveSongUpAction = new Action("Move Up", IAction.AS_PUSH_BUTTON) {public void run() {moveSongUp();}};
-		moveSongDownAction = new Action("Move Down", IAction.AS_PUSH_BUTTON) {public void run() {moveSongDown();}};
+		playSongAction = new Action("Play", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				playSelectedSong();
+			}
+		};
+		newSongAction = new Action("New", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				newSong();
+			}
+		};
+		renameSongAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				renameSelectedSongs();
+			}
+		};
+		deleteSongAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				deleteSelectedSongs();
+			}
+		};
+		moveSongUpAction = new Action("Move Up", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				moveSongUp();
+			}
+		};
+		moveSongDownAction = new Action("Move Down", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				moveSongDown();
+			}
+		};
 
 		/*
 		moveSongUpAction.setAccelerator(SWT.ALT + SWT.ARROW_UP);
@@ -226,19 +322,60 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		*/
 
 		// Effect
-		playEffectAction = new Action("Play", IAction.AS_PUSH_BUTTON) {public void run() {playSelectedEffect();}};
-		newEffectAction = new Action("New", IAction.AS_PUSH_BUTTON) {public void run() {newEffect();}};
-		renameEffectAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {public void run() {renameSelectedEffects();}};
-		deleteEffectAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {public void run() {deleteSelectedEffects();}};
+		playEffectAction = new Action("Play", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				playSelectedEffect();
+			}
+		};
+		
+		newEffectAction = new Action("New", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				newEffect();
+			}
+		};
+		renameEffectAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				renameSelectedEffects();
+			}
+		};
+		deleteEffectAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				deleteSelectedEffects();
+			}
+		};
 
 		// Audio Explorer - Directory
-		directoryAddPlaylistAction = new Action("Add Files To Playlist", IAction.AS_PUSH_BUTTON) {public void run () {directoryAddPlaylist();}};
-		directoryAddPaletteAction = new Action("Add Files To Palette", IAction.AS_PUSH_BUTTON) {public void run () {directoryAddPalette();}};
+		directoryAddPlaylistAction = new Action("Add Files To Playlist",
+				IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				directoryAddPlaylist();
+			}
+		};
+		directoryAddPaletteAction = new Action("Add Files To Palette",
+				IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				directoryAddPalette();
+			}
+		};	
 
 		// Audio Explorer - File
-		fileAddPlaylistAction = new Action("Add to Playlist", IAction.AS_PUSH_BUTTON) {public void run () {fileAddPlaylist();}};
-		fileAddPaletteAction = new Action("Add to Palette", IAction.AS_PUSH_BUTTON) {public void run () {fileAddPalette();}};
-		filePreviewAction = new Action("Preview", IAction.AS_PUSH_BUTTON) {public void run () {filePreview();}};
+		fileAddPlaylistAction = new Action("Add to Playlist",
+				IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				fileAddPlaylist();
+			}
+		};
+		fileAddPaletteAction = new Action("Add to Palette",
+				IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				fileAddPalette();
+			}
+		};
+		filePreviewAction = new Action("Preview", IAction.AS_PUSH_BUTTON) {
+			public void run() {
+				filePreview();
+			}
+		};
 
 		filePreviewAction.setEnabled(false);
 		fileAddPlaylistAction.setEnabled(false);
@@ -384,11 +521,11 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		
 		// Drive data comes from file system roots and never changes
 		driveViewer.setContentProvider(new IStructuredContentProvider() {
-			public void dispose() {}
+			public void dispose() { }
 			public Object[] getElements(Object arg0) {
 				return File.listRoots();
 			}
-			public void inputChanged(Viewer arg0, Object arg1, Object arg2) {}
+			public void inputChanged(Viewer arg0, Object arg1, Object arg2) { }
 		});
 		
 		driveViewer.setLabelProvider(new LabelProvider() {
@@ -419,7 +556,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		
 		// Directory viewer gets its info from currently selected drives
 		directoryViewer.setContentProvider(new ITreeContentProvider() {
-			public void dispose() {}
+			public void dispose() { }
 
 			public Object[] getChildren(Object element) {
 				Object[] children = ((File) element).listFiles(new DirectoryFilter());
@@ -431,12 +568,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			}
 
 			public Object getParent(Object element) {
-				return ((File)element).getParent();
+				return ((File) element).getParent();
 			}
 			public boolean hasChildren(Object element) {
 				return getChildren(element).length > 0;
 			}
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { }
 		});
 		
 	    directoryViewer.setLabelProvider(new LabelProvider() {
@@ -469,8 +606,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	    });
 
 		directoryViewer.addDragSupport(DND.DROP_COPY, fileFormat, new DragSourceListener() {
-			public void dragFinished(DragSourceEvent dse) {}
-			public void dragStart(DragSourceEvent dse) {}		
+			public void dragFinished(DragSourceEvent dse) { }
+			public void dragStart(DragSourceEvent dse) { }		
 
 			public void dragSetData(DragSourceEvent dse) {
 				if (FileTransfer.getInstance().isSupportedType(dse.dataType)) {
@@ -503,21 +640,21 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 		// File Viewer gets content from currently selected directory
 		fileViewer.setContentProvider(new IStructuredContentProvider() {
-			public void dispose() {}
+			public void dispose() { }
 
 			public Object[] getElements(Object element) {
 				Object[] children = null;
 				children = ((File) element).listFiles(audioFileFilter);		
 				return children == null ? new Object[0] : children;
 			}
-			public void inputChanged(Viewer viewer, Object oldObject, Object newObject) {}
+			public void inputChanged(Viewer viewer, Object oldObject, Object newObject) { }
 
 		});
 		
 		fileViewer.setLabelProvider(new ITableLabelProvider() {
-			  public void addListener(ILabelProviderListener ilabelproviderlistener) {}
+			  public void addListener(ILabelProviderListener ilabelproviderlistener) { }
 
-			  public void dispose() {}
+			  public void dispose() { }
 
 			  public Image getColumnImage(Object arg0, int arg1) {
 			    return null;
@@ -531,7 +668,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			  	return false;
 			  }
 			  
-			  public void removeListener(ILabelProviderListener ilabelproviderlistener) {}
+			  public void removeListener(ILabelProviderListener ilabelproviderlistener) { }
 		});
 
 		// File Viewer popup context menu
@@ -577,8 +714,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 		// File Viewer drag and drop support
 		fileViewer.addDragSupport(DND.DROP_COPY, fileFormat, new DragSourceListener() {
-			public void dragFinished(DragSourceEvent dse) {}
-			public void dragStart(DragSourceEvent dse) {}		
+			public void dragFinished(DragSourceEvent dse) { }
+			public void dragStart(DragSourceEvent dse) { }		
 
 			public void dragSetData(DragSourceEvent dse) {
 				if (FileTransfer.getInstance().isSupportedType(dse.dataType)) {
@@ -607,11 +744,11 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		resourceNameInputValidator = new IInputValidator() {
 	    	public String isValid(String newText) {
 	    		if (newText.equals("")) {
-	    			return ("The name cannot be blank.") ;
+	    			return ("The name cannot be blank.");
 	    		}
 	    		
 	    		if (newText.length() > MAX_RESOURCE_NAME_LENGTH) {
-	    			return("The name cannot exceed " + MAX_RESOURCE_NAME_LENGTH + " characters.");
+	    			return ("The name cannot exceed " + MAX_RESOURCE_NAME_LENGTH + " characters.");
 	    		}
 	    		return null;
 	    	}
@@ -655,8 +792,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			public Object[] getElements(Object inputElement) {
 				return ((Palette) inputElement).getEffects().toArray();
 			}
-			public void dispose() {}
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
+			public void dispose() { }
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { }
 		});
 
 		effectTableViewer.setLabelProvider(new ITableLabelProvider() {
@@ -679,12 +816,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				}
 			}
 
-			public void addListener(ILabelProviderListener listener) {}
-			public void dispose() {}
+			public void addListener(ILabelProviderListener listener) { }
+			public void dispose() { }
 			public boolean isLabelProperty(Object element, String property) {
 				return false;
 			}
-			public void removeListener(ILabelProviderListener listener) {}
+			public void removeListener(ILabelProviderListener listener) { }
 		});
 
 		// Effect Table Context Popup Menu
@@ -714,7 +851,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			}
 		});
 
-		effectTableViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener () {
+		effectTableViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener() {
 			public void dragEnter(DropTargetEvent dte) {
 				dte.detail = DND.DROP_COPY;
 				
@@ -731,10 +868,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				}
 			}
 
-			public void dragLeave(DropTargetEvent dte) {}
-			public void dragOperationChanged(DropTargetEvent dte) {}
-			public void dragOver(DropTargetEvent dte) {}
-			public void dropAccept(DropTargetEvent dte) {}
+			public void dragLeave(DropTargetEvent dte) { }
+			public void dragOperationChanged(DropTargetEvent dte) { }
+			public void dragOver(DropTargetEvent dte) { }
+			public void dropAccept(DropTargetEvent dte) { }
 		});
 		
 		effectTable.addKeyListener(new KeyListener() {
@@ -781,12 +918,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		songTableViewer.getTable().setMenu(songTableContextMenu.createContextMenu(songTableViewer.getTable()));
 		
 		songTableViewer.setContentProvider(new IStructuredContentProvider() {
-			public void dispose() {}
+			public void dispose() { }
 
 			public Object[] getElements(Object inputElement) {
 				return ((Playlist) inputElement).getSongs().toArray();
 			}
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {}
+			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { }
 		});
 		
 		songTableViewer.setLabelProvider(new SongLabelProvider());
@@ -799,17 +936,17 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			}
 		});
 
-		songTableViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener () {
+		songTableViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener() {
 			public void dragEnter(DropTargetEvent dte) {
 				dte.detail = DND.DROP_COPY;
 				
 				//dte.currentDataType = dte.dataTypes[0];
 			}
 			
-			public void dragLeave(DropTargetEvent dte) {}
+			public void dragLeave(DropTargetEvent dte) { }
 
-			public void dragOperationChanged(DropTargetEvent dte) {}
-			public void dragOver(DropTargetEvent dte) {}
+			public void dragOperationChanged(DropTargetEvent dte) { }
+			public void dragOver(DropTargetEvent dte) { }
 			public void drop(DropTargetEvent dte) {
 				try {
 					if (FileTransfer.getInstance().isSupportedType(dte.currentDataType)) {
@@ -820,7 +957,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 					System.out.println(e.toString());
 				}
 			}
-			public void dropAccept(DropTargetEvent dte) {}
+			public void dropAccept(DropTargetEvent dte) { }
 		});
 		
 		songTable.addKeyListener(new KeyListener() {
@@ -851,14 +988,14 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		resourceViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
 		resourceViewer.setContentProvider(new ITreeContentProvider() {
-			public void dispose() {}
+			public void dispose() { }
 
 			public Object[] getChildren(Object o) {
-				return ((IResource)o).getItems().toArray();
+				return ((IResource)o).getChildren().toArray();
 			}
 
 			public Object[] getElements(Object o) {
-				return ((IResource)o).getItems().toArray();
+				return ((IResource)o).getChildren().toArray();
 			}
 
 			public Object getParent(Object o) {
@@ -867,13 +1004,13 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 			public boolean hasChildren(Object o) {
 				IResource resource = (IResource) o;
-				List<IResource> items = resource.getItems();
+				List<IResource> items = resource.getChildren();
 				if (items == null || items.size() == 0) return false;
 
 				return true;
 			}
 
-			public void inputChanged(Viewer arg0, Object arg1, Object arg2) {}
+			public void inputChanged(Viewer arg0, Object arg1, Object arg2) { }
 
 		});
 
@@ -953,14 +1090,14 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	
 		});
 
-		resourceViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener () {
+		resourceViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener() {
 			public void dragEnter(DropTargetEvent event) {
 				event.detail = DND.DROP_COPY;
 			}
 
-			public void dragLeave(DropTargetEvent event) {}
-			public void dragOperationChanged(DropTargetEvent event) {}
-			public void dragOver(DropTargetEvent event) {}
+			public void dragLeave(DropTargetEvent event) { }
+			public void dragOperationChanged(DropTargetEvent event) { }
+			public void dragOver(DropTargetEvent event) { }
 
 			public void drop(DropTargetEvent event) {
 				// Figure out what item they're trying to drop it on
@@ -990,7 +1127,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				}
 			}
 
-			public void dropAccept(DropTargetEvent event) {}
+			public void dropAccept(DropTargetEvent event) { }
 			
 		});
 
@@ -1220,7 +1357,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private void deleteSelectedResource() {
 		confirmDialog.setMessage("Delete '" + selectedResource.getName() + "'?");
 		if (selectedResource instanceof Folder) {
-				int childrenCount = selectedResource.getItems().size();
+				int childrenCount = selectedResource.getChildren().size();
 				if (childrenCount > 0) {
 					confirmDialog.setMessage("Delete '" + selectedResource.getName() + "' and all items underneath it?");
 				}
@@ -1300,7 +1437,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	private void renameResource(String typeName, IResource resource) {
 		// Prompt for new name
-		InputDialog renameDialog = new InputDialog(this.getShell(), "Rename " + typeName + ": " + resource.getName() , "Enter new name", resource.getName(), resourceNameInputValidator);
+		renameDialog = new InputDialog(this.getShell(), "Rename " + typeName + ": " + resource.getName() , "Enter new name", resource.getName(), resourceNameInputValidator);
 
 		if (renameDialog.open() == InputDialog.OK) {
 			resource.setName(renameDialog.getValue());
@@ -1460,7 +1597,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			// See http://dev.eclipse.org/viewcvs/index.cgi/platform-swt-home/faq.html?rev=1.56#uithread
 			getShell().getDisplay().syncExec(
 				new Runnable() {
-		        	public void run(){
+		        	public void run() {
 		        		//songTableViewer.refresh();
 		        	}
 		        }
@@ -1825,9 +1962,9 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			return null;
 		}
 
-		public void addListener(ILabelProviderListener listener) {}
-		public void removeListener(ILabelProviderListener listener) {}
-		public void dispose() {}
+		public void addListener(ILabelProviderListener listener) { }
+		public void removeListener(ILabelProviderListener listener) { }
+		public void dispose() { }
 
 	}
 

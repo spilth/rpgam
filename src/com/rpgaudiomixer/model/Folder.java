@@ -18,12 +18,12 @@ public final class Folder implements IResource {
 	private String name;
 
 	/**
-	 * The folders child items.
+	 * The folder's child items.
 	 */
-	private List<IResource> items = new ArrayList<IResource>();
+	private List<IResource> children = new ArrayList<IResource>();
 
 	/**
-	 * The parents resource of this folder.
+	 * The parent resource of this folder.
 	 */
 	private IResource parent = null;
 
@@ -68,7 +68,7 @@ public final class Folder implements IResource {
 	 * @param resource The resource to add. Must implement IResource.
 	 */
 	public void addItem(final IResource resource) {
-		items.add(resource);
+		children.add(resource);
 		resource.setParent(this);
 	}
 
@@ -78,14 +78,15 @@ public final class Folder implements IResource {
 	 * @param resource The resoure to remove.  Must implement IResource.
 	 */
 	public void removeItem(final IResource resource) {
-		items.remove(resource);
+		children.remove(resource);
+		resource.setParent(null);
 	}
 	
 	/**
 	 * @return A List of this folder's IResources.
 	 */
-	public List<IResource> getItems() {
-		return items;
+	public List<IResource> getChildren() {
+		return children;
 	}
 
 	/**

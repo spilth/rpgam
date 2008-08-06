@@ -9,7 +9,18 @@ import javazoom.jlgui.basicplayer.BasicPlayerEvent;
 import javazoom.jlgui.basicplayer.BasicPlayerException;
 import javazoom.jlgui.basicplayer.BasicPlayerListener;
 
-public class JavaZoomAudioEngine extends AudioEngine implements BasicPlayerListener {
+/**
+ * JavaZoomAudioEngine is an implementation of the AudioEngine
+ * class specific to the JavaZoom audio library.
+ * 
+ * @author Brian Kelly
+ *
+ */
+
+public final class JavaZoomAudioEngine
+		extends AudioEngine
+		implements BasicPlayerListener {
+
 	private BasicPlayer songPlayer, previewPlayer, effectPlayer;
 	
 	public JavaZoomAudioEngine() {
@@ -18,7 +29,6 @@ public class JavaZoomAudioEngine extends AudioEngine implements BasicPlayerListe
 		effectPlayer = new BasicPlayer();
 		
 		songPlayer.addBasicPlayerListener(this);
-		
 	}
 	
 	@Override
@@ -122,7 +132,10 @@ public class JavaZoomAudioEngine extends AudioEngine implements BasicPlayerListe
 		System.out.println(properties);
 	}
 
-	public void progress(int bytesRead, long microsecondsElapsed, byte[] pcmSamples, Map properties) {
+	public void progress(int bytesRead, 
+			long microsecondsElapsed,
+			byte[] pcmSamples,
+			Map properties) {
 		//System.out.println(bytesRead);
 	}
 
@@ -134,10 +147,10 @@ public class JavaZoomAudioEngine extends AudioEngine implements BasicPlayerListe
 	public void stateUpdated(BasicPlayerEvent bpe) {
 		if (bpe.getCode() == BasicPlayerEvent.EOM) {
 			Object[] listeners = listenerList.getListenerList();
-			for (int i = listeners.length-2; i>=0; i-=2) {
+			for (int i = listeners.length - 2; i >= 0; i -= 2) {
 		         if (listeners[i] == AudioEngineListener.class) {
 		             // Lazily create the event:
-		             ((AudioEngineListener)listeners[i+1]).songFinished();
+		             ((AudioEngineListener) listeners[i + 1]).songFinished();
 		         }
 		     }
 

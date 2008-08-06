@@ -32,7 +32,7 @@ public interface IResource {
 
 	 * @return A List of IResources or null
 	 */
-	List<IResource> getItems();
+	List<IResource> getChildren();
 
 	/**
 	 * Sets the parents resource of this resource.
