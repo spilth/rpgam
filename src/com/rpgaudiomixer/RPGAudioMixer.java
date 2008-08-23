@@ -150,6 +150,22 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private Image newPlaylistImage;
 	private Image newPaletteImage;
 	private IInputValidator resourceNameInputValidator;
+
+	private IAction showLibraryExplorerAction;
+
+	private IAction showAudioExplorerAction;
+
+	private IAction showPlaylistAction;
+
+	private IAction showPaletteAction;
+
+	private IAction showSongPlayerAction;
+
+	private SashForm mainSash;
+
+	private Composite middleComposite;
+
+	private Group playerComposite;
 	
 	public RPGAudioMixer() {
 		super(null);
@@ -224,6 +240,56 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		saveLibraryAsAction.setEnabled(false);
 		closeLibraryAction.setEnabled(false);
 		exitAction.setEnabled(true);
+		
+		// View Actions
+		showLibraryExplorerAction = new Action("Show Library Explorer",
+				IAction.AS_CHECK_BOX) {
+
+			public void run() {
+				toggleLibraryExplorer();
+			}
+		};
+		showAudioExplorerAction = new Action("Show Audio Explorer",
+				IAction.AS_CHECK_BOX) {
+
+			public void run() {
+				toggleAudioExplorer();
+			}
+		};
+		showPlaylistAction = new Action("Show Playlist",
+				IAction.AS_CHECK_BOX) {
+
+			public void run() {
+				togglePlaylist();
+			}
+		};
+		showPaletteAction = new Action("Show Palette",
+				IAction.AS_CHECK_BOX) {
+
+			public void run() {
+				togglePalette();
+			}
+		};
+		showSongPlayerAction = new Action("Show Song Player",
+				IAction.AS_CHECK_BOX) {
+
+			public void run() {
+				toggleSongPlayer();
+			}
+		};
+		
+		showLibraryExplorerAction.setAccelerator(SWT.ALT+ '1');
+		showAudioExplorerAction.setAccelerator(SWT.ALT+ '2');
+		showPlaylistAction.setAccelerator(SWT.ALT+ '3');
+		showPaletteAction.setAccelerator(SWT.ALT+ '4');
+		showSongPlayerAction.setAccelerator(SWT.ALT+ '5');
+
+		showLibraryExplorerAction.setChecked(true);
+		showAudioExplorerAction.setChecked(true);
+		showPlaylistAction.setChecked(true);
+		showPaletteAction.setChecked(true);
+		showSongPlayerAction.setChecked(true);
+		
 		
 		// Resources
 		newFolderAction = new Action("Folder", IAction.AS_PUSH_BUTTON) {
@@ -385,6 +451,32 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	// UI Creation Methods
 	
+	protected void toggleSongPlayer() {
+		playerComposite.setVisible(!playerComposite.getVisible());
+		middleComposite.layout();
+		
+	}
+
+	protected void togglePalette() {
+		paletteComposite.setVisible(!paletteComposite.getVisible());
+		middleComposite.layout();
+	}
+
+	protected void togglePlaylist() {
+		playlistComposite.setVisible(!playlistComposite.getVisible());
+		middleComposite.layout();
+	}
+
+	protected void toggleAudioExplorer() {
+		explorerComposite.setVisible(!explorerComposite.getVisible());
+		mainSash.layout();
+	}
+
+	protected void toggleLibraryExplorer() {
+		resourceComposite.setVisible(!resourceComposite.getVisible());
+		mainSash.layout();
+	}
+
 	protected void stopSong() {
 		audioEngine.stopSong();
 	}
@@ -425,7 +517,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		saveLibraryAction.setImageDescriptor(saveImageDescriptor);
 		saveLibraryAsAction.setImageDescriptor(saveAsImageDescriptor);
 		
-		SashForm mainSash = new SashForm(parent, SWT.HORIZONTAL);
+		mainSash = new SashForm(parent, SWT.HORIZONTAL);
 		mainSash.SASH_WIDTH = 4;
 		
 		// Resource Viewer
@@ -434,8 +526,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		resourceComposite.setText("Library Explorer");
 		createLibraryExplorer(resourceComposite);
 		
-		// Middle Column
-		Composite middleComposite = new Composite(mainSash, SWT.NULL);
+		middleComposite = new Composite(mainSash, SWT.NULL);
 		middleComposite.setLayout(new FillLayout(SWT.VERTICAL));
 
 		// Middle Column - Playlist Viewer
@@ -444,8 +535,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		playlistComposite.setText("Playlist");
 		createPlaylistViewer(playlistComposite);
 
-		// Middle Column - Song Player
-		Group playerComposite = new Group(middleComposite, SWT.SHADOW_NONE);
+		playerComposite = new Group(middleComposite, SWT.SHADOW_NONE);
 		playerComposite.setLayout(new FillLayout());
 		playerComposite.setText("Song Player");
 		createSongPlayer(playerComposite);
@@ -1242,6 +1332,15 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		fileMenuManager.add(new Separator());
 		fileMenuManager.add(exitAction);
 
+		MenuManager viewMenuManager = new MenuManager("&View");
+		viewMenuManager.add(showLibraryExplorerAction);
+		viewMenuManager.add(showAudioExplorerAction);
+		
+		// TODO: Put back in when Middle Column is switched to a resizable component
+		//viewMenuManager.add(showPlaylistAction);
+		//viewMenuManager.add(showPaletteAction);
+		//viewMenuManager.add(showSongPlayerAction);
+		
 		MenuManager libraryMenuManager = new MenuManager("&Library");
 		//libraryMenuManager.add(newMenu);
 		
@@ -1254,6 +1353,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		mainMenu.add(libraryMenuManager);
 		mainMenu.add(playlistMenuManager);
 		mainMenu.add(paletteMenuManager);
+		mainMenu.add(viewMenuManager);
 
 		return mainMenu;
 	}
