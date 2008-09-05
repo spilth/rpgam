@@ -77,12 +77,14 @@ import com.rpgaudiomixer.model.IResource;
 import com.rpgaudiomixer.model.Palette;
 import com.rpgaudiomixer.model.Playlist;
 import com.rpgaudiomixer.model.Alias;
+import com.rpgaudiomixer.ui.LibraryExplorer;
+import com.rpgaudiomixer.ui.LibraryExplorerListener;
 import com.rpgaudiomixer.util.DirectoryFilter;
 import com.rpgaudiomixer.util.FilenameExtensionFilter;
 
 import com.thoughtworks.xstream.XStream;
 
-public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListener {
+public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListener, LibraryExplorerListener {
 
 	public static void main(String[] args) {
 		RPGAudioMixer rpgam = new RPGAudioMixer();
@@ -166,6 +168,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private Composite middleComposite;
 
 	private Group playerComposite;
+
+	private LibraryExplorer libraryViewer;
 	
 	public RPGAudioMixer() {
 		super(null);
@@ -524,7 +528,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		resourceComposite = new Group(mainSash, SWT.SHADOW_NONE);
 		resourceComposite.setLayout(new FillLayout());
 		resourceComposite.setText("Library Explorer");
-		createLibraryExplorer(resourceComposite);
+		libraryViewer = new LibraryExplorer(resourceComposite, SWT.NULL);
+		libraryViewer.addLibraryViewerListener(this);
 		
 		middleComposite = new Composite(mainSash, SWT.NULL);
 		middleComposite.setLayout(new FillLayout(SWT.VERTICAL));
@@ -1169,10 +1174,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 				} else {
 					if (resource instanceof Playlist) {
-						selectPlaylist((Playlist) resource);
+						openPlaylist((Playlist) resource);
 						
 					} else if (resource instanceof Palette) {
-						selectPalette((Palette) resource);
+						openPalette((Palette) resource);
 
 					}
 				}
@@ -1468,7 +1473,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			case SWT.OK:
 				Folder f = (Folder) selectedResource.getParent();
 				f.removeItem(selectedResource);
-				resourceViewer.refresh(f);
+				// TODO: Replace this with a message from the model
+				//resourceViewer.refresh(f);
 				touchLibrary();
 				
 			case SWT.CANCEL:
@@ -1485,8 +1491,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			Folder f = new Folder(newFolderDialog.getValue());
 			((Folder)selectedResource).addItem(f);
 			touchLibrary();
-			resourceViewer.refresh(selectedResource);
-			resourceViewer.expandToLevel(selectedResource, 1);
+			// TODO: Replace this
+			//resourceViewer.refresh(selectedResource);
+			//resourceViewer.expandToLevel(selectedResource, 1);
+			libraryViewer.refresh(selectedResource);
 		}
 	}
 
@@ -1496,8 +1504,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			Palette p = new Palette(newPaletteDialog.getValue());
 			((Folder)selectedResource).addItem(p);
 			touchLibrary();
-			resourceViewer.refresh(selectedResource);
-			resourceViewer.expandToLevel(selectedResource, 1);
+			// TODO: Replace this
+			//resourceViewer.refresh(selectedResource);
+			//resourceViewer.expandToLevel(selectedResource, 1);
+			libraryViewer.refresh(selectedResource);
 		}	
 	}
 	
@@ -1507,8 +1517,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			Playlist p = new Playlist(newPlaylistDialog.getValue());
 			((Folder)selectedResource).addItem(p);
 			touchLibrary();
-			resourceViewer.refresh(selectedResource);
-			resourceViewer.expandToLevel(selectedResource, 1);
+			// TODO: Replace this
+			//resourceViewer.refresh(selectedResource);
+			//resourceViewer.expandToLevel(selectedResource, 1);
+			libraryViewer.refresh(selectedResource);
 		}
 	}
 
@@ -1542,7 +1554,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		if (renameDialog.open() == InputDialog.OK) {
 			resource.setName(renameDialog.getValue());
 			touchLibrary();
-			resourceViewer.refresh(resource.getParent());		
+			// TODO: Replace this
+			//resourceViewer.refresh(resource.getParent());		
 		}
 	}
 
@@ -1761,7 +1774,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		}
 	}
 
-	private void selectPlaylist(Playlist p) {
+	private void openPlaylist(Playlist p) {
 		selectedPlaylist = p;
 		playlistComposite.setText("Playlist: " + p.getName());
 		songTableViewer.setInput(selectedPlaylist);
@@ -1770,7 +1783,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	}
 
-	private void selectPalette(Palette p) {
+	private void openPalette(Palette p) {
 		selectedPalette = p;
 		paletteComposite.setText("Palette: " + p.getName());	
 		effectTableViewer.setInput(selectedPalette);
@@ -1791,9 +1804,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			untouchLibrary();
 			
 			// TODO: Update a bunch of UI here - probably shared by Open Library as well
-			resourceViewer.setInput(library.getResources());
-			resourceViewer.getTree().setVisible(true);
-
+			//resourceViewer.setInput(library.getResources());
+			//resourceViewer.getTree().setVisible(true);
+			libraryViewer.setLibrary(library);
+			
 			songTableViewer.setInput(null);
 			songTableViewer.getTable().setVisible(false);
 
@@ -1820,9 +1834,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				loadLibraryXML(libraryPath);
 				untouchLibrary();
 
-				resourceViewer.setInput(library.getResources());
-				resourceViewer.getTree().setVisible(true);
-
+				//resourceViewer.setInput(library.getResources());
+				//resourceViewer.getTree().setVisible(true);
+				libraryViewer.setLibrary(library);
+				
 				songTableViewer.setInput(null);
 				songTableViewer.getTable().setVisible(false);
 
@@ -1871,9 +1886,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			libraryPath = null;
 			untouchLibrary();
 
-			resourceViewer.setInput(null);
-			resourceViewer.getTree().setVisible(false);
-
+			//resourceViewer.setInput(null);
+			//resourceViewer.getTree().setVisible(false);
+			libraryViewer.setLibrary(null);
+			
 			songTableViewer.setInput(null);
 			songTableViewer.getTable().setVisible(false);
 
@@ -2066,6 +2082,18 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		public void removeListener(ILabelProviderListener listener) { }
 		public void dispose() { }
 
+	}
+
+	public void resourceSelected(IResource resource) {
+		this.selectedResource = resource;
+	}
+
+	public void playlistOpened(IResource playlist) {
+		openPlaylist((Playlist) playlist);
+	}
+
+	public void paletteOpened(IResource palette) {
+		openPalette((Palette) palette);		
 	}
 
 }
