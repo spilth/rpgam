@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.util.Iterator;
-import java.util.List;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -16,75 +15,44 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IColorProvider;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DragSourceEvent;
-import org.eclipse.swt.dnd.DragSourceListener;
-import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
-import org.eclipse.swt.dnd.FileTransfer;
-import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.ProgressBar;
-import org.eclipse.swt.widgets.Scale;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.Tree;
-import org.eclipse.swt.widgets.TreeItem;
+
 import com.rpgaudiomixer.audioengine.AudioEngine;
 import com.rpgaudiomixer.audioengine.AudioEngineListener;
 import com.rpgaudiomixer.audioengine.JavaZoomAudioEngine;
-import com.rpgaudiomixer.model.Library;
+import com.rpgaudiomixer.model.Alias;
 import com.rpgaudiomixer.model.AliasCollector;
 import com.rpgaudiomixer.model.Folder;
 import com.rpgaudiomixer.model.IResource;
+import com.rpgaudiomixer.model.Library;
 import com.rpgaudiomixer.model.Palette;
 import com.rpgaudiomixer.model.Playlist;
-import com.rpgaudiomixer.model.Alias;
+import com.rpgaudiomixer.ui.AudioExplorer;
+import com.rpgaudiomixer.ui.AudioExplorerListener;
 import com.rpgaudiomixer.ui.LibraryExplorer;
 import com.rpgaudiomixer.ui.LibraryExplorerListener;
-import com.rpgaudiomixer.util.DirectoryFilter;
+import com.rpgaudiomixer.ui.PaletteViewer;
+import com.rpgaudiomixer.ui.PlaylistViewer;
+import com.rpgaudiomixer.ui.SongPlayer;
 import com.rpgaudiomixer.util.FilenameExtensionFilter;
-
 import com.thoughtworks.xstream.XStream;
 
-public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListener, LibraryExplorerListener {
+public class RPGAudioMixer extends ApplicationWindow
+		implements AudioEngineListener, LibraryExplorerListener, AudioExplorerListener {
 
 	public static void main(String[] args) {
 		RPGAudioMixer rpgam = new RPGAudioMixer();
@@ -122,7 +90,6 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private FileDialog saveLibraryDialog, openFileDialog, songDialog;
 	private FilenameExtensionFilter audioFileFilter = new FilenameExtensionFilter(new String[] {"wav", "mp3", "ogg", "flac"});
 	private Group explorerComposite, paletteComposite, playlistComposite, resourceComposite;
-	private Image folderImage, playlistImage, paletteImage;
 	private InputDialog renameDialog;
 	private IResource selectedResource;
 	private MenuManager directoryPopupMenuManager;
@@ -133,16 +100,11 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private MessageBox confirmDialog;
 	private Palette selectedPalette;
 	private Playlist activePlaylist, selectedPlaylist;
-	private SashForm explorerSash;
-	private Scale songVolumeScale;
 	private String libraryPath;
 	private String[] audioExtensions = new String[] {"*.mp3;*.wav;*.ogg;*.flac", "*.wav", "*.mp3", "*.ogg", "*.flac"};
 	private String[] rpgamExtension = new String[] {"*.raml"};
-	private Table effectTable;
-	private Table songTable;
-	private TableViewer effectTableViewer, songTableViewer, fileViewer;
-	private Transfer[] fileFormat = new Transfer[] {FileTransfer.getInstance()};
-	private TreeViewer directoryViewer, resourceViewer;
+	private TableViewer effectTableViewer, fileViewer;
+	private TreeViewer directoryViewer;
 	private XStream xstream;
 	private Image deleteImage;
 	private Image saveImage;
@@ -154,13 +116,9 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private IInputValidator resourceNameInputValidator;
 
 	private IAction showLibraryExplorerAction;
-
 	private IAction showAudioExplorerAction;
-
 	private IAction showPlaylistAction;
-
 	private IAction showPaletteAction;
-
 	private IAction showSongPlayerAction;
 
 	private SashForm mainSash;
@@ -170,6 +128,14 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private Group playerComposite;
 
 	private LibraryExplorer libraryViewer;
+
+	private PlaylistViewer playlistViewer;
+
+	private PaletteViewer paletteViewer;
+
+	private AudioExplorer audioExplorer;
+
+	private SongPlayer songPlayer;
 	
 	public RPGAudioMixer() {
 		super(null);
@@ -457,8 +423,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	
 	protected void toggleSongPlayer() {
 		playerComposite.setVisible(!playerComposite.getVisible());
-		middleComposite.layout();
-		
+		middleComposite.layout();	
 	}
 
 	protected void togglePalette() {
@@ -492,9 +457,6 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 		createDialogs();
 
-		folderImage = new Image(getShell().getDisplay(), "icons/folder.gif");
-		playlistImage = new Image(getShell().getDisplay(), "icons/playlist.gif");
-		paletteImage = new Image(getShell().getDisplay(), "icons/palette.gif");
 		deleteImage = new Image(getShell().getDisplay(), "icons/delete.gif");
 
 		newLibraryImage = new Image(getShell().getDisplay(), "icons/newlibrary.gif");
@@ -538,300 +500,29 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		playlistComposite = new Group(middleComposite, SWT.SHADOW_NONE);
 		playlistComposite.setLayout(new FillLayout());
 		playlistComposite.setText("Playlist");
-		createPlaylistViewer(playlistComposite);
-
+		playlistViewer = new PlaylistViewer (playlistComposite, SWT.NULL);
+		
 		playerComposite = new Group(middleComposite, SWT.SHADOW_NONE);
 		playerComposite.setLayout(new FillLayout());
 		playerComposite.setText("Song Player");
-		createSongPlayer(playerComposite);
+		songPlayer = new SongPlayer(playerComposite, SWT.NULL);
 		
 		// Middle Column - Palette Viewer
 		paletteComposite = new Group(middleComposite, SWT.SHADOW_NONE);
 		paletteComposite.setLayout(new FillLayout());
 		paletteComposite.setText("Palette");
-		createPaletteViewer(paletteComposite);
+		paletteViewer = new PaletteViewer(paletteComposite, SWT.NULL);
 
 		// Audio Explorer
 		explorerComposite = new Group(mainSash, SWT.SHADOW_NONE);
 		explorerComposite.setLayout(new FillLayout());
 		explorerComposite.setText("Audio Explorer");
-		createAudioExplorer(explorerComposite);
-
+		audioExplorer = new AudioExplorer(explorerComposite, SWT.NULL);
+		audioExplorer.addAudioExplorerListener(this);
+		
 		mainSash.setWeights(new int[] {20, 60, 20});
 		
 		return mainSash;
-	}
-
-	private void createSongPlayer(Composite c) {
-		Composite controlComposite = new Composite(c, SWT.NULL);
-		GridLayout controlLayout = new GridLayout();
-		controlLayout.numColumns = 7;
-		controlLayout.horizontalSpacing = 2;
-		controlLayout.verticalSpacing = 2;
-		controlLayout.marginHeight = 2;
-		controlLayout.marginWidth = 2;
-		controlComposite.setLayout(controlLayout);
-		Button playButton = new Button(controlComposite, SWT.PUSH);
-		playButton.setText("Play");
-		
-		Button stopButton = new Button(controlComposite, SWT.PUSH);
-		stopButton.setText("Stop");
-		stopButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent se) {
-				stopSong();
-			}
-		});
-		
-		Button nextButton = new Button(controlComposite, SWT.PUSH);
-		nextButton.setText("Next");
-		nextButton.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent se) {
-				//nextSong();
-			}
-		});
-		
-		ProgressBar songProgressBar = new ProgressBar(controlComposite, SWT.SMOOTH);
-		songProgressBar.setMinimum(0);
-		songProgressBar.setMaximum(1000);
-		songProgressBar.setSelection(0);
-		
-		songVolumeScale = new Scale(controlComposite, SWT.HORIZONTAL);
-		songVolumeScale.setMinimum(0);
-		songVolumeScale.setMaximum(100);
-		songVolumeScale.setIncrement(1);
-		songVolumeScale.setPageIncrement(10);
-		songVolumeScale.setSelection(100);
-		songVolumeScale.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
-				audioEngine.setSongVolume(songVolumeScale.getSelection());
-			}
-		});
-	}
-
-	private void createAudioExplorer(Composite c) {
-		explorerSash = new SashForm(c, SWT.VERTICAL);
-
-		// Drive List
-		ListViewer driveViewer = new ListViewer(explorerSash);
-		
-		// Drive data comes from file system roots and never changes
-		driveViewer.setContentProvider(new IStructuredContentProvider() {
-			public void dispose() { }
-			public Object[] getElements(Object arg0) {
-				return File.listRoots();
-			}
-			public void inputChanged(Viewer arg0, Object arg1, Object arg2) { }
-		});
-		
-		driveViewer.setLabelProvider(new LabelProvider() {
-	    	public String getText(Object element) {
-	    		return ((File) element).getPath();
-	    	}
-	    });
-
-		// Drive Viewer informs directory viewer of changes
-		driveViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-	    	public void selectionChanged(SelectionChangedEvent event) {
-		        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-		        if (selection.size() > 0) {   	
-			        Object selectedFile = selection.getFirstElement();
-			        directoryViewer.setInput(selectedFile);
-
-		        } else {
-		        	directoryViewer.setInput(null);
-		        	
-		        }
-	    	}
-	    });
-
-		driveViewer.setInput(File.listRoots());
-		
-		// Directory Tree
-		directoryViewer = new TreeViewer(explorerSash);
-		
-		// Directory viewer gets its info from currently selected drives
-		directoryViewer.setContentProvider(new ITreeContentProvider() {
-			public void dispose() { }
-
-			public Object[] getChildren(Object element) {
-				Object[] children = ((File) element).listFiles(new DirectoryFilter());
-				return children == null ? new Object[0] : children;
-			}
-
-			public Object[] getElements(Object element) {
-				return getChildren(element);
-			}
-
-			public Object getParent(Object element) {
-				return ((File) element).getParent();
-			}
-			public boolean hasChildren(Object element) {
-				return getChildren(element).length > 0;
-			}
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { }
-		});
-		
-	    directoryViewer.setLabelProvider(new LabelProvider() {
-	    	public String getText(Object element) {
-	    		return ((File) element).getName();
-	    	}
-	    });
-
-		// Directory Viewer informs file viewer of changes
-		directoryViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-	    	public void selectionChanged(SelectionChangedEvent event) {
-		        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-
-		        if (selection.size() > 0) {   	
-			        Object selected_file = selection.getFirstElement();
-			        fileViewer.setInput(selected_file);
-			        
-			        //directoryCreatePlaylistAction.setEnabled(true);
-			        //directoryCreatePaletteAction.setEnabled(true);
-			        
-		        } else {
-		        	fileViewer.setInput(null);
-
-			        //directoryCreatePlaylistAction.setEnabled(false);
-			        //directoryCreatePlaylistAction.setEnabled(false);
-		        	
-		        }
-		        
-	    	}
-	    });
-
-		directoryViewer.addDragSupport(DND.DROP_COPY, fileFormat, new DragSourceListener() {
-			public void dragFinished(DragSourceEvent dse) { }
-			public void dragStart(DragSourceEvent dse) { }		
-
-			public void dragSetData(DragSourceEvent dse) {
-				if (FileTransfer.getInstance().isSupportedType(dse.dataType)) {
-					IStructuredSelection selection = (IStructuredSelection) directoryViewer.getSelection();
-					File selectedDirectory = (File) selection.getFirstElement();
-					File[] paths = selectedDirectory.listFiles(audioFileFilter);
-
-					String[] files = new String[paths.length];
-					for (int i = 0; i < paths.length; i++) {
-						files[i] = paths[i].getAbsolutePath();
-					}
-					
-					dse.data = files;
-					dse.doit = true;
-
-				} else {
-					dse.doit = false;
-
-				}	
-			}
-		});
-		
-	    // Directory Viewer popup context menu
-		directoryViewer.getTree().setMenu(directoryPopupMenuManager.createContextMenu(directoryViewer.getTree()));
-
-	    directoryViewer.setInput(File.listRoots()[0]);
-
-	    // File List
-		fileViewer = new TableViewer(explorerSash, SWT.BORDER | SWT.MULTI);
-
-		// File Viewer gets content from currently selected directory
-		fileViewer.setContentProvider(new IStructuredContentProvider() {
-			public void dispose() { }
-
-			public Object[] getElements(Object element) {
-				Object[] children = null;
-				children = ((File) element).listFiles(audioFileFilter);		
-				return children == null ? new Object[0] : children;
-			}
-			public void inputChanged(Viewer viewer, Object oldObject, Object newObject) { }
-
-		});
-		
-		fileViewer.setLabelProvider(new ITableLabelProvider() {
-			  public void addListener(ILabelProviderListener ilabelproviderlistener) { }
-
-			  public void dispose() { }
-
-			  public Image getColumnImage(Object arg0, int arg1) {
-			    return null;
-			  }
-
-			  public String getColumnText(Object obj, int i) {
-			    return ((File) obj).getName();
-			  }
-
-			  public boolean isLabelProperty(Object obj, String s) {
-			  	return false;
-			  }
-			  
-			  public void removeListener(ILabelProviderListener ilabelproviderlistener) { }
-		});
-
-		// File Viewer popup context menu
-		fileViewer.getTable().setMenu(filePopupMenuManager.createContextMenu(fileViewer.getTable()));
-
-		fileViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				if (selection.size() > 0) {
-					// Only allow previewing of single files
-					if (selection.size() == 1) {
-						filePreviewAction.setEnabled(true);
-					} else {
-						filePreviewAction.setEnabled(false);
-					}
-
-					// TODO: Also need to check if a Playlist/Palette is open
-					if (selectedPlaylist != null) {
-						fileAddPlaylistAction.setEnabled(true);
-					}
-					
-					if (selectedPalette != null) {
-						fileAddPaletteAction.setEnabled(true);
-					}
-					
-				} else {
-					filePreviewAction.setEnabled(false);
-					fileAddPlaylistAction.setEnabled(false);
-					fileAddPaletteAction.setEnabled(false);
-
-				}
-			}
-		});
-	
-		// File Viewer informs application of double-clicked files
-		fileViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				File selectedFile = (File) selection.getFirstElement();
-				previewSong(selectedFile);
-			}
-		});
-
-		// File Viewer drag and drop support
-		fileViewer.addDragSupport(DND.DROP_COPY, fileFormat, new DragSourceListener() {
-			public void dragFinished(DragSourceEvent dse) { }
-			public void dragStart(DragSourceEvent dse) { }		
-
-			public void dragSetData(DragSourceEvent dse) {
-				if (FileTransfer.getInstance().isSupportedType(dse.dataType)) {
-					IStructuredSelection selection = (IStructuredSelection) fileViewer.getSelection();
-					Object[] items = selection.toArray();
-					String[] paths = new String[items.length];
-					for (int i = 0; i < items.length; i++) {
-						paths[i] = ((File) items[i]).getAbsolutePath();
-					}
-					dse.data = paths;
-					dse.doit = true;
-
-				} else {
-					dse.doit = false;
-
-				}	
-			}
-		});
-		
-		explorerSash.setWeights(new int[] {20, 40, 40});
-
 	}
 
 	private void createDialogs() {
@@ -860,397 +551,6 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		
 		confirmDialog = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
 		confirmDialog.setText("RPG Audio Mixer");
-	}
-
-	private void createPaletteViewer(Composite c) {
-		effectTable = new Table(c, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-		TableColumn tcEffectName = new TableColumn(effectTable, SWT.LEFT);
-		tcEffectName.setText("Name");
-		
-		TableColumn tcEffectPath = new TableColumn(effectTable, SWT.LEFT);
-		tcEffectPath.setText("Path");
-		
-		tcEffectName.setWidth(192);
-		tcEffectPath.setWidth(256);
-		
-		effectTableViewer = new TableViewer(effectTable);
-		effectTableViewer.getTable().setLinesVisible(true);
-		effectTableViewer.getTable().setHeaderVisible(true);
-		effectTableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
-		effectTableViewer.setSorter(new ViewerSorter() {
-			public int compare(Viewer viewer, Object a, Object b) {
-				return ((Alias)a).getName().compareTo(((Alias)b).getName());
-			}
-		});
-
-		effectTableViewer.setContentProvider(new IStructuredContentProvider() {
-			public Object[] getElements(Object inputElement) {
-				return ((Palette) inputElement).getEffects().toArray();
-			}
-			public void dispose() { }
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { }
-		});
-
-		effectTableViewer.setLabelProvider(new ITableLabelProvider() {
-			public Image getColumnImage(Object element, int columnIndex) {
-				return null;
-			}
-
-			public String getColumnText(Object element, int columnIndex) {
-				Alias c = (Alias) element;
-				if (columnIndex == 0) {
-					String sName = c.getName();	
-					return sName;
-
-				} else if (columnIndex == 1) {
-					return c.getPath();
-					
-				} else { 
-					return c.getPath();
-
-				}
-			}
-
-			public void addListener(ILabelProviderListener listener) { }
-			public void dispose() { }
-			public boolean isLabelProperty(Object element, String property) {
-				return false;
-			}
-			public void removeListener(ILabelProviderListener listener) { }
-		});
-
-		// Effect Table Context Popup Menu
-		effectTableViewer.getTable().setMenu(effectTableContextMenu.createContextMenu(effectTableViewer.getTable()));
-		
-		effectTableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				if (selection.size() == 0) {
-					//renameEffectAction.setEnabled(false);
-					//deleteEffectAction.setEnabled(false);
-
-				} else {
-					//renameEffectAction.setEnabled(true);
-					//deleteEffectAction.setEnabled(true);
-
-				}
-
-			}
-		});
-
-		effectTableViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				Alias a = (Alias) selection.getFirstElement();
-				activateEffect(a);				
-			}
-		});
-
-		effectTableViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener() {
-			public void dragEnter(DropTargetEvent dte) {
-				dte.detail = DND.DROP_COPY;
-				
-			}
-			
-			public void drop(DropTargetEvent dte) {				
-				try {
-					if (FileTransfer.getInstance().isSupportedType(dte.currentDataType)) {
-						String[] paths = (String[]) dte.data;						
-						addFiles(paths, effectTableViewer, selectedPalette);
-					}
-				} catch (Exception e) {
-					System.out.println(e.toString());
-				}
-			}
-
-			public void dragLeave(DropTargetEvent dte) { }
-			public void dragOperationChanged(DropTargetEvent dte) { }
-			public void dragOver(DropTargetEvent dte) { }
-			public void dropAccept(DropTargetEvent dte) { }
-		});
-		
-		effectTable.addKeyListener(new KeyListener() {
-
-			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
-				if (e.keyCode == SWT.F2) {
-					renameSelectedEffects();
-				}
-				
-				if (e.keyCode == SWT.DEL) {
-					deleteSelectedEffects();
-				}
-
-			}
-
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		effectTable.setVisible(false);
-	}
-
-	private void createPlaylistViewer(Composite c) {
-		songTable = new Table(c, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
-		TableColumn tcNumber = new TableColumn(songTable, SWT.LEFT);
-		tcNumber.setText("#");
-		tcNumber.setWidth(32);
-		
-		TableColumn tcName = new TableColumn(songTable, SWT.LEFT);
-		tcName.setText("Name");
-		tcName.setWidth(192);
-		
-		TableColumn tcPath = new TableColumn(songTable, SWT.LEFT);
-		tcPath.setText("Path");
-		tcPath.setWidth(192);
-		
-		songTableViewer = new TableViewer(songTable);
-		songTableViewer.getTable().setLinesVisible(true);
-		songTableViewer.getTable().setHeaderVisible(true);
-		songTableViewer.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
-		songTableViewer.getTable().setMenu(songTableContextMenu.createContextMenu(songTableViewer.getTable()));
-		
-		songTableViewer.setContentProvider(new IStructuredContentProvider() {
-			public void dispose() { }
-
-			public Object[] getElements(Object inputElement) {
-				return ((Playlist) inputElement).getSongs().toArray();
-			}
-			public void inputChanged(Viewer viewer, Object oldInput, Object newInput) { }
-		});
-		
-		songTableViewer.setLabelProvider(new SongLabelProvider());
-
-		songTableViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-				Alias a = (Alias) selection.getFirstElement();
-				activateSong(a);
-			}
-		});
-
-		songTableViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener() {
-			public void dragEnter(DropTargetEvent dte) {
-				dte.detail = DND.DROP_COPY;
-				
-				//dte.currentDataType = dte.dataTypes[0];
-			}
-			
-			public void dragLeave(DropTargetEvent dte) { }
-
-			public void dragOperationChanged(DropTargetEvent dte) { }
-			public void dragOver(DropTargetEvent dte) { }
-			public void drop(DropTargetEvent dte) {
-				try {
-					if (FileTransfer.getInstance().isSupportedType(dte.currentDataType)) {
-						String[] paths = (String[]) dte.data;						
-						addFiles(paths, songTableViewer, selectedPlaylist);
-					}
-				} catch (Exception e) {
-					System.out.println(e.toString());
-				}
-			}
-			public void dropAccept(DropTargetEvent dte) { }
-		});
-		
-		songTable.addKeyListener(new KeyListener() {
-
-			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
-				if (e.keyCode == SWT.F2) {
-					renameSelectedSongs();
-				}
-
-				if (e.keyCode == SWT.DEL) {
-					deleteSelectedSongs();
-				}
-
-			}
-
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		songTable.setVisible(false);
-	}
-
-	private void createLibraryExplorer(Composite c) {
-		resourceViewer = new TreeViewer(c, SWT.BORDER);
-		resourceViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
-
-		resourceViewer.setContentProvider(new ITreeContentProvider() {
-			public void dispose() { }
-
-			public Object[] getChildren(Object o) {
-				return ((IResource)o).getChildren().toArray();
-			}
-
-			public Object[] getElements(Object o) {
-				return ((IResource)o).getChildren().toArray();
-			}
-
-			public Object getParent(Object o) {
-				return ((IResource)o).getParent();
-			}
-
-			public boolean hasChildren(Object o) {
-				IResource resource = (IResource) o;
-				List<IResource> items = resource.getChildren();
-				if (items == null || items.size() == 0) return false;
-
-				return true;
-			}
-
-			public void inputChanged(Viewer arg0, Object arg1, Object arg2) { }
-
-		});
-
-		resourceViewer.setLabelProvider(new LabelProvider() {
-			public Image getImage(Object o) {
-				if (o.getClass() == Folder.class) return getFolderImage();
-				if (o.getClass() == Playlist.class) return getPlaylistImage();
-				if (o.getClass() == Palette.class) return getPaletteImage();
-				return getFolderImage();
-			}
-
-			public String getText(Object o) {
-				return ((IResource)o).getName();
-			}
-		});
-
-		resourceViewer.setSorter(new ViewerSorter() {
-			public int category(Object o) {
-				IResource resource = (IResource) o;
-				if (resource.getClass() == Folder.class) return 0;
-				return 1;
-			}
-		});
-		
-		resourceViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				if(event.getSelection().isEmpty()) {
-					return;
-				}
-				
-				if(event.getSelection() instanceof IStructuredSelection) {
-			           IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-			           selectedResource = (IResource) selection.getFirstElement();
-			           
-			           if (selectedResource.getClass() == Folder.class) {
-			        	   resourceViewer.getTree().setMenu(folderContextMenu.createContextMenu(getShell()));
-			           }
-
-			           if (selectedResource.getClass() == Playlist.class) {
-			        	   resourceViewer.getTree().setMenu(playlistContextMenu.createContextMenu(getShell()));
-			           }
-
-			           if (selectedResource.getClass() == Palette.class) {
-			        	   resourceViewer.getTree().setMenu(paletteContextMenu.createContextMenu(getShell()));
-			           }
-			
-				}
-			}
-			
-		});
-
-		resourceViewer.addDoubleClickListener(new IDoubleClickListener() {
-			public void doubleClick(DoubleClickEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				IResource resource = (IResource) selection.getFirstElement();
-				
-				if (resourceViewer.isExpandable(resource)) {
-					if (resourceViewer.getExpandedState(resource) == true) {
-						// TODO: What is the second argument here?
-						resourceViewer.collapseToLevel(resource, 1);
-						
-					} else {
-						// TODO: What is the second argument here?
-						resourceViewer.expandToLevel(resource, 1);
-					}	
-
-				} else {
-					if (resource instanceof Playlist) {
-						openPlaylist((Playlist) resource);
-						
-					} else if (resource instanceof Palette) {
-						openPalette((Palette) resource);
-
-					}
-				}
-			}
-	
-		});
-
-		resourceViewer.addDropSupport(DND.DROP_COPY, fileFormat, new DropTargetListener() {
-			public void dragEnter(DropTargetEvent event) {
-				event.detail = DND.DROP_COPY;
-			}
-
-			public void dragLeave(DropTargetEvent event) { }
-			public void dragOperationChanged(DropTargetEvent event) { }
-			public void dragOver(DropTargetEvent event) { }
-
-			public void drop(DropTargetEvent event) {
-				// Figure out what item they're trying to drop it on
-				Tree tree = resourceViewer.getTree();
-				TreeItem item = tree.getItem(tree.toControl(new Point(event.x, event.y)));
-				
-				if (item != null) {
-					IResource resource = (IResource) item.getData();
-										
-					try {
-						if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
-							String[] paths = (String[]) event.data;
-							AliasCollector ac = (AliasCollector) resource;
-
-							if (resource instanceof Playlist) {
-								addFiles(paths, songTableViewer, ac);
-								
-							} else if (resource instanceof Palette) {
-								addFiles(paths, effectTableViewer, ac);
-
-							}
-
-						}
-					} catch (Exception e) {
-						System.out.println(e.toString());
-					}
-				}
-			}
-
-			public void dropAccept(DropTargetEvent event) { }
-			
-		});
-
-		//treeViewer.setInput(library.getResources());
-		
-		resourceViewer.getTree().addKeyListener(new KeyListener() {
-
-			public void keyPressed(KeyEvent e) {
-				// TODO Auto-generated method stub
-				if (e.keyCode == SWT.F2) {
-					// TODO: Implement TreeViewer's F2 Key
-					renameSelectedResource();
-				}
-				
-				if (e.keyCode == SWT.DEL) {
-					// TODO: Implement TreeViewer's DEL Key
-					deleteSelectedResource();
-				}
-
-			}
-
-			public void keyReleased(KeyEvent e) {
-				// TODO Auto-generated method stub
-				
-			}
-		});
-		
-		resourceViewer.getTree().setVisible(false);
 	}
 
 	private void createContextMenus() {
@@ -1362,25 +662,14 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 		return mainMenu;
 	}
-
-	private Image getFolderImage() {
-		return folderImage;
-	}
-	
-	private Image getPaletteImage() {
-		return paletteImage;
-	}
-
-	private Image getPlaylistImage() {
-		return playlistImage;
-	}
 	
 	// Action Methods
 	
 	// Audio Explorer Actions
 	
 	private void directoryAddPlaylist() {
-		addSelectedDirectory(directoryViewer, songTableViewer, selectedPlaylist);
+		// TODO: Change how this is implemented
+		//addSelectedDirectory(directoryViewer, songTableViewer, selectedPlaylist);
 	}
 
 	private void directoryAddPalette() {
@@ -1388,7 +677,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
 	private void fileAddPlaylist() {
-		addSelectedFiles(fileViewer, songTableViewer, selectedPlaylist);
+		// TODO: Change how this is implemented
+		//addSelectedFiles(fileViewer, songTableViewer, selectedPlaylist);
 	}
 
 	private void fileAddPalette() {
@@ -1570,7 +860,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
 	private void deleteSelectedSongs() {
-		deleteSelectedAliases(selectedPlaylist, songTableViewer);
+		// TODO: Change how this is implemented
+		//deleteSelectedAliases(selectedPlaylist, songTableViewer);
 	}
 
 	private void deleteSelectedEffects() {
@@ -1591,6 +882,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
 	private void moveSongUp() {
+		// TODO: Change how this is implemented
+		/*
 		Alias a;
 		IStructuredSelection selection = (IStructuredSelection) songTableViewer.getSelection();
 		Iterator i = selection.iterator();
@@ -1600,9 +893,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		}
 		songTableViewer.refresh();
 		touchLibrary();
+		*/
 	}
 	
 	private void moveSongDown() {
+		// TODO: Change how this is implemented
+		/*
 		Alias a;
 		IStructuredSelection selection = (IStructuredSelection) songTableViewer.getSelection();
 
@@ -1617,11 +913,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		
 		songTableViewer.refresh();
 		touchLibrary();
-		
+		*/
 	}
 
 	private void newSong() {
-		addChosenFiles(selectedPlaylist, songTableViewer);	
+		// TODO: Change how this is implemented
+		//addChosenFiles(selectedPlaylist, songTableViewer);	
 	}
 
 	private void newEffect() {
@@ -1663,9 +960,10 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
 	private void playSelectedSong() {
-		IStructuredSelection selection = (IStructuredSelection) songTableViewer.getSelection();
-		Alias a = (Alias) selection.getFirstElement();
-		playSong(a);
+		// TODO: Change how this is implemented
+		//IStructuredSelection selection = (IStructuredSelection) songTableViewer.getSelection();
+		//Alias a = (Alias) selection.getFirstElement();
+		//playSong(a);
 	}
 	
 	private void playSelectedEffect() {
@@ -1721,7 +1019,8 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	}
 
 	private void renameSelectedSongs() {
-		renameSelectedAliases(songTableViewer, "Song");
+		// TODO: Change how this is implemented
+		//renameSelectedAliases(songTableViewer, "Song");
 	}
 
 	private void renameSelectedEffects() {
@@ -1777,8 +1076,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private void openPlaylist(Playlist p) {
 		selectedPlaylist = p;
 		playlistComposite.setText("Playlist: " + p.getName());
-		songTableViewer.setInput(selectedPlaylist);
-		songTable.setVisible(true);		
+		playlistViewer.setPlaylist(p);
 		fileAddPlaylistAction.setEnabled(true);
 
 	}
@@ -1786,8 +1084,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 	private void openPalette(Palette p) {
 		selectedPalette = p;
 		paletteComposite.setText("Palette: " + p.getName());	
-		effectTableViewer.setInput(selectedPalette);
-		effectTable.setVisible(true);
+		paletteViewer.setPalette(p);
 		fileAddPaletteAction.setEnabled(true);
 
 	}
@@ -1808,11 +1105,15 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			//resourceViewer.getTree().setVisible(true);
 			libraryViewer.setLibrary(library);
 			
-			songTableViewer.setInput(null);
-			songTableViewer.getTable().setVisible(false);
+			// TODO: Change how this is implemented
+			playlistViewer.setPlaylist(null);
+			//songTableViewer.setInput(null);
+			//songTableViewer.getTable().setVisible(false);
 
-			effectTableViewer.setInput(null);
-			effectTableViewer.getTable().setVisible(false);
+			// TODO: Change how this is implemented
+			paletteViewer.setPalette(null);
+			//effectTableViewer.setInput(null);
+			//effectTableViewer.getTable().setVisible(false);
 			
 			saveLibraryAction.setEnabled(true);
 			closeLibraryAction.setEnabled(true);
@@ -1838,11 +1139,13 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 				//resourceViewer.getTree().setVisible(true);
 				libraryViewer.setLibrary(library);
 				
-				songTableViewer.setInput(null);
-				songTableViewer.getTable().setVisible(false);
+				// TODO: These should be replaced by a PlaylistViewer method
+				//songTableViewer.setInput(null);
+				//songTableViewer.getTable().setVisible(false);
 
-				effectTableViewer.setInput(null);
-				effectTableViewer.getTable().setVisible(false);
+				// TODO: These should be replaced by a PaletteViewer method
+				//effectTableViewer.setInput(null);
+				//effectTableViewer.getTable().setVisible(false);
 				
 				saveLibraryAction.setEnabled(false);
 				saveLibraryAsAction.setEnabled(true);
@@ -1889,12 +1192,14 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 			//resourceViewer.setInput(null);
 			//resourceViewer.getTree().setVisible(false);
 			libraryViewer.setLibrary(null);
-			
-			songTableViewer.setInput(null);
-			songTableViewer.getTable().setVisible(false);
 
-			effectTableViewer.setInput(null);
-			effectTableViewer.getTable().setVisible(false);
+			// TODO: Change how this is implemented
+			//songTableViewer.setInput(null);
+			//songTableViewer.getTable().setVisible(false);
+
+			// TODO: Change how this is implemented
+			//effectTableViewer.setInput(null);
+			//effectTableViewer.getTable().setVisible(false);
 			
 			saveLibraryAction.setEnabled(false);
 			saveLibraryAsAction.setEnabled(false);
@@ -2033,57 +1338,7 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 		nextSong();		
 	}
 
-    // Private Classes
-	private final class SongLabelProvider implements ITableLabelProvider, IColorProvider {
-		public String getColumnText(Object object, int columnIndex) {
-			Alias a = (Alias) object;
-
-			switch (columnIndex) {
-				case 0:
-					return Integer.toString(selectedPlaylist.getSongs().indexOf(a) + 1);
-				
-				case 1:
-					return a.getName();
-					
-				case 2:
-					return a.getPath();
-						
-				default:
-					return a.getName();
-			}
-			
-		}
-		
-		public boolean isLabelProperty(Object element, String property) {
-			return false;
-		}
-
-		public Color getForeground(Object element) {
-			Alias c = (Alias) element;
-			if (c == activeSong) {
-				return Display.getCurrent().getSystemColor(SWT.COLOR_BLUE);				
-			}
-			return null;
-		}
-
-		public Color getBackground(Object element) {
-			Alias c = (Alias) element;
-			if (c == activeSong) {
-				return Display.getCurrent().getSystemColor(SWT.COLOR_GRAY);				
-			}
-			return null;
-		}
-
-		public Image getColumnImage(Object arg0, int arg1) {
-			return null;
-		}
-
-		public void addListener(ILabelProviderListener listener) { }
-		public void removeListener(ILabelProviderListener listener) { }
-		public void dispose() { }
-
-	}
-
+	// LibraryExplorerListener Implemenation
 	public void resourceSelected(IResource resource) {
 		this.selectedResource = resource;
 	}
@@ -2094,6 +1349,12 @@ public class RPGAudioMixer extends ApplicationWindow implements AudioEngineListe
 
 	public void paletteOpened(IResource palette) {
 		openPalette((Palette) palette);		
+	}
+	
+	// AudioExplorerListener Implementation
+	public void fileDoubleClicked(File f) {
+		System.out.println("Previewing " + f);
+		previewSong(f);
 	}
 
 }

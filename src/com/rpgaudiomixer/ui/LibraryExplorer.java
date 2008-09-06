@@ -19,8 +19,9 @@ import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
 import org.eclipse.swt.dnd.DragSourceAdapter;
 import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DropTarget;
+import org.eclipse.swt.dnd.DropTargetAdapter;
 import org.eclipse.swt.dnd.DropTargetEvent;
-import org.eclipse.swt.dnd.DropTargetListener;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.events.KeyEvent;
@@ -212,6 +213,7 @@ public class LibraryExplorer extends Composite {
 			public void dragStart(DragSourceEvent event) {				
 				IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 				IResource resource = (IResource) selection.getFirstElement();
+
 				if (resource instanceof Folder) {
 					dragSource.setTransfer(new Transfer[] {FolderTransfer.getInstance()});
 				} else if (resource instanceof Playlist) {
@@ -224,7 +226,7 @@ public class LibraryExplorer extends Composite {
 			public void dragSetData(DragSourceEvent event) {
 				IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 				IResource resource = (IResource) selection.getFirstElement();
-								
+
 				if (
 						FolderTransfer.getInstance().isSupportedType(event.dataType) ||
 						PlaylistTransfer.getInstance().isSupportedType(event.dataType) ||
@@ -261,7 +263,9 @@ public class LibraryExplorer extends Composite {
 		}
 		);
 
-		treeViewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE, libraryFormat, new DropTargetListener() {
+		final DropTarget dropTarget = new DropTarget(treeViewer.getTree(), DND.DROP_COPY | DND.DROP_MOVE);
+		dropTarget.setTransfer(libraryFormat);
+		dropTarget.addDropListener(new DropTargetAdapter() {
 			public void dragEnter(DropTargetEvent event) {
 				if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
 					// Files are copied into Playlists and Palettes
@@ -272,19 +276,12 @@ public class LibraryExplorer extends Composite {
 				}
 			}
 
-			public void dragLeave(DropTargetEvent event) { }
-
-			public void dragOperationChanged(DropTargetEvent event) { }
-
-			public void dragOver(DropTargetEvent event) { }
-
 			public void drop(DropTargetEvent event) {
-				// Figure out what item they're trying to drop it on
 				Tree tree = treeViewer.getTree();	
-				TreeItem item = tree.getItem(tree.toControl(new Point(event.x, event.y)));
+				TreeItem targetItem = tree.getItem(tree.toControl(new Point(event.x, event.y)));
 				
-				if (item != null) {
-					IResource targetResource = (IResource) item.getData();
+				if (targetItem != null) {
+					IResource targetResource = (IResource) targetItem.getData();
 
 					try {
 						if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
@@ -294,7 +291,7 @@ public class LibraryExplorer extends Composite {
 							if (targetResource instanceof Playlist) {
 								// TODO: What should handle this activity?
 								//addFiles(paths, songTableViewer, ac);
-								
+
 							} else if (targetResource instanceof Palette) {
 								// TODO: What should handle this activity?
 								//addFiles(paths, effectTableViewer, ac);
@@ -322,9 +319,12 @@ public class LibraryExplorer extends Composite {
 			}
 
 			public void dropAccept(DropTargetEvent event) { }
-			
+			public void dragLeave(DropTargetEvent event) { }
+			public void dragOperationChanged(DropTargetEvent event) { }
+			public void dragOver(DropTargetEvent event) { }
+		
 		});
-
+		
 		treeViewer.getTree().addKeyListener(new KeyListener() {
 
 			public void keyPressed(KeyEvent e) {
