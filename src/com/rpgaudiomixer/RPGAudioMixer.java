@@ -1105,15 +1105,8 @@ public class RPGAudioMixer extends ApplicationWindow
 			//resourceViewer.getTree().setVisible(true);
 			libraryViewer.setLibrary(library);
 			
-			// TODO: Change how this is implemented
 			playlistViewer.setPlaylist(null);
-			//songTableViewer.setInput(null);
-			//songTableViewer.getTable().setVisible(false);
-
-			// TODO: Change how this is implemented
 			paletteViewer.setPalette(null);
-			//effectTableViewer.setInput(null);
-			//effectTableViewer.getTable().setVisible(false);
 			
 			saveLibraryAction.setEnabled(true);
 			closeLibraryAction.setEnabled(true);
@@ -1139,13 +1132,8 @@ public class RPGAudioMixer extends ApplicationWindow
 				//resourceViewer.getTree().setVisible(true);
 				libraryViewer.setLibrary(library);
 				
-				// TODO: These should be replaced by a PlaylistViewer method
-				//songTableViewer.setInput(null);
-				//songTableViewer.getTable().setVisible(false);
-
-				// TODO: These should be replaced by a PaletteViewer method
-				//effectTableViewer.setInput(null);
-				//effectTableViewer.getTable().setVisible(false);
+				playlistViewer.setPlaylist(null);
+				paletteViewer.setPalette(null);
 				
 				saveLibraryAction.setEnabled(false);
 				saveLibraryAsAction.setEnabled(true);
@@ -1193,13 +1181,8 @@ public class RPGAudioMixer extends ApplicationWindow
 			//resourceViewer.getTree().setVisible(false);
 			libraryViewer.setLibrary(null);
 
-			// TODO: Change how this is implemented
-			//songTableViewer.setInput(null);
-			//songTableViewer.getTable().setVisible(false);
-
-			// TODO: Change how this is implemented
-			//effectTableViewer.setInput(null);
-			//effectTableViewer.getTable().setVisible(false);
+			playlistViewer.setPlaylist(null);
+			paletteViewer.setPalette(null);
 			
 			saveLibraryAction.setEnabled(false);
 			saveLibraryAsAction.setEnabled(false);
