@@ -75,7 +75,7 @@ public final class FilenameExtensionFilter implements FilenameFilter {
 
 		for (Iterator<String> i = extensions.iterator(); i.hasNext();) {
 			if (string.toLowerCase().endsWith("." + (String) i.next())) {
-				return true;
+				return !(new File(string)).isHidden();
 			}
 		}
 

@@ -20,6 +20,11 @@ public final class DirectoryFilter implements FileFilter {
 	 * @return True if the file is a directory.  False if not.
 	 */
 	public boolean accept(final File file) {
-		return file.isDirectory();
-	}
+		if (file.isDirectory()){
+			return !file.isHidden();
+		}
+		else {
+			return false;
+		}
+		}
 }

@@ -1,6 +1,7 @@
 package com.rpgaudiomixer.ui;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.event.EventListenerList;
 
@@ -15,8 +16,10 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -243,6 +246,33 @@ public class AudioExplorer extends Composite {
 			}
 		});
 		 */
+
+		{   //block is used to shorten variables TTL
+	    	//step 1 get the users home in a String
+	    	String homeFolderPath = System.getProperty("user.home");
+	    	ArrayList homeFolderPathElements = new ArrayList();
+
+	    	//split it via the filesystem
+	    	File theFolder = new File(homeFolderPath);
+	    	
+	    	//Fill the ArrayList
+	    	homeFolderPathElements.add(theFolder);
+	    	while (theFolder.getParentFile() != null){
+	    		theFolder = theFolder.getParentFile();
+	    		homeFolderPathElements.add(theFolder);
+	    	}
+	    	//Now we have an ArrayList with all imbricated folders
+	    	//leading to user home path
+	    	//we need only reverse-traverse the List to expand each item
+	    	//and select the last
+	    	Object[] elements=homeFolderPathElements.toArray();
+	    	for (int i = elements.length-1; i >=0 ; i--) {
+	    		directoryViewer.setExpandedState((File)elements[i],true);
+	    		if (i==0){
+	    			directoryViewer.setSelection(new StructuredSelection((File)elements[i]));
+	    		}
+			}
+	    }
 		
 		// File Viewer informs application of double-clicked files
 		fileViewer.addDoubleClickListener(new IDoubleClickListener() {
@@ -285,7 +315,9 @@ public class AudioExplorer extends Composite {
 			}
 		});
 		
-		explorerSash.setWeights(new int[] {20, 40, 40});
+		
+	    //define relative heights
+	    explorerSash.setWeights(new int[] {10, 40, 50});
 	}
 
 	public final void addAudioExplorerListener(
