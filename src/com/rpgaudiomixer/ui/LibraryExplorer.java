@@ -132,42 +132,42 @@ public class LibraryExplorer extends Composite {
 		});
 		
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-			public void selectionChanged(SelectionChangedEvent event) {
-				if(event.getSelection().isEmpty()) {
-					return;
-				}
-				
+			public void selectionChanged(SelectionChangedEvent event) {				
 				if(event.getSelection() instanceof IStructuredSelection) {
-			           IStructuredSelection selection = (IStructuredSelection)event.getSelection();
-			           selectedResource = (IResource) selection.getFirstElement();
-			           
-			           // TODO: Tell any listeners about the selection change
-						Object[] listeners = listenerList.getListenerList();
-						for (int i = listeners.length - 2; i >= 0; i -= 2) {
-						     if (listeners[i] == LibraryExplorerListener.class) {
-						         // Lazily create the event:
-						         ((LibraryExplorerListener) listeners[i + 1]).resourceSelected(selectedResource);
-						     }
-						 }
-			           
-			           if (selectedResource.getClass() == Folder.class) {
-			        	   // TODO: Who should handle this activity?
-			        	   //tv.getTree().setMenu(folderContextMenu.createContextMenu(getShell()));
-			           }
+					IStructuredSelection selection = (IStructuredSelection)event.getSelection();
+					if (selection == null) {
+						selectedResource = null;
+					} else {
+						selectedResource = (IResource) selection.getFirstElement();
+					}
+				
+			        // TODO: Tell any listeners about the selection change
+					Object[] listeners = listenerList.getListenerList();
+					for (int i = listeners.length - 2; i >= 0; i -= 2) {
+					     if (listeners[i] == LibraryExplorerListener.class) {
+					         // Lazily create the event:
+					         ((LibraryExplorerListener) listeners[i + 1]).resourceSelected(selectedResource);
+					     }
+					}
 
-			           if (selectedResource.getClass() == Playlist.class) {
-			        	   // TODO: Who should handle this activity?
-			        	   //tv.getTree().setMenu(playlistContextMenu.createContextMenu(getShell()));
-			           }
-
-			           if (selectedResource.getClass() == Palette.class) {
-			        	   // TODO: Who should handle this activity?
-			        	   //tv.getTree().setMenu(paletteContextMenu.createContextMenu(getShell()));
-			           }
-			
+					if (selectedResource != null) {
+						if (selectedResource.getClass() == Folder.class) {
+							// TODO: Who should handle this activity?
+							//tv.getTree().setMenu(folderContextMenu.createContextMenu(getShell()));
+						}
+					
+					   	if (selectedResource.getClass() == Playlist.class) {
+					   		// TODO: Who should handle this activity?
+					   		//tv.getTree().setMenu(playlistContextMenu.createContextMenu(getShell()));
+					   	}
+					
+					   	if (selectedResource.getClass() == Palette.class) {
+					   		// TODO: Who should handle this activity?
+					   		//tv.getTree().setMenu(paletteContextMenu.createContextMenu(getShell()));
+					   	}
+					}
 				}
 			}
-			
 		});
 		
 		treeViewer.addDoubleClickListener(new IDoubleClickListener() {

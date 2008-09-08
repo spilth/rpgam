@@ -779,7 +779,11 @@ public class RPGAudioMixer extends ApplicationWindow
 		InputDialog newFolderDialog = new InputDialog(this.getShell(), "New Folder" , "Enter Folder name", "Default Folder", resourceNameInputValidator);
 		if (newFolderDialog.open() == InputDialog.OK) {
 			Folder f = new Folder(newFolderDialog.getValue());
-			((Folder)selectedResource).addItem(f);
+			if (selectedResource != null) {
+				((Folder)selectedResource).addItem(f);
+			} else {
+				((Folder) library.getRoot()).addItem(f);
+			}
 			touchLibrary();
 			// TODO: Replace this
 			//resourceViewer.refresh(selectedResource);
@@ -792,7 +796,11 @@ public class RPGAudioMixer extends ApplicationWindow
 		InputDialog newPaletteDialog = new InputDialog(this.getShell(), "New Playlist" , "Enter Palette name", "Default Palette", resourceNameInputValidator);
 		if (newPaletteDialog.open() == InputDialog.OK) {
 			Palette p = new Palette(newPaletteDialog.getValue());
-			((Folder)selectedResource).addItem(p);
+			if (selectedResource != null) {
+				((Folder)selectedResource).addItem(p);
+			} else {
+				((Folder) library.getRoot()).addItem(p);				
+			}
 			touchLibrary();
 			// TODO: Replace this
 			//resourceViewer.refresh(selectedResource);
@@ -805,7 +813,11 @@ public class RPGAudioMixer extends ApplicationWindow
 		InputDialog newPlaylistDialog = new InputDialog(this.getShell(), "New Playlist" , "Enter Playlist name", "Default Playlist", resourceNameInputValidator);
 		if (newPlaylistDialog.open() == InputDialog.OK) {
 			Playlist p = new Playlist(newPlaylistDialog.getValue());
-			((Folder)selectedResource).addItem(p);
+			if (selectedResource != null) {
+				((Folder)selectedResource).addItem(p);
+			} else {
+				((Folder) library.getRoot()).addItem(p);
+			}
 			touchLibrary();
 			// TODO: Replace this
 			//resourceViewer.refresh(selectedResource);
