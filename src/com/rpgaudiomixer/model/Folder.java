@@ -10,23 +10,13 @@ import java.util.List;
  *
  */
 
-public final class Folder implements IResource {
-
-	/**
-	 * The name of the folder.
-	 */
-	private String name;
+public final class Folder extends BaseResource {
 
 	/**
 	 * The folder's child items.
 	 */
 	private List<IResource> children = new ArrayList<IResource>();
-
-	/**
-	 * The parent resource of this folder.
-	 */
-	private IResource parent = null;
-
+	
 	/**
 	 * Default constructor.  Creates a folder with the name "Default Folder".
 	 */
@@ -42,26 +32,7 @@ public final class Folder implements IResource {
 	public Folder(final String folderName) {
 		setName(folderName);
 	}
-	
-
-	/**
-	 * Method to change the name of a folder.
-	 * 
-	 * @param newName The new name to give the folder.
-	 */
-	public void setName(final String newName) {
-		this.name = newName;
-	}
-
-	/**
-	 * Method to return the name of a folder.
-	 * 
-	 * @return The name of the folder.
-	 */
-	public String getName() {
-		return name;
-	}
-	
+		
 	/**
 	 * Adds a child item to this folder.
 	 * 
@@ -89,18 +60,4 @@ public final class Folder implements IResource {
 		return children;
 	}
 
-	/**
-	 * @return The parent IResource for this Folder.
-	 */
-	public IResource getParent() {
-		return parent;
-	}
-
-	/**
-	 * @param newParent The new parent for this Folder.
-	 */
-	public void setParent(final IResource newParent) {
-		this.parent = newParent;
-	}
-	
 }

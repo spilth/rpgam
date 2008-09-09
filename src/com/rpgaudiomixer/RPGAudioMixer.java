@@ -1113,8 +1113,6 @@ public class RPGAudioMixer extends ApplicationWindow
 			untouchLibrary();
 			
 			// TODO: Update a bunch of UI here - probably shared by Open Library as well
-			//resourceViewer.setInput(library.getResources());
-			//resourceViewer.getTree().setVisible(true);
 			libraryViewer.setLibrary(library);
 			
 			playlistViewer.setPlaylist(null);
@@ -1140,8 +1138,6 @@ public class RPGAudioMixer extends ApplicationWindow
 				loadLibraryXML(libraryPath);
 				untouchLibrary();
 
-				//resourceViewer.setInput(library.getResources());
-				//resourceViewer.getTree().setVisible(true);
 				libraryViewer.setLibrary(library);
 				
 				playlistViewer.setPlaylist(null);
@@ -1350,6 +1346,22 @@ public class RPGAudioMixer extends ApplicationWindow
 	public void fileDoubleClicked(File f) {
 		System.out.println("Previewing " + f);
 		previewSong(f);
+	}
+
+	public void moveResource(IResource selectedResource,
+			IResource targetResource) {
+
+		Folder oldParent = (Folder) selectedResource.getParent();
+		Folder newParent;
+		if (targetResource != null) {
+			newParent = (Folder) targetResource;
+		} else {
+			newParent = (Folder) library.getRoot();
+		}
+
+		oldParent.removeItem(selectedResource);
+		newParent.addItem(selectedResource);
+		
 	}
 
 }

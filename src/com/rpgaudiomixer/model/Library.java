@@ -20,7 +20,7 @@ public final class Library {
 	 */
 	public Library() {
 		root = new Folder("Root");
-
+		
 		Folder f = new Folder("Default Folder");
 		Playlist p = new Playlist("Default Playlist");
 		Palette x = new Palette("Default Palette");
@@ -29,16 +29,8 @@ public final class Library {
 		root.addItem(p);
 		root.addItem(x);
 	}
-	
-	/**
-	 * 
-	 * @return The root Folder of the Library
-	 */
-	public IResource getResources() {
-		return root;
-	}
-	
-	public IResource getRoot() {
+		
+	public Folder getRoot() {
 		return root;
 	}
 

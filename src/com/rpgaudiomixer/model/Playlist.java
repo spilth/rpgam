@@ -10,7 +10,7 @@ import java.util.List;
  * @author Brian Kelly
  */
 
-public final class Playlist implements IResource, AliasCollector {
+public final class Playlist extends BaseResource implements AliasCollector {
 	/**
 	 * A Playlist in Automatic List Mode always returns
 	 * the next song in the list.
@@ -49,19 +49,9 @@ public final class Playlist implements IResource, AliasCollector {
 	public static final int LOOP_SONG = 2;
 
 	/**
-	 * The name of the Playlist.
-	 */
-	private String name;
-	
-	/**
 	 * The songs that make up the Playlist.
 	 */
 	private List<Alias> songs = new ArrayList<Alias>();
-
-	/**
-	 * The parent IResource this Playlist belongs to.
-	 */
-	private IResource parent = null;
 
 	/**
 	 * The default List Mode.
@@ -107,45 +97,6 @@ public final class Playlist implements IResource, AliasCollector {
 		this.name = playlistName;
 		this.listMode = list;
 		this.loopMode = loop;
-	}
-	
-	/**
-	 * @return Returns null since Playlists can't have children items
-	 */
-	public List<IResource> getChildren() {
-		return null;
-	}
-
-	/**
-	 * @return The name of the Playlist
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Method to set the name of the Playlist.
-	 * 
-	 * @param newName The new desired named.
-	 */
-	public void setName(final String newName) {
-		this.name = newName;
-	}
-
-	/**
-	 * @return The parent IResource for this Playlist
-	 */
-	public IResource getParent() {
-		return parent;
-	}
-
-	/**
-	 * Assigns a new parent to this Playlist.
-	 * 
-	 * @param newParent The new IResource parent for this Playlist
-	 */
-	public void setParent(final IResource newParent) {
-		this.parent = newParent;
 	}
 
 	/**

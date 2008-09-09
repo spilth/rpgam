@@ -279,10 +279,13 @@ public class LibraryExplorer extends Composite {
 			public void drop(DropTargetEvent event) {
 				Tree tree = treeViewer.getTree();	
 				TreeItem targetItem = tree.getItem(tree.toControl(new Point(event.x, event.y)));
+				IResource resource = (IResource) selectedResource;
+				IResource targetResource = null;
 				
 				if (targetItem != null) {
-					IResource targetResource = (IResource) targetItem.getData();
-
+					targetResource = (IResource) targetItem.getData();
+				}
+				
 					try {
 						if (FileTransfer.getInstance().isSupportedType(event.currentDataType)) {
 							String[] paths = (String[]) event.data;
@@ -304,18 +307,22 @@ public class LibraryExplorer extends Composite {
 								PaletteTransfer.getInstance().isSupportedType(event.currentDataType)
 						) {
 							// TODO: This looks like app/model specific behavior and shouldn't be here
-							IResource resource = (IResource) selectedResource;
-							Folder oldParent = (Folder) resource.getParent();
-							Folder newParent = (Folder) targetResource;
-							oldParent.removeItem(resource);
-							newParent.addItem(resource);
+							
+							Object[] listeners = listenerList.getListenerList();
+							for (int i = listeners.length - 2; i >= 0; i -= 2) {
+							     if (listeners[i] == LibraryExplorerListener.class) {
+							         // Lazily create the event:
+							         ((LibraryExplorerListener) listeners[i + 1]).moveResource(selectedResource, targetResource);
+							     }
+							}
+							
 							treeViewer.refresh();
 							
 						}
 					} catch (Exception e) {
 						System.out.println(e.toString());
 					}
-				}
+				
 			}
 
 			public void dropAccept(DropTargetEvent event) { }
@@ -350,8 +357,8 @@ public class LibraryExplorer extends Composite {
 		treeViewer.getTree().setVisible(false);
 	}
 	
-	public void setLibrary(Library l) {
-		treeViewer.setInput(l.getResources());
+	public void setLibrary(Library library) {
+		treeViewer.setInput(library.getRoot());
 		treeViewer.getTree().setVisible(true);
 	}
 

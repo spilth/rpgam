@@ -48,4 +48,5 @@ public interface IResource {
 	 * @return An IResource representing the parent of this resoruce
 	 */
 	IResource getParent();
+
 }

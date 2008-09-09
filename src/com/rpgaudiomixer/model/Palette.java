@@ -9,17 +9,7 @@ import java.util.List;
  * @author Brian Kelly
  */
 
-public final class Palette implements IResource, AliasCollector {
-
-	/**
-	 * The name of the Palette.
-	 */
-	private String name;
-	
-	/**
-	 * The parent IResource of the Palette.
-	 */
-	private IResource parent = null;
+public final class Palette extends BaseResource implements AliasCollector {
 
 	/**
 	 * The list of Aliases that the Palette contains.
@@ -40,45 +30,6 @@ public final class Palette implements IResource, AliasCollector {
 	 */
 	public Palette(final String paletteName) {
 		this.name = paletteName;
-	}
-
-	/**
-	 * @return Returns null since Palettes can't have children resources.
-	 */
-	public List<IResource> getChildren() {
-		return null;
-	}
-
-	/**
-	 * @return The name of the Palette.
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * Method to give a Palette a new name.
-	 * 
-	 * @param newName The new name.
-	 */
-	public void setName(final String newName) {
-		this.name = newName;
-	}
-
-	/**
-	 * @return The parent IResource of this Palette.
-	 */
-	public IResource getParent() {
-		return parent;
-	}
-
-	/**
-	 * Method to set a new parent for the Palette.
-	 * 
-	 * @param newParent The new parent.
-	 */
-	public void setParent(final IResource newParent) {
-		this.parent = newParent;
 	}
 
 	/**
