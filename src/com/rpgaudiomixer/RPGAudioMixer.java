@@ -16,8 +16,8 @@ import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.SWT;
@@ -103,8 +103,7 @@ public class RPGAudioMixer extends ApplicationWindow
 	private String libraryPath;
 	private String[] audioExtensions = new String[] {"*.mp3;*.wav;*.ogg;*.flac", "*.wav", "*.mp3", "*.ogg", "*.flac"};
 	private String[] rpgamExtension = new String[] {"*.raml"};
-	private TableViewer effectTableViewer, fileViewer;
-	private TreeViewer directoryViewer;
+	private TableViewer effectTableViewer;
 	private XStream xstream;
 	private Image deleteImage;
 	private Image saveImage;
@@ -517,7 +516,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		explorerComposite = new Group(mainSash, SWT.SHADOW_NONE);
 		explorerComposite.setLayout(new FillLayout());
 		explorerComposite.setText("Audio Explorer");
-		audioExplorer = new AudioExplorer(explorerComposite, SWT.NULL);
+		audioExplorer = new AudioExplorer(explorerComposite, SWT.NULL, directoryPopupMenuManager,filePopupMenuManager);
 		audioExplorer.addAudioExplorerListener(this);
 		
 		mainSash.setWeights(new int[] {20, 60, 20});
@@ -669,31 +668,31 @@ public class RPGAudioMixer extends ApplicationWindow
 	
 	private void directoryAddPlaylist() {
 		// TODO: Change how this is implemented
-		//addSelectedDirectory(directoryViewer, songTableViewer, selectedPlaylist);
+		addSelectedDirectory(audioExplorer.directorySelection(), effectTableViewer, selectedPlaylist);
 	}
 
 	private void directoryAddPalette() {
-		addSelectedDirectory(directoryViewer, effectTableViewer, selectedPalette);
+		addSelectedDirectory(audioExplorer.directorySelection(), effectTableViewer, selectedPalette);
 	}
 
 	private void fileAddPlaylist() {
 		// TODO: Change how this is implemented
-		//addSelectedFiles(fileViewer, songTableViewer, selectedPlaylist);
+		addSelectedFiles(audioExplorer.fileSelection(), effectTableViewer, selectedPlaylist);
 	}
 
 	private void fileAddPalette() {
-		addSelectedFiles(fileViewer, effectTableViewer, selectedPalette);
+		addSelectedFiles(audioExplorer.fileSelection(), effectTableViewer, selectedPalette);
 	}
 
 	private void filePreview() {
-		IStructuredSelection selection = (IStructuredSelection) fileViewer.getSelection();
+		IStructuredSelection selection = (IStructuredSelection) audioExplorer.fileSelection();
 		File selectedFile = (File) selection.getFirstElement();
 		previewSong(selectedFile);
 	}
 	
-	private void addSelectedDirectory(Viewer sourceViewer, Viewer destinationViewer, AliasCollector ac) {
-		IStructuredSelection selection = (IStructuredSelection) sourceViewer.getSelection();
-		File f = (File) selection.getFirstElement();
+	private void addSelectedDirectory(IStructuredSelection source, Viewer destinationViewer, AliasCollector ac) {
+		//IStructuredSelection selection = (IStructuredSelection) sourceViewer.getSelection();
+		File f = (File) source.getFirstElement();
 
 		// Get all its files
 		File[] paths = f.listFiles(audioFileFilter);
@@ -720,9 +719,9 @@ public class RPGAudioMixer extends ApplicationWindow
 		}
 	}
 
-	private void addSelectedFiles(Viewer sourceViewer, Viewer destinationViewer, AliasCollector ac) {
-		IStructuredSelection selection = (IStructuredSelection) sourceViewer.getSelection();
-		Iterator i = selection.iterator();
+	private void addSelectedFiles(IStructuredSelection source, Viewer destinationViewer, AliasCollector ac) {
+		//IStructuredSelection selection = (IStructuredSelection) sourceViewer.getSelection();
+		Iterator i = source.iterator();
 		File f;
 		Alias a;
 		while (i.hasNext()) {
@@ -1361,6 +1360,55 @@ public class RPGAudioMixer extends ApplicationWindow
 
 		oldParent.removeItem(selectedResource);
 		newParent.addItem(selectedResource);
+		
+	}
+
+	public void directorySelectionChanged(SelectionChangedEvent event) {
+		// TODO Auto-generated method stub
+        IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+        if (selection.size() > 0) {   	
+	        //Object selected_file = selection.getFirstElement();
+	        //fileViewer.setInput(selected_file);
+	        
+	        directoryAddPlaylistAction.setEnabled(true);
+	        directoryAddPaletteAction.setEnabled(true);
+	        
+        } else {
+        	//fileViewer.setInput(null);
+
+	        directoryAddPlaylistAction.setEnabled(false);
+	        directoryAddPaletteAction.setEnabled(false);
+        	
+        }
+		
+	}
+
+	public void fileSelectionChanged(SelectionChangedEvent event) {
+		// TODO Auto-generated method stub
+		IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+		if (selection.size() > 0) {
+			// Only allow previewing of single files
+			if (selection.size() == 1) {
+				filePreviewAction.setEnabled(true);
+			} else {
+				filePreviewAction.setEnabled(false);
+			}
+
+			// TODO: Also need to check if a Playlist/Palette is open
+			if (selectedPlaylist != null) {
+				fileAddPlaylistAction.setEnabled(true);
+			}
+			
+			if (selectedPalette != null) {
+				fileAddPaletteAction.setEnabled(true);
+			}
+			
+		} else {
+			filePreviewAction.setEnabled(false);
+			fileAddPlaylistAction.setEnabled(false);
+			fileAddPaletteAction.setEnabled(false);
+
+		}
 		
 	}
 

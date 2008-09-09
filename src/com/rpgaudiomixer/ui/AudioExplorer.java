@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.swing.event.EventListenerList;
 
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -17,9 +18,7 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
@@ -40,14 +39,24 @@ public class AudioExplorer extends Composite {
 
 	private SashForm explorerSash;
 	private TreeViewer directoryViewer;
-	protected StructuredViewer fileViewer;
+	protected TableViewer fileViewer;
 	private Transfer[] fileFormat = new Transfer[] {FileTransfer.getInstance()};
 	private FilenameExtensionFilter audioFileFilter = new FilenameExtensionFilter(new String[] {"wav", "mp3", "ogg", "flac"});
 	protected EventListenerList listenerList = new EventListenerList();
-
+	private MenuManager directoryPopupMenuManager;
+	private MenuManager filePopupMenuManager;
+	
 	public AudioExplorer(Composite parent, int style) {
 		super(parent, style);
 		setLayout(new FillLayout());
+		createFileBrowser(this);
+	}
+
+	public AudioExplorer(Composite parent, int style, MenuManager directoryMenu, MenuManager fileMenu) {
+		super(parent, style);
+		setLayout(new FillLayout());
+		directoryPopupMenuManager=directoryMenu;
+		filePopupMenuManager=fileMenu;
 		createFileBrowser(this);
 	}
 
@@ -141,6 +150,15 @@ public class AudioExplorer extends Composite {
 		        	
 		        }
 		        
+				// FIX: Repetitive code
+				Object[] listeners = listenerList.getListenerList();
+				for (int i = listeners.length - 2; i >= 0; i -= 2) {
+				     if (listeners[i] == AudioExplorerListener.class) {
+				         // Lazily create the event:
+			    		((AudioExplorerListener) listeners[i + 1]).directorySelectionChanged(event);
+				     }
+				 }
+		        
 	    	}
 	    });
 
@@ -171,7 +189,9 @@ public class AudioExplorer extends Composite {
 		
 	    // Directory Viewer popup context menu
 		// TODO: Change the way this is implemented
-		//directoryViewer.getTree().setMenu(directoryPopupMenuManager.createContextMenu(directoryViewer.getTree()));
+		if (directoryPopupMenuManager!=null){
+			directoryViewer.getTree().setMenu(directoryPopupMenuManager.createContextMenu(directoryViewer.getTree()));
+		}
 
 	    directoryViewer.setInput(File.listRoots()[0]);
 
@@ -213,46 +233,33 @@ public class AudioExplorer extends Composite {
 
 		// File Viewer popup context menu
 		// TODO: Change the way this is implemented
-		//fileViewer.getTable().setMenu(filePopupMenuManager.createContextMenu(fileViewer.getTable()));
+		if (filePopupMenuManager!=null){
+			fileViewer.getTable().setMenu(filePopupMenuManager.createContextMenu(fileViewer.getTable()));
+		}
 
-		// TODO: Change the way this is implemented
-		/*
+		// TODO: review this code
 		fileViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 			public void selectionChanged(SelectionChangedEvent event) {
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				if (selection.size() > 0) {
-					// Only allow previewing of single files
-					if (selection.size() == 1) {
-						filePreviewAction.setEnabled(true);
-					} else {
-						filePreviewAction.setEnabled(false);
-					}
 
-					// TODO: Also need to check if a Playlist/Palette is open
-					if (selectedPlaylist != null) {
-						fileAddPlaylistAction.setEnabled(true);
-					}
-					
-					if (selectedPalette != null) {
-						fileAddPaletteAction.setEnabled(true);
-					}
-					
-				} else {
-					filePreviewAction.setEnabled(false);
-					fileAddPlaylistAction.setEnabled(false);
-					fileAddPaletteAction.setEnabled(false);
-
-				}
+				// FIX: Repetitive code
+				Object[] listeners = listenerList.getListenerList();
+				for (int i = listeners.length - 2; i >= 0; i -= 2) {
+				     if (listeners[i] == AudioExplorerListener.class) {
+				         // Lazily create the event:
+			    		((AudioExplorerListener) listeners[i + 1]).fileSelectionChanged(event);
+				     }
+				 }
+			
 			}
 		});
-		 */
+		 
 
 		{   //block is used to shorten variables TTL
 	    	//step 1 get the users home in a String
 	    	String homeFolderPath = System.getProperty("user.home");
-	    	ArrayList homeFolderPathElements = new ArrayList();
+	    	ArrayList<File> homeFolderPathElements = new ArrayList<File>();
 
-	    	//split it via the filesystem
+	    	//split it via the file system
 	    	File theFolder = new File(homeFolderPath);
 	    	
 	    	//Fill the ArrayList
@@ -329,5 +336,14 @@ public class AudioExplorer extends Composite {
 			final AudioExplorerListener audioExplorerListener) {
 		listenerList.remove(AudioExplorerListener.class, audioExplorerListener);
 	}
+
+	public IStructuredSelection directorySelection() { 
+		return (IStructuredSelection) directoryViewer.getSelection();
+	}		
+
+	public IStructuredSelection fileSelection() { 
+		return (IStructuredSelection) fileViewer.getSelection();
+	}		
+	
 	
 }
