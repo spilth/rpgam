@@ -43,8 +43,6 @@ public class AudioExplorer extends Composite {
 	private Transfer[] fileFormat = new Transfer[] {FileTransfer.getInstance()};
 	private FilenameExtensionFilter audioFileFilter = new FilenameExtensionFilter(new String[] {"wav", "mp3", "ogg", "flac"});
 	protected EventListenerList listenerList = new EventListenerList();
-	private MenuManager directoryPopupMenuManager;
-	private MenuManager filePopupMenuManager;
 	
 	public AudioExplorer(Composite parent, int style) {
 		super(parent, style);
@@ -52,14 +50,14 @@ public class AudioExplorer extends Composite {
 		createFileBrowser(this);
 	}
 
-	public AudioExplorer(Composite parent, int style, MenuManager directoryMenu, MenuManager fileMenu) {
-		super(parent, style);
-		setLayout(new FillLayout());
-		directoryPopupMenuManager=directoryMenu;
-		filePopupMenuManager=fileMenu;
-		createFileBrowser(this);
+	public void setDirectoryContextMenu(MenuManager directoryPopupMenuManager) {
+		directoryViewer.getTree().setMenu(directoryPopupMenuManager.createContextMenu(directoryViewer.getTree()));
 	}
 
+	public void setFileContextMenu(MenuManager filePopupMenuManager) {
+		fileViewer.getTable().setMenu(filePopupMenuManager.createContextMenu(fileViewer.getTable()));
+	}
+	
 	private void createFileBrowser(Composite parent) {
 		explorerSash = new SashForm(parent, SWT.VERTICAL);
 		explorerSash.setLayout(new FillLayout());
@@ -186,12 +184,6 @@ public class AudioExplorer extends Composite {
 				}	
 			}
 		});
-		
-	    // Directory Viewer popup context menu
-		// TODO: Change the way this is implemented
-		if (directoryPopupMenuManager!=null){
-			directoryViewer.getTree().setMenu(directoryPopupMenuManager.createContextMenu(directoryViewer.getTree()));
-		}
 
 	    directoryViewer.setInput(File.listRoots()[0]);
 
@@ -230,12 +222,6 @@ public class AudioExplorer extends Composite {
 			  
 			  public void removeListener(ILabelProviderListener ilabelproviderlistener) { }
 		});
-
-		// File Viewer popup context menu
-		// TODO: Change the way this is implemented
-		if (filePopupMenuManager!=null){
-			fileViewer.getTable().setMenu(filePopupMenuManager.createContextMenu(fileViewer.getTable()));
-		}
 
 		// TODO: review this code
 		fileViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -337,11 +323,11 @@ public class AudioExplorer extends Composite {
 		listenerList.remove(AudioExplorerListener.class, audioExplorerListener);
 	}
 
-	public IStructuredSelection directorySelection() { 
+	public IStructuredSelection getDirectorySelection() { 
 		return (IStructuredSelection) directoryViewer.getSelection();
 	}		
 
-	public IStructuredSelection fileSelection() { 
+	public IStructuredSelection getFileSelection() { 
 		return (IStructuredSelection) fileViewer.getSelection();
 	}		
 	

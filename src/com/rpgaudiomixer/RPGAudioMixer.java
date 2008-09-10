@@ -516,8 +516,10 @@ public class RPGAudioMixer extends ApplicationWindow
 		explorerComposite = new Group(mainSash, SWT.SHADOW_NONE);
 		explorerComposite.setLayout(new FillLayout());
 		explorerComposite.setText("Audio Explorer");
-		audioExplorer = new AudioExplorer(explorerComposite, SWT.NULL, directoryPopupMenuManager,filePopupMenuManager);
+		audioExplorer = new AudioExplorer(explorerComposite, SWT.NULL);
 		audioExplorer.addAudioExplorerListener(this);
+		audioExplorer.setDirectoryContextMenu(directoryPopupMenuManager);
+		audioExplorer.setFileContextMenu(filePopupMenuManager);
 		
 		mainSash.setWeights(new int[] {20, 60, 20});
 		
@@ -668,24 +670,24 @@ public class RPGAudioMixer extends ApplicationWindow
 	
 	private void directoryAddPlaylist() {
 		// TODO: Change how this is implemented
-		addSelectedDirectory(audioExplorer.directorySelection(), effectTableViewer, selectedPlaylist);
+		addSelectedDirectory(audioExplorer.getDirectorySelection(), effectTableViewer, selectedPlaylist);
 	}
 
 	private void directoryAddPalette() {
-		addSelectedDirectory(audioExplorer.directorySelection(), effectTableViewer, selectedPalette);
+		addSelectedDirectory(audioExplorer.getDirectorySelection(), effectTableViewer, selectedPalette);
 	}
 
 	private void fileAddPlaylist() {
 		// TODO: Change how this is implemented
-		addSelectedFiles(audioExplorer.fileSelection(), effectTableViewer, selectedPlaylist);
+		addSelectedFiles(audioExplorer.getFileSelection(), effectTableViewer, selectedPlaylist);
 	}
 
 	private void fileAddPalette() {
-		addSelectedFiles(audioExplorer.fileSelection(), effectTableViewer, selectedPalette);
+		addSelectedFiles(audioExplorer.getFileSelection(), effectTableViewer, selectedPalette);
 	}
 
 	private void filePreview() {
-		IStructuredSelection selection = (IStructuredSelection) audioExplorer.fileSelection();
+		IStructuredSelection selection = (IStructuredSelection) audioExplorer.getFileSelection();
 		File selectedFile = (File) selection.getFirstElement();
 		previewSong(selectedFile);
 	}
