@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.swing.event.EventListenerList;
 
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -150,22 +151,6 @@ public class LibraryExplorer extends Composite {
 					     }
 					}
 
-					if (selectedResource != null) {
-						if (selectedResource.getClass() == Folder.class) {
-							// TODO: Who should handle this activity?
-							//tv.getTree().setMenu(folderContextMenu.createContextMenu(getShell()));
-						}
-					
-					   	if (selectedResource.getClass() == Playlist.class) {
-					   		// TODO: Who should handle this activity?
-					   		//tv.getTree().setMenu(playlistContextMenu.createContextMenu(getShell()));
-					   	}
-					
-					   	if (selectedResource.getClass() == Palette.class) {
-					   		// TODO: Who should handle this activity?
-					   		//tv.getTree().setMenu(paletteContextMenu.createContextMenu(getShell()));
-					   	}
-					}
 				}
 			}
 		});
@@ -355,6 +340,10 @@ public class LibraryExplorer extends Composite {
 		});
 		
 		treeViewer.getTree().setVisible(false);
+	}
+	
+	public void setResourceContextMenu(MenuManager resourcePopupMenuManager) {
+		treeViewer.getTree().setMenu(resourcePopupMenuManager.createContextMenu(treeViewer.getTree()));
 	}
 	
 	public void setLibrary(Library library) {

@@ -764,8 +764,7 @@ public class RPGAudioMixer extends ApplicationWindow
 			case SWT.OK:
 				Folder f = (Folder) selectedResource.getParent();
 				f.removeItem(selectedResource);
-				// TODO: Replace this with a message from the model
-				//resourceViewer.refresh(f);
+				libraryViewer.refresh(f);
 				touchLibrary();
 				
 			case SWT.CANCEL:
@@ -857,8 +856,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		if (renameDialog.open() == InputDialog.OK) {
 			resource.setName(renameDialog.getValue());
 			touchLibrary();
-			// TODO: Replace this
-			//resourceViewer.refresh(resource.getParent());		
+			libraryViewer.refresh(resource.getParent());		
 		}
 	}
 
@@ -1333,6 +1331,24 @@ public class RPGAudioMixer extends ApplicationWindow
 	// LibraryExplorerListener Implemenation
 	public void resourceSelected(IResource resource) {
 		this.selectedResource = resource;
+
+		if (selectedResource != null) {
+			if (selectedResource.getClass() == Playlist.class) {
+				libraryViewer.setResourceContextMenu(playlistContextMenu);
+				
+			} else if (selectedResource.getClass() == Palette.class) {
+				libraryViewer.setResourceContextMenu(paletteContextMenu);
+
+			} else {
+				libraryViewer.setResourceContextMenu(folderContextMenu);
+
+			}
+			
+		} else{
+			libraryViewer.setResourceContextMenu(folderContextMenu);
+
+		}
+		
 	}
 
 	public void playlistOpened(IResource playlist) {
