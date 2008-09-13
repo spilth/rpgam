@@ -18,9 +18,9 @@ public class LocalisedRessourcesManager {
 	private String currentLocale = Locale.getDefault().toString(); 
 
 	//TODO : sort both files to separate strings from messages
-	private static final String STRINGS_BUNDLE_NAME = "com.rpgaudiomixer.ressources.strings"; //$NON-NLS-1$
+	private static final String STRINGS_BUNDLE_NAME = "com.rpgaudiomixer.resources.strings"; //$NON-NLS-1$
 
-	private static final String MESSAGES_BUNDLE_NAME = "com.rpgaudiomixer.ressources.messages"; //$NON-NLS-1$
+	private static final String MESSAGES_BUNDLE_NAME = "com.rpgaudiomixer.resources.messages"; //$NON-NLS-1$
 
 	private static final ResourceBundle STRINGS_RESOURCE_BUNDLE = ResourceBundle.getBundle(STRINGS_BUNDLE_NAME);
 
