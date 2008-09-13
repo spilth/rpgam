@@ -41,6 +41,9 @@ import com.rpgaudiomixer.model.IResource;
 import com.rpgaudiomixer.model.Library;
 import com.rpgaudiomixer.model.Palette;
 import com.rpgaudiomixer.model.Playlist;
+import com.rpgaudiomixer.resources.LocalisedRessourcesManager;
+import com.rpgaudiomixer.resources.LocalisedRessourcesManager.MessageKeys;
+import com.rpgaudiomixer.resources.LocalisedRessourcesManager.RessourceKeys;
 import com.rpgaudiomixer.ui.AudioExplorer;
 import com.rpgaudiomixer.ui.AudioExplorerListener;
 import com.rpgaudiomixer.ui.LibraryExplorer;
@@ -136,6 +139,8 @@ public class RPGAudioMixer extends ApplicationWindow
 
 	private SongPlayer songPlayer;
 	
+	private LocalisedRessourcesManager localeManager=LocalisedRessourcesManager.getInstance();
+	
 	public RPGAudioMixer() {
 		super(null);
 
@@ -161,25 +166,25 @@ public class RPGAudioMixer extends ApplicationWindow
 	
 	private void createActions() {
 		// File
-		newLibraryAction = new Action("&New", IAction.AS_PUSH_BUTTON) {
+		newLibraryAction = new Action(localeManager.getString(RessourceKeys.MenuFileNew), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				newLibrary();
 			}
 		};
 		
-		openLibraryAction = new Action("&Open", IAction.AS_PUSH_BUTTON) {
+		openLibraryAction = new Action(localeManager.getString(RessourceKeys.MenuFileOpen), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				openLibrary();
 			}
 		};
 		
-		saveLibraryAction = new Action("&Save", IAction.AS_PUSH_BUTTON) {
+		saveLibraryAction = new Action(localeManager.getString(RessourceKeys.MenuFileSave), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				saveLibrary();
 			}
 		};
 		
-		saveLibraryAsAction = new Action("Save &As...",
+		saveLibraryAsAction = new Action(localeManager.getString(RessourceKeys.MenuFileSaveAs), //$NON-NLS-1$
 				IAction.AS_PUSH_BUTTON) {
 
 			public void run() {
@@ -187,13 +192,13 @@ public class RPGAudioMixer extends ApplicationWindow
 			}
 		};
 		
-		closeLibraryAction = new Action("&Close", IAction.AS_PUSH_BUTTON) {
+		closeLibraryAction = new Action(localeManager.getString(RessourceKeys.MenuFileClose), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				closeLibrary();
 			}
 		};
 		
-		exitAction = new Action("E&xit", IAction.AS_PUSH_BUTTON) {
+		exitAction = new Action(localeManager.getString(RessourceKeys.MenuFileExit), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				quit();
 			}
@@ -211,35 +216,35 @@ public class RPGAudioMixer extends ApplicationWindow
 		exitAction.setEnabled(true);
 		
 		// View Actions
-		showLibraryExplorerAction = new Action("Show Library Explorer",
+		showLibraryExplorerAction = new Action(localeManager.getString(RessourceKeys.MenuViewLibrary), //$NON-NLS-1$
 				IAction.AS_CHECK_BOX) {
 
 			public void run() {
 				toggleLibraryExplorer();
 			}
 		};
-		showAudioExplorerAction = new Action("Show Audio Explorer",
+		showAudioExplorerAction = new Action(localeManager.getString(RessourceKeys.MenuViewExplorer), //$NON-NLS-1$
 				IAction.AS_CHECK_BOX) {
 
 			public void run() {
 				toggleAudioExplorer();
 			}
 		};
-		showPlaylistAction = new Action("Show Playlist",
+		showPlaylistAction = new Action(localeManager.getString(RessourceKeys.MenuViewPlaylist), //$NON-NLS-1$
 				IAction.AS_CHECK_BOX) {
 
 			public void run() {
 				togglePlaylist();
 			}
 		};
-		showPaletteAction = new Action("Show Palette",
+		showPaletteAction = new Action(localeManager.getString(RessourceKeys.MenuViewPalette), //$NON-NLS-1$
 				IAction.AS_CHECK_BOX) {
 
 			public void run() {
 				togglePalette();
 			}
 		};
-		showSongPlayerAction = new Action("Show Song Player",
+		showSongPlayerAction = new Action(localeManager.getString(RessourceKeys.MenuViewPlayer), //$NON-NLS-1$
 				IAction.AS_CHECK_BOX) {
 
 			public void run() {
@@ -261,91 +266,91 @@ public class RPGAudioMixer extends ApplicationWindow
 		
 		
 		// Resources
-		newFolderAction = new Action("Folder", IAction.AS_PUSH_BUTTON) {
+		newFolderAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryNewFolder), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				newFolder();
 			}
 		};
-		newPlaylistAction = new Action("Playlist", IAction.AS_PUSH_BUTTON) {
+		newPlaylistAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryNewPlaylist), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				newPlaylist();
 			}
 		};
-		newPaletteAction = new Action("Palette", IAction.AS_PUSH_BUTTON) {
+		newPaletteAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryNewPalette), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				newPalette();
 			}
 		};
 		
 		// Resource - Folder
-		renameFolderAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+		renameFolderAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryFolderRename), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				renameFolder();
 			}
 		};
 		
-		deleteFolderAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+		deleteFolderAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryFolderDelete), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				deleteSelectedFolder();
 			}
 		};
 
 		// Resource - Playlist
-		playPlaylistAction = new Action("Play", IAction.AS_PUSH_BUTTON) {
+		playPlaylistAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryPlaylistPlay), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				activatePlaylist();
 			}
 		};
-		renamePlaylistAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+		renamePlaylistAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryPlaylistRename), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				renamePlaylist();
 			}
 		};
-		deletePlaylistAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+		deletePlaylistAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryPlaylistDelete), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				deleteSelectedPlaylist();
 			}
 		};
 
 		// Resource - Palette
-		renamePaletteAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+		renamePaletteAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryPaletteRename), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				renamePalette();
 			}
 		};
-		deletePaletteAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+		deletePaletteAction = new Action(localeManager.getString(RessourceKeys.PopupLibraryPaletteDelete), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				deleteSelectedPalette();
 			}
 		};
 
 		// Song
-		playSongAction = new Action("Play", IAction.AS_PUSH_BUTTON) {
+		playSongAction = new Action(localeManager.getString(RessourceKeys.PopupPlaylistPlay), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				playSelectedSong();
 			}
 		};
-		newSongAction = new Action("New", IAction.AS_PUSH_BUTTON) {
+		newSongAction = new Action(localeManager.getString(RessourceKeys.PopupPlaylistNew), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				newSong();
 			}
 		};
-		renameSongAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+		renameSongAction = new Action(localeManager.getString(RessourceKeys.PopupPlaylistRename), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				renameSelectedSongs();
 			}
 		};
-		deleteSongAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+		deleteSongAction = new Action(localeManager.getString(RessourceKeys.PopupPlaylistDelete), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				deleteSelectedSongs();
 			}
 		};
-		moveSongUpAction = new Action("Move Up", IAction.AS_PUSH_BUTTON) {
+		moveSongUpAction = new Action(localeManager.getString(RessourceKeys.PopupPlaylistMoveUp), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				moveSongUp();
 			}
 		};
-		moveSongDownAction = new Action("Move Down", IAction.AS_PUSH_BUTTON) {
+		moveSongDownAction = new Action(localeManager.getString(RessourceKeys.PopupPlaylistMoveDown), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				moveSongDown();
 			}
@@ -357,36 +362,36 @@ public class RPGAudioMixer extends ApplicationWindow
 		*/
 
 		// Effect
-		playEffectAction = new Action("Play", IAction.AS_PUSH_BUTTON) {
+		playEffectAction = new Action(localeManager.getString(RessourceKeys.PopupPalettePlay), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				playSelectedEffect();
 			}
 		};
 		
-		newEffectAction = new Action("New", IAction.AS_PUSH_BUTTON) {
+		newEffectAction = new Action(localeManager.getString(RessourceKeys.PopupPaletteNew), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				newEffect();
 			}
 		};
-		renameEffectAction = new Action("Rename", IAction.AS_PUSH_BUTTON) {
+		renameEffectAction = new Action(localeManager.getString(RessourceKeys.PopupPaletteRename), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				renameSelectedEffects();
 			}
 		};
-		deleteEffectAction = new Action("Delete", IAction.AS_PUSH_BUTTON) {
+		deleteEffectAction = new Action(localeManager.getString(RessourceKeys.PopupPaletteDelete), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				deleteSelectedEffects();
 			}
 		};
 
 		// Audio Explorer - Directory
-		directoryAddPlaylistAction = new Action("Add Files To Playlist",
+		directoryAddPlaylistAction = new Action(localeManager.getString(RessourceKeys.PopupFolderAddToPlaylist), //$NON-NLS-1$
 				IAction.AS_PUSH_BUTTON) {
 			public void run() {
 				directoryAddPlaylist();
 			}
 		};
-		directoryAddPaletteAction = new Action("Add Files To Palette",
+		directoryAddPaletteAction = new Action(localeManager.getString(RessourceKeys.PopupFolderAddToPalette), //$NON-NLS-1$
 				IAction.AS_PUSH_BUTTON) {
 			public void run() {
 				directoryAddPalette();
@@ -394,19 +399,19 @@ public class RPGAudioMixer extends ApplicationWindow
 		};	
 
 		// Audio Explorer - File
-		fileAddPlaylistAction = new Action("Add to Playlist",
+		fileAddPlaylistAction = new Action(localeManager.getString(RessourceKeys.PopupFileAddToPlaylist), //$NON-NLS-1$
 				IAction.AS_PUSH_BUTTON) {
 			public void run() {
 				fileAddPlaylist();
 			}
 		};
-		fileAddPaletteAction = new Action("Add to Palette",
+		fileAddPaletteAction = new Action(localeManager.getString(RessourceKeys.PopupFileAddToPalette), //$NON-NLS-1$
 				IAction.AS_PUSH_BUTTON) {
 			public void run() {
 				fileAddPalette();
 			}
 		};
-		filePreviewAction = new Action("Preview", IAction.AS_PUSH_BUTTON) {
+		filePreviewAction = new Action(localeManager.getString(RessourceKeys.PopupFilePreview), IAction.AS_PUSH_BUTTON) { //$NON-NLS-1$
 			public void run() {
 				filePreview();
 			}
@@ -450,7 +455,7 @@ public class RPGAudioMixer extends ApplicationWindow
 	}
 
 	protected Control createContents(Composite parent) {
-		getShell().setText("RPG Audio Mixer");
+		getShell().setText(localeManager.getString(RessourceKeys.ApplicationTitle)); //$NON-NLS-1$
 		parent.setSize(800, 600);
 		parent.setLocation(16, 16);
 
@@ -488,7 +493,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		// Resource Viewer
 		resourceComposite = new Group(mainSash, SWT.SHADOW_NONE);
 		resourceComposite.setLayout(new FillLayout());
-		resourceComposite.setText("Library Explorer");
+		resourceComposite.setText(localeManager.getString(RessourceKeys.LibraryExplorerCaption)); //$NON-NLS-1$
 		libraryViewer = new LibraryExplorer(resourceComposite, SWT.NULL);
 		libraryViewer.addLibraryViewerListener(this);
 		
@@ -498,24 +503,24 @@ public class RPGAudioMixer extends ApplicationWindow
 		// Middle Column - Playlist Viewer
 		playlistComposite = new Group(middleComposite, SWT.SHADOW_NONE);
 		playlistComposite.setLayout(new FillLayout());
-		playlistComposite.setText("Playlist");
+		playlistComposite.setText(localeManager.getString(RessourceKeys.PlaylistCaption)); //$NON-NLS-1$
 		playlistViewer = new PlaylistViewer (playlistComposite, SWT.NULL);
 		
 		playerComposite = new Group(middleComposite, SWT.SHADOW_NONE);
 		playerComposite.setLayout(new FillLayout());
-		playerComposite.setText("Song Player");
+		playerComposite.setText(localeManager.getString(RessourceKeys.PlayerCaption)); //$NON-NLS-1$
 		songPlayer = new SongPlayer(playerComposite, SWT.NULL);
 		
 		// Middle Column - Palette Viewer
 		paletteComposite = new Group(middleComposite, SWT.SHADOW_NONE);
 		paletteComposite.setLayout(new FillLayout());
-		paletteComposite.setText("Palette");
+		paletteComposite.setText(localeManager.getString(RessourceKeys.PaletteCaption)); //$NON-NLS-1$
 		paletteViewer = new PaletteViewer(paletteComposite, SWT.NULL);
 
 		// Audio Explorer
 		explorerComposite = new Group(mainSash, SWT.SHADOW_NONE);
 		explorerComposite.setLayout(new FillLayout());
-		explorerComposite.setText("Audio Explorer");
+		explorerComposite.setText(localeManager.getString(RessourceKeys.AudioExplorerCaption)); //$NON-NLS-1$
 		audioExplorer = new AudioExplorer(explorerComposite, SWT.NULL);
 		audioExplorer.addAudioExplorerListener(this);
 		audioExplorer.setDirectoryContextMenu(directoryPopupMenuManager);
@@ -531,11 +536,11 @@ public class RPGAudioMixer extends ApplicationWindow
 		resourceNameInputValidator = new IInputValidator() {
 	    	public String isValid(String newText) {
 	    		if (newText.equals("")) {
-	    			return ("The name cannot be blank.");
+	    			return (localeManager.getMessage(MessageKeys.ErrorNotBlank)); //$NON-NLS-1$
 	    		}
 	    		
 	    		if (newText.length() > MAX_RESOURCE_NAME_LENGTH) {
-	    			return ("The name cannot exceed " + MAX_RESOURCE_NAME_LENGTH + " characters.");
+	    			return (localeManager.getMessage(MessageKeys.ErrorMaxLength, String.valueOf(MAX_RESOURCE_NAME_LENGTH))); //$NON-NLS-1$ //$NON-NLS-2$
 	    		}
 	    		return null;
 	    	}
@@ -551,37 +556,37 @@ public class RPGAudioMixer extends ApplicationWindow
 		songDialog.setFilterExtensions(audioExtensions);
 		
 		confirmDialog = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.OK | SWT.CANCEL);
-		confirmDialog.setText("RPG Audio Mixer");
+		confirmDialog.setText(localeManager.getString(RessourceKeys.DialogTitle)); //$NON-NLS-1$
 	}
 
 	private void createContextMenus() {
 		// Library - New
-		newMenu = new MenuManager("New");
+		newMenu = new MenuManager(localeManager.getString(RessourceKeys.PopupLibraryNew)); //$NON-NLS-1$
 		newMenu.add(newFolderAction);
 		newMenu.add(newPlaylistAction);
 		newMenu.add(newPaletteAction);
 
 		// Library - Folder
-		folderContextMenu = new MenuManager("Folder");
+		folderContextMenu = new MenuManager(localeManager.getString(RessourceKeys.PopupLibraryFolder)); //$NON-NLS-1$
 		folderContextMenu.add(newMenu);
 		folderContextMenu.add(new Separator());
 		folderContextMenu.add(deleteFolderAction);
 		folderContextMenu.add(renameFolderAction);
 
 		// Library - Playlist
-		playlistContextMenu = new MenuManager("Playlist");
+		playlistContextMenu = new MenuManager(localeManager.getString(RessourceKeys.PopupLibraryPlaylist)); //$NON-NLS-1$
 		playlistContextMenu.add(playPlaylistAction);
 		playlistContextMenu.add(new Separator());
 		playlistContextMenu.add(deletePlaylistAction);
 		playlistContextMenu.add(renamePlaylistAction);
 
 		// Library - Palette
-		paletteContextMenu = new MenuManager("Palette");
+		paletteContextMenu = new MenuManager(localeManager.getString(RessourceKeys.PopupLibraryPalette)); //$NON-NLS-1$
 		paletteContextMenu.add(deletePaletteAction);
 		paletteContextMenu.add(renamePaletteAction);
 
 		// Song Table
-		songTableContextMenu = new MenuManager("Playlist");
+		songTableContextMenu = new MenuManager(localeManager.getString(RessourceKeys.PopupPlaylist)); //$NON-NLS-1$
 		songTableContextMenu.add(playSongAction);
 		songTableContextMenu.add(new Separator());
 		songTableContextMenu.add(newSongAction);
@@ -592,7 +597,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		songTableContextMenu.add(moveSongDownAction);
 
 		// Effect Table
-		effectTableContextMenu = new MenuManager("Palette");
+		effectTableContextMenu = new MenuManager(localeManager.getString(RessourceKeys.PopupPalette)); //$NON-NLS-1$
 		effectTableContextMenu.add(playEffectAction);
 		effectTableContextMenu.add(new Separator());
 		effectTableContextMenu.add(newEffectAction);
@@ -627,7 +632,7 @@ public class RPGAudioMixer extends ApplicationWindow
 	}
 	
 	protected MenuManager createMenuManager() {
-		MenuManager fileMenuManager	= new MenuManager("&File");
+		MenuManager fileMenuManager	= new MenuManager(localeManager.getString(RessourceKeys.MenuFile)); //$NON-NLS-1$
 		fileMenuManager.add(newLibraryAction);
 		fileMenuManager.add(openLibraryAction);
 		fileMenuManager.add(new Separator());
@@ -638,7 +643,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		fileMenuManager.add(new Separator());
 		fileMenuManager.add(exitAction);
 
-		MenuManager viewMenuManager = new MenuManager("&View");
+		MenuManager viewMenuManager = new MenuManager(localeManager.getString(RessourceKeys.MenuView)); //$NON-NLS-1$
 		viewMenuManager.add(showLibraryExplorerAction);
 		viewMenuManager.add(showAudioExplorerAction);
 		
@@ -647,12 +652,12 @@ public class RPGAudioMixer extends ApplicationWindow
 		//viewMenuManager.add(showPaletteAction);
 		//viewMenuManager.add(showSongPlayerAction);
 		
-		MenuManager libraryMenuManager = new MenuManager("&Library");
+		MenuManager libraryMenuManager = new MenuManager(localeManager.getString(RessourceKeys.MenuLibrary)); //$NON-NLS-1$
 		//libraryMenuManager.add(newMenu);
 		
-		MenuManager playlistMenuManager = new MenuManager("Playlist");
+		MenuManager playlistMenuManager = new MenuManager(localeManager.getString(RessourceKeys.MenuPlaylist)); //$NON-NLS-1$
 
-		MenuManager paletteMenuManager = new MenuManager("Palette");
+		MenuManager paletteMenuManager = new MenuManager(localeManager.getString(RessourceKeys.MenuPalette)); //$NON-NLS-1$
 		
 		MenuManager mainMenu = new MenuManager();
 		mainMenu.add(fileMenuManager);
@@ -751,11 +756,11 @@ public class RPGAudioMixer extends ApplicationWindow
 	}
 
 	private void deleteSelectedResource() {
-		confirmDialog.setMessage("Delete '" + selectedResource.getName() + "'?");
+		confirmDialog.setMessage(localeManager.getMessage(MessageKeys.ConfirmDelete,selectedResource.getName()) ); //$NON-NLS-1$ //$NON-NLS-2$
 		if (selectedResource instanceof Folder) {
 				int childrenCount = selectedResource.getChildren().size();
 				if (childrenCount > 0) {
-					confirmDialog.setMessage("Delete '" + selectedResource.getName() + "' and all items underneath it?");
+					confirmDialog.setMessage(localeManager.getMessage(MessageKeys.ConfirmDeleteRecursive,selectedResource.getName()) ); //$NON-NLS-1$ //$NON-NLS-2$
 				}
 		}
 		int iResponse = confirmDialog.open();
@@ -776,7 +781,7 @@ public class RPGAudioMixer extends ApplicationWindow
 
 	// TODO: These 3 look pretty similar, no?
 	private void newFolder() {
-		InputDialog newFolderDialog = new InputDialog(this.getShell(), "New Folder" , "Enter Folder name", "Default Folder", resourceNameInputValidator);
+		InputDialog newFolderDialog = new InputDialog(this.getShell(), localeManager.getString(RessourceKeys.NewFolder) , localeManager.getMessage(MessageKeys.EnterFolderName), localeManager.getString(RessourceKeys.DefaultFolderName), resourceNameInputValidator); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		if (newFolderDialog.open() == InputDialog.OK) {
 			Folder f = new Folder(newFolderDialog.getValue());
 			if (selectedResource != null) {
@@ -793,7 +798,7 @@ public class RPGAudioMixer extends ApplicationWindow
 	}
 
 	private void newPalette() {
-		InputDialog newPaletteDialog = new InputDialog(this.getShell(), "New Playlist" , "Enter Palette name", "Default Palette", resourceNameInputValidator);
+		InputDialog newPaletteDialog = new InputDialog(this.getShell(), localeManager.getString(RessourceKeys.NewPalette) , localeManager.getMessage(MessageKeys.EnterPaletteName), localeManager.getString(RessourceKeys.DefaultPaletteName), resourceNameInputValidator); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		if (newPaletteDialog.open() == InputDialog.OK) {
 			Palette p = new Palette(newPaletteDialog.getValue());
 			if (selectedResource != null) {
@@ -810,7 +815,7 @@ public class RPGAudioMixer extends ApplicationWindow
 	}
 	
 	private void newPlaylist() {
-		InputDialog newPlaylistDialog = new InputDialog(this.getShell(), "New Playlist" , "Enter Playlist name", "Default Playlist", resourceNameInputValidator);
+		InputDialog newPlaylistDialog = new InputDialog(this.getShell(), localeManager.getString(RessourceKeys.NewPlaylist) , localeManager.getMessage(MessageKeys.EnterPlaylistName), localeManager.getString(RessourceKeys.DefaultPlaylistName), resourceNameInputValidator); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		if (newPlaylistDialog.open() == InputDialog.OK) {
 			Playlist p = new Playlist(newPlaylistDialog.getValue());
 			if (selectedResource != null) {
@@ -827,15 +832,15 @@ public class RPGAudioMixer extends ApplicationWindow
 	}
 
 	private void renameFolder() {
-		renameResource("Folder", selectedResource);
+		renameResource(localeManager.getString(RessourceKeys.RessourceTypeFolder), selectedResource); //$NON-NLS-1$
 	}
 
 	private void renamePalette() {
-		renameResource("Palette", selectedResource);
+		renameResource(localeManager.getString(RessourceKeys.RessourceTypePalette), selectedResource); //$NON-NLS-1$
 	}
 
 	private void renamePlaylist() {
-		renameResource("Playlist", selectedResource);
+		renameResource(localeManager.getString(RessourceKeys.RessourceTypePlaylist), selectedResource); //$NON-NLS-1$
 	}
 	
 	private void renameSelectedResource() {
@@ -1035,7 +1040,7 @@ public class RPGAudioMixer extends ApplicationWindow
 	}
 
 	private void renameSelectedEffects() {
-		renameSelectedAliases(effectTableViewer, "Effect");
+		renameSelectedAliases(effectTableViewer, localeManager.getString(RessourceKeys.AliasTypeEffect)); //$NON-NLS-1$
 	}
 
 	private void renameSelectedAliases(Viewer v, String type) {
@@ -1044,7 +1049,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		Iterator i = selection.iterator();
 		while (i.hasNext()) {
 			a = (Alias) i.next();
-			renameDialog = new InputDialog(this.getShell(), "Rename " + type + ": " + a.getName() , "Enter new name", a.getName(), resourceNameInputValidator);
+			renameDialog = new InputDialog(this.getShell(), localeManager.getMessage(MessageKeys.ConfirmRenameAlias,type,a.getName()) , localeManager.getMessage(MessageKeys.EnterNewName), a.getName(), resourceNameInputValidator); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if (renameDialog.open() == InputDialog.OK) {
 				a.setName(renameDialog.getValue());
 				touchLibrary();
@@ -1086,7 +1091,7 @@ public class RPGAudioMixer extends ApplicationWindow
 
 	private void openPlaylist(Playlist p) {
 		selectedPlaylist = p;
-		playlistComposite.setText("Playlist: " + p.getName());
+		playlistComposite.setText(localeManager.getMessage(MessageKeys.SelectedPlaylist) + p.getName()); //$NON-NLS-1$
 		playlistViewer.setPlaylist(p);
 		fileAddPlaylistAction.setEnabled(true);
 
@@ -1094,7 +1099,7 @@ public class RPGAudioMixer extends ApplicationWindow
 
 	private void openPalette(Palette p) {
 		selectedPalette = p;
-		paletteComposite.setText("Palette: " + p.getName());	
+		paletteComposite.setText(localeManager.getMessage(MessageKeys.SelectedPalette) + p.getName());	 //$NON-NLS-1$
 		paletteViewer.setPalette(p);
 		fileAddPaletteAction.setEnabled(true);
 
@@ -1201,8 +1206,8 @@ public class RPGAudioMixer extends ApplicationWindow
 	private boolean confirmSaveDialog() {
 		if (library != null && isLibraryDirty()) {
 			confirmDialog = new MessageBox(getShell(), SWT.ICON_WARNING | SWT.YES | SWT.NO | SWT.CANCEL);
-			confirmDialog.setText("Save Current Library?");
-			confirmDialog.setMessage("The currently opened Library is not saved.  Do you want to save it before continuing?");
+			confirmDialog.setText(localeManager.getMessage(MessageKeys.SaveCurrentLibrary)); //$NON-NLS-1$
+			confirmDialog.setMessage(localeManager.getMessage(MessageKeys.SaveCurrentLibraryFull)); //$NON-NLS-1$
 			
 			int iResponse = confirmDialog.open();
 
@@ -1305,17 +1310,17 @@ public class RPGAudioMixer extends ApplicationWindow
 	
 	// Misc Support Methods
 	public void updateWindowTitle() {
-		StringBuffer title = new StringBuffer("RPG Audio Mixer");
+		StringBuffer title = new StringBuffer(localeManager.getString(RessourceKeys.WindowTitle)); //$NON-NLS-1$
 
 		if (library != null) {
 			if (libraryPath != null) {
 				title.append(": " + libraryPath);
 			} else {
-				title.append(": Unsaved Library");
+				title.append(localeManager.getString(RessourceKeys.UnsavedTitle)); //$NON-NLS-1$
 			}
 			
 			if (isLibraryDirty()) {
-					title.append(" [unsaved]");
+					title.append(localeManager.getString(RessourceKeys.UnsavedStatus)); //$NON-NLS-1$
 			}
 
 		}
@@ -1361,7 +1366,7 @@ public class RPGAudioMixer extends ApplicationWindow
 	
 	// AudioExplorerListener Implementation
 	public void fileDoubleClicked(File f) {
-		System.out.println("Previewing " + f);
+		System.out.println(localeManager.getMessage(MessageKeys.Previewing) + f); //$NON-NLS-1$
 		previewSong(f);
 	}
 
