@@ -11,16 +11,17 @@ import java.util.EventListener;
  *
  */
 
-public interface AudioEngineListener extends EventListener {
+public interface AudioChannelListener extends EventListener {
 
 	/**
 	 * Fired when the current song has finished playing.
 	 */
-	void songFinished(String channel);
+	void songFinished(AudioChannel source);
+	
 	
 	/**
-	 * Fired on progress.
+	 * Fired on progress
 	 */
-	void progress(int percentile,String channel);
+	void progress(int secondsPlayed,AudioChannel source);
 	
 }

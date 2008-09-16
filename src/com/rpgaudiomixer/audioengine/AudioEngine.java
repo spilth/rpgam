@@ -81,7 +81,7 @@ public abstract class AudioEngine {
 	 * @return Returns true if the effect was able to load and play.
 	 * False otherwise.
 	 */
-	public abstract boolean playEffect(File file);
+	public abstract boolean playEffect(File file, int channelNumber);
 	
 	/**
 	 * Stop the Song Player.

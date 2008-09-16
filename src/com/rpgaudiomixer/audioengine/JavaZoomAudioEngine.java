@@ -1,6 +1,7 @@
 package com.rpgaudiomixer.audioengine;
 
 import java.io.File;
+import java.util.Hashtable;
 import java.util.Map;
 
 import javazoom.jlgui.basicplayer.BasicController;
@@ -19,16 +20,34 @@ import javazoom.jlgui.basicplayer.BasicPlayerListener;
 
 public final class JavaZoomAudioEngine
 		extends AudioEngine
-		implements BasicPlayerListener {
+		implements AudioChannelListener {
 
-	private BasicPlayer songPlayer, previewPlayer, effectPlayer;
+	private Hashtable<String,JavaZoomAudioChannel> channels;
+
+	private String findPlayerKey(JavaZoomAudioChannel whoami){
+		for (String test : channels.keySet()) {
+			if (channels.get(test)==whoami){
+				return test;
+			}
+		}; 
+		return "";
+	}
+
+	private JavaZoomAudioChannel songChannel, previewChannel, effectChannel;
 	
 	public JavaZoomAudioEngine() {
-		songPlayer = new BasicPlayer();
-		previewPlayer = new BasicPlayer();
-		effectPlayer = new BasicPlayer();
+		channels=new Hashtable<String, JavaZoomAudioChannel>();
+		songChannel = new JavaZoomAudioChannel();
+		channels.put("song", songChannel);
+		previewChannel = new JavaZoomAudioChannel();
+		channels.put("preview", previewChannel);
+		effectChannel = new JavaZoomAudioChannel();
+		channels.put("effect", effectChannel);
 		
-		songPlayer.addBasicPlayerListener(this);
+		songChannel.addAudioChannelListener(this);
+		effectChannel.addAudioChannelListener(this);
+		previewChannel.addAudioChannelListener(this);
+
 	}
 	
 	@Override
@@ -40,140 +59,105 @@ public final class JavaZoomAudioEngine
 	@Override
 	public int getPreviewProgress() {
 		// TODO Auto-generated method stub
-		return 0;
+		return previewChannel.getProgress();
 	}
 
 	@Override
 	public int getSongProgress() {
 		// TODO Auto-generated method stub
-		return 0;
+		return songChannel.getProgress();
 	}
 
 	@Override
 	public int getSongVolume() {
 		// TODO Auto-generated method stub
-		return 0;
+		return songChannel.getVolume();
 	}
 
 	@Override
 	public void init() {
 		// TODO Auto-generated method stub
-
+		for (String test : channels.keySet()) {
+			channels.get(test).init();
+		}; 
 	}
 
 	@Override
 	public boolean playSong(File f) {	
 		System.out.println(f.getAbsolutePath());
-		try {
-			songPlayer.stop();
-			previewPlayer.stop();
 
-			songPlayer.open(f);
-			songPlayer.play();
-				
-			return true;
+		songChannel.stop();
+		previewChannel.stop();
+
+		songChannel.play(f);
 			
-		} catch (BasicPlayerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		
-		}
-
-		return false;
+		return true;
+			
 	}
 
 	@Override
 	public boolean previewSong(File f) {
-		try {
-			songPlayer.stop();
-			previewPlayer.stop();
-			
-			previewPlayer.open(f);
-			previewPlayer.play();
+		System.out.println(f.getAbsolutePath());
 
-			return true;
+		songChannel.stop();
+		previewChannel.stop();
+
+		previewChannel.play(f);
 			
-		} catch (BasicPlayerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return false;
+		return true;
 	}
 
 	@Override
 	public void setSongVolume(int volumeLevel) {
 		// TODO Auto-generated method stub
-
+		songChannel.setVolume(volumeLevel);
 	}
 	@Override
 	public void stop() {
 		// TODO Auto-generated method stub
-		stopSong();
+		for (String test : channels.keySet()) {
+			channels.get(test).stop();
+		}; 
 	}
 
 	@Override
 	public void stopSong() {
 		// TODO Auto-generated method stub
-		try {
-			previewPlayer.stop();
-			songPlayer.stop();
-
-		} catch (BasicPlayerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
+		previewChannel.stop();
+		songChannel.stop();
 	}
 
 	// Basic Player Listener Implementation
+	//TODO obsolete, see if we need this
 	public void opened(Object arg0, Map properties) {
 		System.out.println("FILE OPENED");
 		System.out.println(properties);
 	}
 
-	public void progress(int bytesRead, 
-			long microsecondsElapsed,
-			byte[] pcmSamples,
-			Map properties) {
-		//System.out.println(bytesRead);
-	}
-
-	public void setController(BasicController bc) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void stateUpdated(BasicPlayerEvent bpe) {
-		if (bpe.getCode() == BasicPlayerEvent.EOM) {
-			Object[] listeners = listenerList.getListenerList();
-			for (int i = listeners.length - 2; i >= 0; i -= 2) {
-		         if (listeners[i] == AudioEngineListener.class) {
-		             // Lazily create the event:
-		             ((AudioEngineListener) listeners[i + 1]).songFinished();
-		         }
-		     }
-
-		}
-		
-	}
-
 	@Override
-	public boolean playEffect(File f) {
-		try {
-			effectPlayer.stop();
-			effectPlayer.open(f);
-			effectPlayer.play();
+	public boolean playEffect(File f, int channelNumber) {
+		effectChannel.stop();
+		effectChannel.play(f);
+		return true;
+	}
 
-			return true;
-			
-		} catch (BasicPlayerException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+	public void progress(int secondsPlayed, AudioChannel source) {
+		// TODO what to do with this method ?
+		// answer : calculate ratio based on song length and propagate event
 		
-		}
+	}
 
-		return false;
+	public void songFinished(AudioChannel source) {
+		// propagate song finished event to top level
+		
+		Object[] listeners = listenerList.getListenerList();
+		for (int i = listeners.length - 2; i >= 0; i -= 2) {
+	         if (listeners[i] == AudioEngineListener.class) {
+	             // Lazily create the event:
+	             ((AudioEngineListener) listeners[i + 1]).songFinished( findPlayerKey((JavaZoomAudioChannel) source) );
+	         }
+	     }
+	
 	}
 
 }
