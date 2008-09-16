@@ -994,7 +994,7 @@ public class RPGAudioMixer extends ApplicationWindow
 			File file = new File(a.getPath());
 			
 			if (file.exists()) {
-				boolean success = audioEngine.playEffect(file);
+				boolean success = audioEngine.playEffect(file,0);
 
 				if (success) {
 					// Update UI?
@@ -1329,8 +1329,12 @@ public class RPGAudioMixer extends ApplicationWindow
 	}
 
 	// AudioEngineListener Implementation
-	public void songFinished() {
+	public void songFinished(String channel) {
 		nextSong();		
+	}
+	
+	public void progress(int percentile,String channel){
+		//TODO, implement incrementing progress bars
 	}
 
 	// LibraryExplorerListener Implemenation
