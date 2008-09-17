@@ -23,6 +23,11 @@
 	<property name="jarFile"                 location="${jarDirectory}/rpgam.jar" />
 	<property name="mainClass"               value="com.rpgaudiomixer.RPGAudioMixer"/>
 
+	<!-- Exe Properties -->
+	<property name="exeDirectory"            location="${distDirectory}/exe" />
+	<property name="exeName"                 value="rpgam.exe" />
+	<property name="exeFile"                 location="${exeDirectory}/${exeName}" />
+	
 	<!-- Native Library Properties -->
 	<property name="macLibraryDirectory"     location="lib/native/mac" />
 	<property name="windowsLibraryDirectory" location="lib/native/windows" />
@@ -50,6 +55,11 @@
         <fileset dir="${testLibraryDirectory}" includes="**/*.jar"/>
     </path>
 	
+	<property name="launch4j.dir" location="C:/Program Files/Launch4j" />
+	<taskdef name="launch4j" 
+	     classname="net.sf.launch4j.ant.Launch4jTask"
+	     classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
+	
 	<target name="init">
 		<mkdir dir="${buildDirectory}" />
 		<mkdir dir="${classesDirectory}" />
@@ -57,6 +67,7 @@
 		<mkdir dir="${testReportDirectory}" />
 		<mkdir dir="${distDirectory}" />
 		<mkdir dir="${jarDirectory}"/>
+		<mkdir dir="${exeDirectory}" />
 		<mkdir dir="${unjarDirectory}" />
 		<mkdir dir="${zipDirectory}" />
 		<mkdir dir="${unzipDirectory}" />
@@ -69,7 +80,6 @@
 				<include name="**/*.properties" />
 			</fileset>
 		</copy>
-		
 	</target>
 
 	<target name="javadoc" depends="compile">
@@ -99,12 +109,16 @@
 	<target name="jar" depends="compile">
 		<jar destfile="${jarFile}" basedir="${classesDirectory}" manifest="manifest.txt" />
     </target>
+	
+	<target name="exe" depends="jar">
+		<launch4j configFile="scripts/launch4j.xml" outfile="${exeFile}" />
+	</target>
 
 	<target name="unjar" depends="jar">
 		<unjar src="${jarFile}" dest="${unjarDirectory}" />		
 	</target>
 
-	<target name="zip" depends="jar">
+	<target name="zip" depends="exe">
 		<zip destFile="${macZipFile}">
 			<zipfileset file="scripts/rpgam.sh"          prefix="RPG Audio Mixer/" />
 			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/" />
@@ -114,7 +128,7 @@
 		</zip>
 
 		<zip destFile="${windowsZipFile}">
-			<zipfileset file="scripts/rpgam.bat"         prefix="RPG Audio Mixer/" />
+			<zipfileset file="${exeFile}"                prefix="RPG Audio Mixer/"  />
 			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/"  />
 			<zipfileset dir="${iconsDirectory}"          prefix="RPG Audio Mixer/icons" />
 			<zipfileset dir="${libraryDirectory}"        prefix="RPG Audio Mixer/lib" />
