@@ -64,6 +64,12 @@
 
 	<target name="compile" depends="init">
 		<javac srcdir="${sourceDirectory}" destdir="${classesDirectory}" classpathref="classpath" />
+		<copy todir="${classesDirectory}">
+			<fileset dir="${sourceDirectory}">
+				<include name="**/*.properties" />
+			</fileset>
+		</copy>
+		
 	</target>
 
 	<target name="javadoc" depends="compile">
