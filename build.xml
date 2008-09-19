@@ -40,6 +40,12 @@
 	<property name="windowsZipFile"          location="${zipDirectory}/rpgam-windows.zip" />
 	<property name="linuxZipFile"            location="${zipDirectory}/rpgam-linux.zip" />
 	
+	<!-- Installer Properties -->
+	<property name="installerDirectory"        location="${distDirectory}/installers" />
+	<property name="windowsInstallerDirectory" location="${installerDirectory}/windows" />
+	<property name="macInstallerDirectory"     location="${installerDirectory}/mac" />
+	<property name="linuxInstallerDirectory"   location="${installerDirectory}/linux" />
+ 	
 	<!-- Upload Properties -->
 	<property name="uploadServer" value="rocket.alienwebshop.com" />
 	<property name="uploadDirectory" value="/home/www/brian/rpgaudiomixer/dist/development" />
@@ -68,6 +74,7 @@
 		<mkdir dir="${distDirectory}" />
 		<mkdir dir="${jarDirectory}"/>
 		<mkdir dir="${exeDirectory}" />
+		<mkdir dir="${installerDirectory}" />
 		<mkdir dir="${unjarDirectory}" />
 		<mkdir dir="${zipDirectory}" />
 		<mkdir dir="${unzipDirectory}" />
@@ -106,19 +113,49 @@
 		<javac srcdir="${testSourceDirectory}" destdir="${testClassesDirectory}" classpathref="testClasspath" />
 	</target>
 		
-	<target name="jar" depends="compile">
+	<target name="jar" depends="compile" description="Create the JAR used by all platforms">
 		<jar destfile="${jarFile}" basedir="${classesDirectory}" manifest="manifest.txt" />
     </target>
 	
-	<target name="exe" depends="jar">
+	<target name="executable-windows" depends="jar" description="Create Windows executable (EXE)">
 		<launch4j configFile="scripts/launch4j.xml" outfile="${exeFile}" />
 	</target>
 
+	<target name="executable-mac" depends="jar" description="Create Mac executable (APP)">
+		<property name="macLayoutDirectory" location="${distDirectory}/layout/mac" />
+		
+		<mkdir dir="${macLayoutDirectory}" />
+		<mkdir dir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents" />
+		<mkdir dir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/MacOS" />
+		<mkdir dir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/Resources" />
+		
+		<copy file="${jarFile}" todir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/MacOS" />
+
+		<copy todir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/MacOS/lib">
+			<fileset dir="${libraryDirectory}" />
+			<fileset dir="${windowsLibraryDirectory}" />
+		</copy>
+		<copy todir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/MacOS/icons">
+			<fileset dir="${iconsDirectory}" />
+		</copy>
+		
+		<copy todir="s:\">
+			<fileset dir="${macLayoutDirectory}" />
+		</copy>
+	</target>
+
+	<target name="executable-linux" depends="jar" description="Create Linux executable (???)">
+
+	</target>
+	
+	<target name="executables" depends="executable-windows, executable-mac, executable-linux"
+		description="Create executables for all platforms" />
+	
 	<target name="unjar" depends="jar">
 		<unjar src="${jarFile}" dest="${unjarDirectory}" />		
 	</target>
 
-	<target name="zip" depends="exe">
+	<target name="zip" depends="executables">
 		<zip destFile="${macZipFile}">
 			<zipfileset file="scripts/rpgam.sh"          prefix="RPG Audio Mixer/" />
 			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/" />
@@ -158,6 +195,42 @@
             </classpath>
         </java>
     </target>
+	
+	<target name="installer-windows" depends="executable-windows" description="Create the installer for Windows (EXE)">
+		<property name="windowsLayoutDirectory" location="${distDirectory}/layout/windows" />
+		<mkdir dir="${windowsLayoutDirectory}" />
+		<copy file="${jarFile}"                todir="${windowsLayoutDirectory}" />
+		<copy todir="${windowsLayoutDirectory}/lib">
+			<fileset dir="${libraryDirectory}" />
+			<fileset dir="${windowsLibraryDirectory}" />
+		</copy>
+		<copy todir="${windowsLayoutDirectory}/icons">
+			<fileset dir="${iconsDirectory}" />
+		</copy>
+		<copy todir="${windowsLayoutDirectory}" file="${exeFile}" />
+
+		<mkdir dir="${windowsInstallerDirectory}" />
+	</target>
+
+	<target name="installer-mac" description="Create the installer for Mac (DMG)">
+		<mkdir dir="${macInstallerDirectory}" />
+	</target>
+
+	<target name="installer-linux" description="Create the installer for Linux">
+		<mkdir dir="${linuxInstallerDirectory}" />
+	</target>
+	
+	<target name="installers"
+		depends="installer-windows, installer-mac, installer-linux"
+		description="Create all installers" />
+	
+	<target name="upload" depends="installers">
+		<input addproperty="username" message="Username:" />
+		<input addproperty="password" message="Password:" />
+		<scp todir="${username}:${password}@${uploadServer}:${uploadDirectory}" verbose="yes" trust="true">
+			<fileset dir="${zipDirectory}" />
+		</scp>
+	</target>
 
 	<target name="run-tests" depends="compile-tests">
 		<junit printsummary="yes">
@@ -175,15 +248,7 @@
 			</batchtest>
 		</junit>
 	</target>
-	
-	<target name="upload" depends="zip">
-		<input addproperty="username" message="Username:" />
-		<input addproperty="password" message="Password:" />
-		<scp todir="${username}:${password}@${uploadServer}:${uploadDirectory}" verbose="yes" trust="true">
-			<fileset dir="${zipDirectory}" />
-		</scp>
-	</target>
-	
+
 	<target name="clean">
 		<delete dir="${buildDirectory}" />
 		<delete dir="${distDirectory}" />
