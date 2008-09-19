@@ -113,9 +113,22 @@ public class AudioExplorer extends Composite {
 				return getChildren(element);
 			}
 
-			public Object getParent(Object element) {
-				return ((File) element).getParent();
+			/**
+			 * @author delegreg
+			 * true parameter is elementOrTreePath, meaning it is called 
+			 * either with a domain object or a "path" for the object
+			 * thus requiring the gimmick below
+			 * 
+			 */
+			public Object getParent(Object elementOrTreePath) {
+				if (elementOrTreePath.getClass()==File.class){
+					return ((File) elementOrTreePath).getParent();
+				}
+				else {
+					return new File(((String)elementOrTreePath) );
+				}
 			}
+			
 			public boolean hasChildren(Object element) {
 				return getChildren(element).length > 0;
 			}
