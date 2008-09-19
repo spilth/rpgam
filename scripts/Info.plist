@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE plist SYSTEM "file://localhost/System/Library/DTDs/PropertyList.dtd">
+
+<plist version="0.9">
+	<dict>
+		<key>CFBundleName</key>
+		<string>RPG Audio Mixer</string>
+
+		<key>CFBundleExecutable</key>
+		<string>JavaApplicationStub</string>
+
+		<key>CFBundleIconFile</key>
+		<string>app.icns</string>
+
+		<key>CFBundleInfoDictionaryVersion</key>
+		<string>6.0</string>
+
+		<key>CFBundlePackageType</key>
+		<string>APPL</string>
+
+		<key>CFBundleSignature</key>
+		<string>????</string>
+
+		<key>CFBundleIdentifier</key>
+		<string>????</string>
+
+		<key>CFBundleVersion</key>
+		<string>1.4.7.0</string>
+
+		<key>CFBundleGetInfoString</key>
+		<string>????</string>
+
+		<key>CFBundleDocumentTypes</key>
+		<array><!-- I4J_INSERT_DOCTYPE --></array>
+
+		<key>Java</key>
+		<dict>
+			<key>MainClass</key>
+			<string>com.rpgaudiomixer.RPGAudioMixer</string>
+
+			<key>VMOptions</key>
+			<string>-XstartOnFirstThread</string>
+			<!-- I4J_INSERT_VMOPTIONS -->
+
+			<key>Properties</key>
+			<dict>
+				<key>exe4j.moduleName</key>
+				<string>$APP_PACKAGE</string>
+
+				<key>java.library.path</key>
+				<string>dist/natives/osx</string>
+			</dict>
+
+			<key>JVMVersion</key>
+			<string>1.5+</string>
+		
+			<key>ClassPath</key>	<string>$APP_PACKAGE/Contents/Resources/app/.install4j/i4jruntime.jar:$APP_PACKAGE/Contents/Resources/app/launcher.jar</string>
+			<!-- I4J_INSERT_CLASSPATH -->
+		
+			<key>WorkingDirectory</key>
+			<string>$APP_PACKAGE/Contents/Resources/app/.</string>
+		</dict>
+	</dict>
+</plist>
+s
