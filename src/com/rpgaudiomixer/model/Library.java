@@ -1,5 +1,8 @@
 package com.rpgaudiomixer.model;
 
+import com.rpgaudiomixer.resources.LocalisedRessourcesManager;
+import com.rpgaudiomixer.resources.LocalisedRessourcesManager.RessourceKeys;
+
 /**
  * Library is the main document type in RPG Audio Mixer.
  * It contains Folders, Playlists and Palettes.
@@ -21,9 +24,9 @@ public final class Library {
 	public Library() {
 		root = new Folder("Root");
 		
-		Folder f = new Folder("Default Folder");
-		Playlist p = new Playlist("Default Playlist");
-		Palette x = new Palette("Default Palette");
+		Folder f = new Folder(LocalisedRessourcesManager.getInstance().getString(RessourceKeys.DefaultFolderName));
+		Playlist p = new Playlist(LocalisedRessourcesManager.getInstance().getString(RessourceKeys.DefaultPlaylistName));
+		Palette x = new Palette(LocalisedRessourcesManager.getInstance().getString(RessourceKeys.DefaultPaletteName));
 		
 		root.addItem(f);
 		root.addItem(p);
