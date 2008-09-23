@@ -121,12 +121,15 @@ public class AudioExplorer extends Composite {
 			 * 
 			 */
 			public Object getParent(Object elementOrTreePath) {
+				
+				return ((File) elementOrTreePath).getParentFile();
+				/*
 				if (elementOrTreePath.getClass()==File.class){
-					return ((File) elementOrTreePath).getParent();
+					return ((File) elementOrTreePath).getParentFile();
 				}
 				else {
-					return new File(((String)elementOrTreePath) );
-				}
+					return (new File(((String)elementOrTreePath) )).getParentFile();
+				}*/
 			}
 			
 			public boolean hasChildren(Object element) {
