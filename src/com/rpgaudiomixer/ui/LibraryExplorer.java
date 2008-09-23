@@ -276,15 +276,20 @@ public class LibraryExplorer extends Composite {
 							String[] paths = (String[]) event.data;
 							AliasCollector ac = (AliasCollector) targetResource;
 
-							if (targetResource instanceof Playlist) {
+							if (targetResource instanceof Playlist || targetResource instanceof Palette) {
 								// TODO: What should handle this activity?
-								//addFiles(paths, songTableViewer, ac);
-
-							} else if (targetResource instanceof Palette) {
+								Object[] listeners = listenerList.getListenerList();
+								for (int i = listeners.length - 2; i >= 0; i -= 2) {
+								     if (listeners[i] == LibraryExplorerListener.class) {
+								         // Lazily create the event:
+								         ((LibraryExplorerListener) listeners[i + 1]).dropFiles(paths, targetResource);
+								     }
+								}
+							} /*else if (targetResource instanceof Palette) {
 								// TODO: What should handle this activity?
 								//addFiles(paths, effectTableViewer, ac);
 
-							}
+							}*/
 
 						} else if (
 								FolderTransfer.getInstance().isSupportedType(event.currentDataType) ||
