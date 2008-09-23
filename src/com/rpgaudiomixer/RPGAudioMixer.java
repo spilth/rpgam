@@ -49,13 +49,16 @@ import com.rpgaudiomixer.ui.AudioExplorerListener;
 import com.rpgaudiomixer.ui.LibraryExplorer;
 import com.rpgaudiomixer.ui.LibraryExplorerListener;
 import com.rpgaudiomixer.ui.PaletteViewer;
+import com.rpgaudiomixer.ui.PaletteViewerListener;
 import com.rpgaudiomixer.ui.PlaylistViewer;
+import com.rpgaudiomixer.ui.PlaylistViewerListener;
 import com.rpgaudiomixer.ui.SongPlayer;
 import com.rpgaudiomixer.util.FilenameExtensionFilter;
 import com.thoughtworks.xstream.XStream;
 
 public class RPGAudioMixer extends ApplicationWindow
-		implements AudioEngineListener, LibraryExplorerListener, AudioExplorerListener {
+		implements AudioEngineListener, LibraryExplorerListener, 
+		AudioExplorerListener, PaletteViewerListener, PlaylistViewerListener {
 
 	public static void main(String[] args) {
 		RPGAudioMixer rpgam = new RPGAudioMixer();
@@ -505,6 +508,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		playlistComposite.setLayout(new FillLayout());
 		playlistComposite.setText(localeManager.getString(RessourceKeys.PlaylistCaption)); //$NON-NLS-1$
 		playlistViewer = new PlaylistViewer (playlistComposite, SWT.NULL);
+		playlistViewer.addPlaylistViewerListener(this);
 		
 		playerComposite = new Group(middleComposite, SWT.SHADOW_NONE);
 		playerComposite.setLayout(new FillLayout());
@@ -516,6 +520,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		paletteComposite.setLayout(new FillLayout());
 		paletteComposite.setText(localeManager.getString(RessourceKeys.PaletteCaption)); //$NON-NLS-1$
 		paletteViewer = new PaletteViewer(paletteComposite, SWT.NULL);
+		paletteViewer.addPaletteViewerListener(this);
 
 		// Audio Explorer
 		explorerComposite = new Group(mainSash, SWT.SHADOW_NONE);
@@ -801,7 +806,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		InputDialog newPaletteDialog = new InputDialog(this.getShell(), localeManager.getString(RessourceKeys.NewPalette) , localeManager.getMessage(MessageKeys.EnterPaletteName), localeManager.getString(RessourceKeys.DefaultPaletteName), resourceNameInputValidator); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		if (newPaletteDialog.open() == InputDialog.OK) {
 			Palette p = new Palette(newPaletteDialog.getValue());
-			if (selectedResource != null) {
+			if (selectedResource instanceof Folder) {
 				((Folder)selectedResource).addItem(p);
 			} else {
 				((Folder) library.getRoot()).addItem(p);				
@@ -818,8 +823,8 @@ public class RPGAudioMixer extends ApplicationWindow
 		InputDialog newPlaylistDialog = new InputDialog(this.getShell(), localeManager.getString(RessourceKeys.NewPlaylist) , localeManager.getMessage(MessageKeys.EnterPlaylistName), localeManager.getString(RessourceKeys.DefaultPlaylistName), resourceNameInputValidator); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		if (newPlaylistDialog.open() == InputDialog.OK) {
 			Playlist p = new Playlist(newPlaylistDialog.getValue());
-			if (selectedResource != null) {
-				((Folder)selectedResource).addItem(p);
+			if (selectedResource instanceof Folder) {
+				((Folder) selectedResource).addItem(p);
 			} else {
 				((Folder) library.getRoot()).addItem(p);
 			}
@@ -1060,7 +1065,7 @@ public class RPGAudioMixer extends ApplicationWindow
 
 	// Other Actions
 	
-	private void addFiles(String[] paths, Viewer v, AliasCollector ac) {
+	private void addFiles(String[] paths, AliasCollector ac) {
 		int numPaths = paths.length;
 		File f;
 		for (int i = 0; i < numPaths; i++) {
@@ -1069,7 +1074,6 @@ public class RPGAudioMixer extends ApplicationWindow
 
 			ac.add(a);
 		}
-		v.refresh();
 		touchLibrary();
 	}
 	
@@ -1437,6 +1441,22 @@ public class RPGAudioMixer extends ApplicationWindow
 
 		}
 		
+	}
+
+	public void dropFiles(String[] paths, IResource targetResource) {
+		// TODO Auto-generated method stub
+		addFiles(paths,(AliasCollector) targetResource);
+		if (targetResource instanceof Palette){
+			if ((Palette) targetResource==selectedPalette){
+				paletteViewer.refresh();
+			}
+		}
+		else if (targetResource instanceof Playlist){
+ 			if ((Playlist) targetResource==selectedPlaylist){
+ 				playlistViewer.refresh();
+ 			}
+		}
+			
 	}
 
 }
