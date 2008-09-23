@@ -1,5 +1,7 @@
 package com.rpgaudiomixer.ui;
 
+import javax.swing.event.EventListenerList;
+
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IColorProvider;
@@ -29,6 +31,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.rpgaudiomixer.model.Alias;
+import com.rpgaudiomixer.model.IResource;
 import com.rpgaudiomixer.model.Playlist;
 
 public class PlaylistViewer extends Composite {
@@ -37,6 +40,17 @@ public class PlaylistViewer extends Composite {
 	private TableViewer songTableViewer;
 	private MenuManager songTableContextMenu;
 	private Transfer[] fileFormat = new Transfer[] {FileTransfer.getInstance()};
+	protected EventListenerList listenerList = new EventListenerList();
+	
+	public final void addPlaylistViewerListener(
+			final PlaylistViewerListener playlistViewerListener) {
+		listenerList.add(PlaylistViewerListener.class, playlistViewerListener);
+	}
+
+	public final void removePaletteViewerListener(
+			final PlaylistViewerListener playlistViewerListener) {
+		listenerList.remove(PlaylistViewerListener.class, playlistViewerListener);
+	}
 
 	public PlaylistViewer(Composite parent, int style) {
 		super(parent, style);
@@ -102,7 +116,14 @@ public class PlaylistViewer extends Composite {
 					if (FileTransfer.getInstance().isSupportedType(dte.currentDataType)) {
 						String[] paths = (String[]) dte.data;						
 						// TODO: Change how this is implemented
-						//addFiles(paths, songTableViewer, selectedPlaylist);
+						Object[] listeners = listenerList.getListenerList();
+						for (int i = listeners.length - 2; i >= 0; i -= 2) {
+						     if (listeners[i] == PlaylistViewerListener.class) {
+						         // Lazily create the event:
+						         ((PlaylistViewerListener) listeners[i + 1]).dropFiles(paths, (IResource) songTableViewer.getInput());
+						     }
+						}
+						refresh();
 					}
 				} catch (Exception e) {
 					System.out.println(e.toString());
@@ -201,6 +222,9 @@ public class PlaylistViewer extends Composite {
 		public void dispose() { }
 
 	}
-
+	
+	public void refresh(){
+		songTableViewer.refresh();
+	}
 }
 

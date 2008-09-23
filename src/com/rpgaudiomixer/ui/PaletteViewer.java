@@ -1,5 +1,7 @@
 package com.rpgaudiomixer.ui;
 
+import javax.swing.event.EventListenerList;
+
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -27,6 +29,7 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 
 import com.rpgaudiomixer.model.Alias;
+import com.rpgaudiomixer.model.IResource;
 import com.rpgaudiomixer.model.Palette;
 
 public class PaletteViewer extends Composite {
@@ -34,6 +37,17 @@ public class PaletteViewer extends Composite {
 	private Table effectTable;
 	private TableViewer effectTableViewer;
 	private Transfer[] fileFormat = new Transfer[] {FileTransfer.getInstance()};
+	protected EventListenerList listenerList = new EventListenerList();
+	
+	public final void addPaletteViewerListener(
+			final PaletteViewerListener paletteViewerListener) {
+		listenerList.add(PaletteViewerListener.class, paletteViewerListener);
+	}
+
+	public final void removePaletteViewerListener(
+			final PaletteViewerListener paletteViewerListener) {
+		listenerList.remove(PaletteViewerListener.class, paletteViewerListener);
+	}
 
 	public PaletteViewer(Composite parent, int style) {
 		super(parent, style);
@@ -141,7 +155,14 @@ public class PaletteViewer extends Composite {
 					if (FileTransfer.getInstance().isSupportedType(dte.currentDataType)) {
 						String[] paths = (String[]) dte.data;		
 						// TODO: Change the way this is implemented
-						//addFiles(paths, effectTableViewer, selectedPalette);
+						Object[] listeners = listenerList.getListenerList();
+						for (int i = listeners.length - 2; i >= 0; i -= 2) {
+						     if (listeners[i] == PaletteViewerListener.class) {
+						         // Lazily create the event:
+						         ((PaletteViewerListener) listeners[i + 1]).dropFiles(paths, (IResource) effectTableViewer.getInput());
+						     }
+						}
+						refresh();
 					}
 				} catch (Exception e) {
 					System.out.println(e.toString());
@@ -188,4 +209,7 @@ public class PaletteViewer extends Composite {
 		}
 	}
 
+	public void refresh(){
+		effectTableViewer.refresh();
+	}
 }
