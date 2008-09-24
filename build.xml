@@ -1,5 +1,8 @@
 <project name="rpgam" default="run-tests">
 
+	<!-- Propreties -->
+	<property name="applicationName"         value="RPG Audio Mixer" />
+	
 	<!-- Main Properties -->
 	<property name="sourceDirectory"         location="src" />
     <property name="libraryDirectory"        location="lib/shared" />
@@ -16,6 +19,7 @@
 	<!-- Distribution Properties -->
 	<property name="distDirectory"           location="dist" />
 	<property name="iconsDirectory"          location="icons" />
+	<property name="version"                 value="X.Y.Z" />
 
 	<!-- Jar Properties -->
 	<property name="jarDirectory"            location="${distDirectory}/jar" />
@@ -33,24 +37,30 @@
 	<property name="windowsLibraryDirectory" location="lib/native/windows" />
 	<property name="linuxLibraryDirectory"   location="lib/native/linux" />
 
-	<!-- Zip Properties -->
-	<property name="zipDirectory"            location="${distDirectory}/zip" />
-	<property name="unzipDirectory"          location="${distDirectory}/unzip" />
-	<property name="macZipFile"              location="${zipDirectory}/rpgam-mac.zip" />
-	<property name="windowsZipFile"          location="${zipDirectory}/rpgam-windows.zip" />
-	<property name="linuxZipFile"            location="${zipDirectory}/rpgam-linux.zip" />
-	
+	<!-- Layout Properties -->
+	<property name="macLayoutDirectory"        location="${distDirectory}/layout/mac" />
+	<property name="windowsLayoutDirectory"    location="${distDirectory}/layout/windows" />
+
 	<!-- Installer Properties -->
 	<property name="installerDirectory"        location="${distDirectory}/installers" />
+	<property name="installerName"             value="rpgaudiomixer_${version}" />
 	<property name="windowsInstallerDirectory" location="${installerDirectory}/windows" />
 	<property name="macInstallerDirectory"     location="${installerDirectory}/mac" />
 	<property name="linuxInstallerDirectory"   location="${installerDirectory}/linux" />
- 	
+	<property name="windowsInstallerFile"      location="${windowsInstallerDirectory}/${installerName}.exe" />	
+	<property name="macInstallerFile"          location="${macInstallerDirectory}/${installerName}.dmg" />	
+	<property name="linuxInstallerFile"        location="${linuxInstallerDirectory}/${installerName}.rpm" />	
+	
 	<!-- Upload Properties -->
 	<property name="uploadServer" value="rocket.alienwebshop.com" />
-	<property name="uploadDirectory" value="/home/www/brian/rpgaudiomixer/dist/development" />
-	
-    <path id="classpath">
+	<property name="uploadDirectory" value="/home/www/brian/rpgaudiomixer/temp" />
+
+	<!-- Task Properties -->
+	<property name="launch4j.dir" location="vendor/launch4j" />
+
+	<!-- Classpaths -->
+
+	<path id="classpath">
         <fileset dir="${libraryDirectory}" includes="**/*.jar"/>
         <fileset dir="${macLibraryDirectory}" includes="**/*.jar"/>
     </path>
@@ -60,12 +70,15 @@
         <fileset dir="${jarDirectory}"         includes="**/*.jar"/>
         <fileset dir="${testLibraryDirectory}" includes="**/*.jar"/>
     </path>
-	
-	<property name="launch4j.dir" location="C:/Program Files/Launch4j" />
+
+	<!-- Ant Tasks -->
+
 	<taskdef name="launch4j" 
 	     classname="net.sf.launch4j.ant.Launch4jTask"
 	     classpath="${launch4j.dir}/launch4j.jar:${launch4j.dir}/lib/xstream.jar" />
-	
+
+	<!-- Targets -->
+
 	<target name="init">
 		<mkdir dir="${buildDirectory}" />
 		<mkdir dir="${classesDirectory}" />
@@ -76,8 +89,6 @@
 		<mkdir dir="${exeDirectory}" />
 		<mkdir dir="${installerDirectory}" />
 		<mkdir dir="${unjarDirectory}" />
-		<mkdir dir="${zipDirectory}" />
-		<mkdir dir="${unzipDirectory}" />
 	</target>
 
 	<target name="compile" depends="init">
@@ -88,59 +99,29 @@
 			</fileset>
 		</copy>
 	</target>
-
-	<target name="javadoc" depends="compile">
-		<javadoc
-		           destdir="dist/docs/api"
-		           author="true"
-		           version="true"
-		           use="true"
-		           windowtitle="RPG Audio Mixer API">
-
-		    <packageset dir="src" defaultexcludes="yes">
-		      <include name="com/rpgaudiomixer/**"/>
-		    </packageset>
-
-		    <doctitle><![CDATA[<h1>RPG Audio Mixer</h1>]]></doctitle>
-		    <bottom><![CDATA[<i>Copyright &#169; 2000 Dummy Corp. All Rights Reserved.</i>]]></bottom>
-		    <tag name="todo" scope="all" description="To do:"/>
-		    <link offline="true" href="http://java.sun.com/j2se/1.5.0/docs/api/" packagelistLoc="C:\tmp"/>
-		    <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
-		  </javadoc>		
-	</target>
-	
-	<target name="compile-tests" depends="jar">
-		<javac srcdir="${testSourceDirectory}" destdir="${testClassesDirectory}" classpathref="testClasspath" />
-	</target>
 		
 	<target name="jar" depends="compile" description="Create the JAR used by all platforms">
 		<jar destfile="${jarFile}" basedir="${classesDirectory}" manifest="manifest.txt" />
     </target>
-	
+
 	<target name="executable-windows" depends="jar" description="Create Windows executable (EXE)">
 		<launch4j configFile="scripts/launch4j.xml" outfile="${exeFile}" />
 	</target>
 
 	<target name="executable-mac" depends="jar" description="Create Mac executable (APP)">
-		<property name="macLayoutDirectory" location="${distDirectory}/layout/mac" />
-		
 		<mkdir dir="${macLayoutDirectory}" />
-		<mkdir dir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents" />
-		<mkdir dir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/MacOS" />
-		<mkdir dir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/Resources" />
+		<mkdir dir="${macLayoutDirectory}/${applicationName}.app/Contents" />
+		<mkdir dir="${macLayoutDirectory}/${applicationName}.app/Contents/MacOS" />
+		<mkdir dir="${macLayoutDirectory}/${applicationName}.app/Contents/Resources" />
 		
-		<copy file="${jarFile}" todir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/MacOS" />
+		<copy file="${jarFile}" todir="${macLayoutDirectory}/${applicationName}.app/Contents/MacOS" />
 
-		<copy todir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/MacOS/lib">
+		<copy todir="${macLayoutDirectory}/${applicationName}.app/Contents/MacOS/lib">
 			<fileset dir="${libraryDirectory}" />
 			<fileset dir="${windowsLibraryDirectory}" />
 		</copy>
-		<copy todir="${macLayoutDirectory}/RPG Audio Mixer.app/Contents/MacOS/icons">
+		<copy todir="${macLayoutDirectory}/${applicationName}.app/Contents/MacOS/icons">
 			<fileset dir="${iconsDirectory}" />
-		</copy>
-		
-		<copy todir="s:\">
-			<fileset dir="${macLayoutDirectory}" />
 		</copy>
 	</target>
 
@@ -151,55 +132,9 @@
 	<target name="executables" depends="executable-windows, executable-mac, executable-linux"
 		description="Create executables for all platforms" />
 	
-	<target name="unjar" depends="jar">
-		<unjar src="${jarFile}" dest="${unjarDirectory}" />		
-	</target>
-
-	<target name="zip" depends="executables">
-		<zip destFile="${macZipFile}">
-			<zipfileset file="scripts/rpgam.sh"          prefix="RPG Audio Mixer/" />
-			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/" />
-			<zipfileset dir="${iconsDirectory}"          prefix="RPG Audio Mixer/icons" />
-			<zipfileset dir="${libraryDirectory}"        prefix="RPG Audio Mixer/lib" />
-			<zipfileset dir="${macLibraryDirectory}"     prefix="RPG Audio Mixer/lib" />
-		</zip>
-
-		<zip destFile="${windowsZipFile}">
-			<zipfileset file="${exeFile}"                prefix="RPG Audio Mixer/"  />
-			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/"  />
-			<zipfileset dir="${iconsDirectory}"          prefix="RPG Audio Mixer/icons" />
-			<zipfileset dir="${libraryDirectory}"        prefix="RPG Audio Mixer/lib" />
-			<zipfileset dir="${windowsLibraryDirectory}" prefix="RPG Audio Mixer/lib" />
-		</zip>
-
-		<zip destFile="${linuxZipFile}">
-			<zipfileset file="${jarFile}"                prefix="RPG Audio Mixer/" />
-			<zipfileset dir="${iconsDirectory}"          prefix="RPG Audio Mixer/icons" />
-			<zipfileset dir="${libraryDirectory}"        prefix="RPG Audio Mixer/lib" />
-			<zipfileset dir="${linuxLibraryDirectory}"   prefix="RPG Audio Mixer/lib" />
-		</zip>
-	</target>
-
-	<target name="unzip" depends="zip">
-		<unzip src="${macZipFile}"     dest="${unzipDirectory}/mac" />
-		<unzip src="${windowsZipFile}" dest="${unzipDirectory}/windows" />
-		<unzip src="${linuxZipFile}"   dest="${unzipDirectory}/linux" />
-	</target>
-
-	<!-- TODO: Add Windows and Linux versions of "run" task -->
-	<target name="run" depends="unzip">
-		<java fork="true" classname="${mainClass}" dir="${unzipDirectory}/mac/RPG Audio Mixer" >
-			<arg value="-XstartOnFirstThread" />
-            <classpath>
-    	        <fileset dir="${unzipDirectory}/mac/RPG Audio Mixer" includes="**/*.jar"/>
-            </classpath>
-        </java>
-    </target>
-	
 	<target name="installer-windows" depends="executable-windows" description="Create the installer for Windows (EXE)">
-		<property name="windowsLayoutDirectory" location="${distDirectory}/layout/windows" />
 		<mkdir dir="${windowsLayoutDirectory}" />
-		<copy file="${jarFile}"                todir="${windowsLayoutDirectory}" />
+		<copy file="${jarFile}" todir="${windowsLayoutDirectory}" />
 		<copy todir="${windowsLayoutDirectory}/lib">
 			<fileset dir="${libraryDirectory}" />
 			<fileset dir="${windowsLibraryDirectory}" />
@@ -212,24 +147,64 @@
 		<mkdir dir="${windowsInstallerDirectory}" />
 	</target>
 
-	<target name="installer-mac" description="Create the installer for Mac (DMG)">
+	<target name="installer-mac" depends="executable-mac" description="Create the installer for Mac (DMG)">
+		<delete dir="${macInstallerDirectory}" />
 		<mkdir dir="${macInstallerDirectory}" />
+
+		<exec executable="/usr/bin/hdiutil">
+			<arg value="create" />
+			<arg value="-srcfolder" />
+	 		<arg value="${macLayoutDirectory}" />
+			<arg value="-volname" />
+	 		<arg value="${applicationName} ${version}" />
+			<arg value="${macInstallerFile}" />		
+		</exec>
+		
+		<exec executable="/usr/bin/hdiutil">
+			<arg value="internet-enable" />
+			<arg value="-yes" />
+			<arg value="${macInstallerFile}" />		
+		</exec>
+		
 	</target>
 
-	<target name="installer-linux" description="Create the installer for Linux">
+	<target name="installer-linux" depends="executable-linux" description="Create the installer for Linux">
 		<mkdir dir="${linuxInstallerDirectory}" />
 	</target>
 	
 	<target name="installers"
 		depends="installer-windows, installer-mac, installer-linux"
 		description="Create all installers" />
-	
-	<target name="upload" depends="installers">
+
+	<target name="upload-init">
 		<input addproperty="username" message="Username:" />
 		<input addproperty="password" message="Password:" />
+	</target>
+	
+	<target name="upload-windows" depends="installer-windows, upload-init">
 		<scp todir="${username}:${password}@${uploadServer}:${uploadDirectory}" verbose="yes" trust="true">
-			<fileset dir="${zipDirectory}" />
+			<fileset dir="${windowsInstallerDirectory}" />
 		</scp>
+	</target>
+
+	<target name="upload-mac" depends="installer-mac, upload-init">
+		<scp todir="${username}:${password}@${uploadServer}:${uploadDirectory}" verbose="yes" trust="true">
+			<fileset dir="${macInstallerDirectory}" />
+		</scp>
+	</target>
+
+	<target name="upload-linux" depends="installer-linux, upload-init">
+		<scp todir="${username}:${password}@${uploadServer}:${uploadDirectory}" verbose="yes" trust="true">
+			<fileset dir="${linuxInstallerDirectory}" />
+		</scp>
+	</target>
+	
+	<target name="uploads" depends="upload-windows, upload-mac, upload-linux" />
+
+	<!-- Testing & Support Targets -->
+	
+	<target name="compile-tests" depends="jar">
+		<javac srcdir="${testSourceDirectory}" destdir="${testClassesDirectory}" classpathref="testClasspath" />
 	</target>
 
 	<target name="run-tests" depends="compile-tests">
@@ -249,11 +224,35 @@
 		</junit>
 	</target>
 
+	<target name="unjar" depends="jar">
+		<unjar src="${jarFile}" dest="${unjarDirectory}" />		
+	</target>
+	
+	<target name="javadoc" depends="compile">
+		<javadoc
+		           destdir="dist/docs/api"
+		           author="true"
+		           version="true"
+		           use="true"
+		           windowtitle="${applicationName} API">
+
+		    <packageset dir="src" defaultexcludes="yes">
+		      <include name="com/rpgaudiomixer/**"/>
+		    </packageset>
+
+		    <doctitle><![CDATA[<h1>${applicationName}</h1>]]></doctitle>
+		    <bottom><![CDATA[<i>Copyright &#169; 2000 Dummy Corp. All Rights Reserved.</i>]]></bottom>
+		    <tag name="todo" scope="all" description="To do:"/>
+		    <link offline="true" href="http://java.sun.com/j2se/1.5.0/docs/api/" packagelistLoc="C:\tmp"/>
+		    <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+		  </javadoc>		
+	</target>
+			
 	<target name="clean">
 		<delete dir="${buildDirectory}" />
 		<delete dir="${distDirectory}" />
 	</target>
 
-	<target name="full" depends="clean, unzip, run-tests" />
+	<target name="full" depends="clean, run-tests" />
 
 </project>
