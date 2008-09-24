@@ -1,8 +1,12 @@
 ; The name of the installer
 Name "RPG Audio Mixer"
 
+!ifndef VERSION
+	!define VERSION A.B.C
+!endif
+
 ; The file to write
-outfile "..\dist\installers\windows\rpgam-setup.exe"
+outfile "..\dist\installers\windows\rpgam-${VERSION}.exe"
  
 ; The default installation directory
 InstallDir "$PROGRAMFILES\RPG Audio Mixer"
