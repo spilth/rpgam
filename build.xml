@@ -133,6 +133,7 @@
 		description="Create executables for all platforms" />
 	
 	<target name="installer-windows" depends="executable-windows" description="Create the installer for Windows (EXE)">
+		<!-- Lay out files needed for building the installer -->
 		<mkdir dir="${windowsLayoutDirectory}" />
 		<copy file="${jarFile}" todir="${windowsLayoutDirectory}" />
 		<copy todir="${windowsLayoutDirectory}/lib">
@@ -145,6 +146,12 @@
 		<copy todir="${windowsLayoutDirectory}" file="${exeFile}" />
 
 		<mkdir dir="${windowsInstallerDirectory}" />
+
+		<!-- Build the installer using NSIS -->
+		<exec executable="vendor/nsis/makensis.exe">
+			<arg value="/DVERSION=${version}" />
+			<arg value="scripts/rpgam-setup.nsi" />
+		</exec>
 	</target>
 
 	<target name="installer-mac" depends="executable-mac" description="Create the installer for Mac (DMG)">
