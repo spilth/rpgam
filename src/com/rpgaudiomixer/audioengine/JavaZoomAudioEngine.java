@@ -4,12 +4,6 @@ import java.io.File;
 import java.util.Hashtable;
 import java.util.Map;
 
-import javazoom.jlgui.basicplayer.BasicController;
-import javazoom.jlgui.basicplayer.BasicPlayer;
-import javazoom.jlgui.basicplayer.BasicPlayerEvent;
-import javazoom.jlgui.basicplayer.BasicPlayerException;
-import javazoom.jlgui.basicplayer.BasicPlayerListener;
-
 /**
  * JavaZoomAudioEngine is an implementation of the AudioEngine
  * class specific to the JavaZoom audio library.
@@ -36,18 +30,19 @@ public final class JavaZoomAudioEngine
 	private JavaZoomAudioChannel songChannel, previewChannel, effectChannel;
 	
 	public JavaZoomAudioEngine() {
-		channels=new Hashtable<String, JavaZoomAudioChannel>();
-		songChannel = new JavaZoomAudioChannel();
-		channels.put("song", songChannel);
+		channels = new Hashtable<String, JavaZoomAudioChannel>();
+
+		songChannel    = new JavaZoomAudioChannel();
 		previewChannel = new JavaZoomAudioChannel();
-		channels.put("preview", previewChannel);
-		effectChannel = new JavaZoomAudioChannel();
+		effectChannel  = new JavaZoomAudioChannel();
+
+		channels.put("song", songChannel);
+		channels.put("effect", effectChannel);
 		channels.put("effect", effectChannel);
 		
 		songChannel.addAudioChannelListener(this);
 		effectChannel.addAudioChannelListener(this);
 		previewChannel.addAudioChannelListener(this);
-
 	}
 	
 	@Override
