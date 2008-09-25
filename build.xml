@@ -99,7 +99,7 @@
 			</fileset>
 		</copy>
 	</target>
-		
+
 	<target name="jar" depends="compile" description="Create the JAR used by all platforms">
 		<jar destfile="${jarFile}" basedir="${classesDirectory}" manifest="manifest.txt" />
     </target>
@@ -109,20 +109,25 @@
 	</target>
 
 	<target name="executable-mac" depends="jar" description="Create Mac executable (APP)">
-		<mkdir dir="${macLayoutDirectory}" />
-		<mkdir dir="${macLayoutDirectory}/${applicationName}.app/Contents" />
-		<mkdir dir="${macLayoutDirectory}/${applicationName}.app/Contents/MacOS" />
-		<mkdir dir="${macLayoutDirectory}/${applicationName}.app/Contents/Resources" />
-		
-		<copy file="${jarFile}" todir="${macLayoutDirectory}/${applicationName}.app/Contents/MacOS" />
+		<property name="macApplicationBundle" location="${macLayoutDirectory}/${applicationName}.app" />
 
-		<copy todir="${macLayoutDirectory}/${applicationName}.app/Contents/MacOS/lib">
+		<mkdir dir="${macApplicationBundle}/Contents" />
+		<mkdir dir="${macApplicationBundle}/Contents/MacOS" />
+		<mkdir dir="${macApplicationBundle}/Contents/Resources" />
+
+		<copy todir="${macApplicationBundle}/Contents"           file="scripts/Info.plist" />
+		<copy todir="${macApplicationBundle}/Contents/Resources" file="images/rpgam.icns" />
+		<copy todir="${macApplicationBundle}/Contents/MacOS"     file="${jarFile}"  />
+
+		<copy todir="${macApplicationBundle}/Contents/MacOS/lib">
 			<fileset dir="${libraryDirectory}" />
-			<fileset dir="${windowsLibraryDirectory}" />
+			<fileset dir="${macLibraryDirectory}" />
 		</copy>
-		<copy todir="${macLayoutDirectory}/${applicationName}.app/Contents/MacOS/icons">
+
+		<copy todir="${macApplicationBundle}/Contents/MacOS/icons">
 			<fileset dir="${iconsDirectory}" />
 		</copy>
+
 	</target>
 
 	<target name="executable-linux" depends="jar" description="Create Linux executable (???)">
