@@ -508,6 +508,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		playlistComposite.setLayout(new FillLayout());
 		playlistComposite.setText(localeManager.getString(RessourceKeys.PlaylistCaption)); //$NON-NLS-1$
 		playlistViewer = new PlaylistViewer (playlistComposite, SWT.NULL);
+		playlistViewer.setPlaylistContextMenu(songTableContextMenu);
 		playlistViewer.addPlaylistViewerListener(this);
 		
 		playerComposite = new Group(middleComposite, SWT.SHADOW_NONE);
@@ -520,6 +521,7 @@ public class RPGAudioMixer extends ApplicationWindow
 		paletteComposite.setLayout(new FillLayout());
 		paletteComposite.setText(localeManager.getString(RessourceKeys.PaletteCaption)); //$NON-NLS-1$
 		paletteViewer = new PaletteViewer(paletteComposite, SWT.NULL);
+		paletteViewer.setPaletteContextMenu(effectTableContextMenu);
 		paletteViewer.addPaletteViewerListener(this);
 
 		// Audio Explorer

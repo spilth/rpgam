@@ -59,6 +59,10 @@ public class PlaylistViewer extends Composite {
 
 	}
 
+	public void setPlaylistContextMenu(MenuManager menuManager) {
+		songTableViewer.getTable().setMenu(menuManager.createContextMenu(songTableViewer.getTable()));
+	}
+	
 	private void createSongTableViewer(Composite parent) {
 		songTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		TableColumn tcNumber = new TableColumn(songTable, SWT.LEFT);

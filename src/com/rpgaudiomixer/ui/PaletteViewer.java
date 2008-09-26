@@ -2,6 +2,7 @@ package com.rpgaudiomixer.ui;
 
 import javax.swing.event.EventListenerList;
 
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -58,6 +59,10 @@ public class PaletteViewer extends Composite {
 	
 	}
 
+	public void setPaletteContextMenu(MenuManager menuManager) {
+		effectTableViewer.getTable().setMenu(menuManager.createContextMenu(effectTableViewer.getTable()));
+	}
+	
 	private void createEffectTableViewer(Composite parent) {
 		effectTable = new Table(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI);
 		TableColumn tcEffectName = new TableColumn(effectTable, SWT.LEFT);
