@@ -11,6 +11,9 @@ import java.util.List;
  */
 
 public final class Playlist extends BaseResource implements AliasCollector {
+	
+	SongSelector selector = new LoopModeSongSelector();
+	
 	/**
 	 * A Playlist in Automatic List Mode always returns
 	 * the next song in the list.
@@ -186,9 +189,10 @@ public final class Playlist extends BaseResource implements AliasCollector {
 	 * 
 	 * @return The new Alias to play or null.
 	 */
-	public Alias getNext(final Alias currentAlias) {	
+	public Alias getNext(final Alias currentAlias) {
+		
 		if (this.getLoopMode() == LOOP_SONG) {
-			return currentAlias;
+			return selector.getNext(currentAlias);
 		}
 		
 		if (this.getListMode() == MODE_RANDOM) {
