@@ -32,7 +32,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import com.rpgaudiomixer.util.DirectoryFilter;
+import com.rpgaudiomixer.util.VisibleDirectoryFilter;
 import com.rpgaudiomixer.util.FilenameExtensionFilter;
 
 public class AudioExplorer extends Composite {
@@ -105,7 +105,7 @@ public class AudioExplorer extends Composite {
 			public void dispose() { }
 
 			public Object[] getChildren(Object element) {
-				Object[] children = ((File) element).listFiles(new DirectoryFilter());
+				Object[] children = ((File) element).listFiles(new VisibleDirectoryFilter());
 				return children == null ? new Object[0] : children;
 			}
 
