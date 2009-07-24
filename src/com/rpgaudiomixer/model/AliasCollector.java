@@ -9,18 +9,6 @@ package com.rpgaudiomixer.model;
  */
 
 public interface AliasCollector {
-
-	/**
-	 * Method to add an Alias to a collector.
-	 * 
-	 * @param alias The alias to be added
-	 */
 	void add(Alias alias);
-
-	/**
-	 * Method to remove an Alias from a collector.
-	 * 
-	 * @param alias The alias to be removed
-	 */
 	void remove(Alias alias);
 }

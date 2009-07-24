@@ -12,23 +12,12 @@ import java.util.List;
 
 public final class Folder extends BaseResource {
 
-	/**
-	 * The folder's child items.
-	 */
-	private List<IResource> children = new ArrayList<IResource>();
+	private List<IResource> childResources = new ArrayList<IResource>();
 	
-	/**
-	 * Default constructor.  Creates a folder with the name "Default Folder".
-	 */
 	public Folder() {
 		this("Default Folder");
 	}
 
-	/** 
-	 * Creates a folder with a specified name.
-	 * 
-	 * @param folderName Name to give the Folder.
-	 */
 	public Folder(final String folderName) {
 		setName(folderName);
 	}
@@ -39,7 +28,7 @@ public final class Folder extends BaseResource {
 	 * @param resource The resource to add. Must implement IResource.
 	 */
 	public void addItem(final IResource resource) {
-		children.add(resource);
+		childResources.add(resource);
 		resource.setParent(this);
 	}
 
@@ -49,7 +38,7 @@ public final class Folder extends BaseResource {
 	 * @param resource The resoure to remove.  Must implement IResource.
 	 */
 	public void removeItem(final IResource resource) {
-		children.remove(resource);
+		childResources.remove(resource);
 		resource.setParent(null);
 	}
 	
@@ -57,7 +46,7 @@ public final class Folder extends BaseResource {
 	 * @return A List of this folder's IResources.
 	 */
 	public List<IResource> getChildren() {
-		return children;
+		return childResources;
 	}
 
 }
